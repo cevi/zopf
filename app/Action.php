@@ -7,4 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Action extends Model
 {
     //
+    protected $fillable = [
+    'name', 'group_id', 'year', 'action_status_id'
+    ];
+    
+    public function group(){
+        return $this->belongsTo('App\Group');
+    }
+    
+    public function action_status(){
+        return $this->belongsTo('App\ActionStatus');
+    }
 }
