@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 
+        'username', 'email', 'password', 'role_id', 'is_active', 'group_id'
     ];
 
     /**
@@ -25,9 +25,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token'
     ];
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -39,6 +38,10 @@ class User extends Authenticatable
 
     public function role(){
         return $this->belongsTo('App\Role');
+    }
+
+    public function group(){
+        return $this->belongsTo('App\Group');
     }
 
     public function isAdmin(){

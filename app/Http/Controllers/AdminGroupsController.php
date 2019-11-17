@@ -40,7 +40,8 @@ class AdminGroupsController extends Controller
     public function store(Request $request)
     {
         //
-        Group::create($request->all());
+        $group = Group::create($request->all());
+
         return redirect('admin/groups');
     }
 
