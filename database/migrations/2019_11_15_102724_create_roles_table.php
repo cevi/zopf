@@ -17,10 +17,11 @@ class CreateRolesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('is_admin')->default(0);
+            $table->integer('is_groupleader')->default(0);
             $table->timestamps();
         });
     }
-    //INSERT INTO `roles` (`id`, `name`, `is_admin`, `created_at`, `updated_at`) VALUES (NULL, 'Admin', '1', NULL, NULL), (NULL, 'Logistik-Chef', '1', NULL, NULL)
+    //INSERT INTO `roles` (`id`, `name`, `is_admin`, `is_groupleader`, `created_at`, `updated_at`) VALUES (NULL, 'Administrator', '1', '0', NULL, NULL), (NULL, 'Gruppen Chef', '0', '1', NULL, NULL), (NULL, 'Leiter', '0', '0', NULL, NULL);
     /**
      * Reverse the migrations.
      *

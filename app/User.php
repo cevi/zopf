@@ -47,4 +47,11 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function isGroupleader(){
+        if(($this->role['is_groupleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
+            return true;
+        }
+        return false;
+    }
 }

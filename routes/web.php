@@ -17,17 +17,21 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => 'admin'], function(){
+Route::group(['middleware' => 'groupleader'], function(){
 
     Route::get('/admin','AdminController@index');
 
     Route::resource('admin/users', 'AdminUsersController');
 
-    Route::resource('admin/routes', 'AdminRoutesController');
-
     Route::resource('admin/actions', 'AdminActionsController');
+
+    Route::resource('admin/routes', 'AdminRoutesController');
 
     Route::resource('admin/commands', 'AdminCommandsController');
 
+});
+
+Route::group(['middleware' => 'admin'], function(){
+    Route::resource('admin/groups', 'AdminGroupsController');
 });
 

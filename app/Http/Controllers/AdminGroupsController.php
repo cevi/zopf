@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Group;
+use App\User;
 use Illuminate\Http\Request;
 
 class AdminGroupsController extends Controller
@@ -14,6 +16,9 @@ class AdminGroupsController extends Controller
     public function index()
     {
         //
+        $groups = Group::all();
+        $users = User::pluck('username','id')->all();
+        return view('admin.groups.index', compact('groups','users'));
     }
 
     /**
@@ -35,6 +40,8 @@ class AdminGroupsController extends Controller
     public function store(Request $request)
     {
         //
+        Group::create($request->all());
+        return redirect('admin/groups');
     }
 
     /**
@@ -57,6 +64,10 @@ class AdminGroupsController extends Controller
     public function edit($id)
     {
         //
+        $group = Group::findOrFail($id);
+        $users = User::pluck('username','id')->all();
+
+        return view('admin.groups.edit', compact('group', 'users'));
     }
 
     /**
@@ -69,6 +80,8 @@ class AdminGroupsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        Group::findOrFail($id)->update( $request->all());
+        return redirect('admin/groups');
     }
 
     /**
@@ -80,5 +93,7 @@ class AdminGroupsController extends Controller
     public function destroy($id)
     {
         //
+        Group::findOrFail($id)->delete();
+        return redirect('admin/groups');
     }
 }
