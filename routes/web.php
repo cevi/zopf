@@ -29,6 +29,10 @@ Route::group(['middleware' => 'groupleader'], function(){
 
     Route::resource('admin/commands', 'AdminCommandsController');
 
+    Route::resource('admin/addresses', 'AdminAddressesController');
+
+    Route::get('admin/searchajax', ['as'=>'searchajax','uses'=>'AdminAddressesController@searchResponse']);
+
 });
 
 Route::group(['middleware' => 'admin'], function(){

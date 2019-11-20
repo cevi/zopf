@@ -67,6 +67,19 @@
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+            <li>
+                <a href="#"><i class="fa fa-home fa-fw"></i>Adressen<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="{{route('addresses.index')}}">Alle Adressen</a>
+                    </li>
+
+                    <li>
+                    <a href="{{route('addresses.create')}}">Adressen erstellen</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
         </ul>
     </div>
     <!-- /.sidebar-collapse -->
