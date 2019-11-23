@@ -7,6 +7,8 @@ use App\Group;
 use App\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Geocoder\Facades\Geocoder;
+use Illuminate\Support\Facades\Config;
 
 class AdminAddressesController extends Controller
 {
@@ -41,7 +43,7 @@ class AdminAddressesController extends Controller
         return view('admin.addresses.create', compact('groups'));
     }
 
-    public function searchResponse(Request $request)
+    public function searchResponseCity(Request $request)
     {
         $query = $request->get('term','');
         $cities=\DB::table('cities');
@@ -84,6 +86,11 @@ class AdminAddressesController extends Controller
             $group = Auth::user()->group;
             $input['group_id'] = $group['id'];
         }
+        $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
+        $input['lat'] = $geocode['lat'];
+        $input['lng'] = $geocode['lng'];
+
+        // return $input;
 
         Address::create($input);
 
@@ -138,6 +145,10 @@ class AdminAddressesController extends Controller
             $input['city_id'] = $city->id; 
         }
 
+        $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
+        $input['lat'] = $geocode['lat'];
+        $input['lng'] = $geocode['lng'];
+        
         $address->update($input);
         return redirect('admin/addresses');
     }

@@ -6,16 +6,16 @@
     <div class="col-sm-4">
         @include('includes.form_error')
         {!! Form::open(['method' => 'POST', 'action'=>'AdminAddressesController@store']) !!}
-        <div class="col-sm-6" style="padding-left: 0px;">
-            <div class="form-group">
-                {!! Form::label('name', 'Name:') !!}
-                {!! Form::text('name', null, ['class' => 'form-control']) !!}
-            </div>
-        </div>
         <div class="col-sm-6" style="padding-right: 0px;">
             <div class="form-group">
                 {!! Form::label('firstname', 'Vorname:') !!}
                 {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="col-sm-6" style="padding-left: 0px;">
+            <div class="form-group">
+                {!! Form::label('name', 'Name:') !!}
+                {!! Form::text('name', null, ['class' => 'form-control']) !!}
             </div>
         </div>
 
@@ -67,7 +67,7 @@
             minLength: 0,
             source: function( request, response ) {
                     $.ajax({
-                        url: "{{ route('searchajax') }}",
+                        url: "{{ route('searchajaxcity') }}",
                         dataType: "json",
                         data: {
                             term : request.term,

@@ -5,16 +5,16 @@
     <h1>Adresse</h1>
     <div class="col-sm-6">
         {!! Form::model($address, ['method' => 'Patch', 'action'=>['AdminAddressesController@update',$address->id]]) !!}
+        <div class="col-sm-6" style="padding-left: 0px;">
+                <div class="form-group">
+                    {!! Form::label('name', 'Name:') !!}
+                    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                </div>
+            </div>
             <div class="col-sm-6" style="padding-right: 0px;">
                 <div class="form-group">
                     {!! Form::label('firstname', 'Vorname:') !!}
                     {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-sm-6" style="padding-left: 0px;">
-                <div class="form-group">
-                    {!! Form::label('name', 'Name:') !!}
-                    {!! Form::text('name', null, ['class' => 'form-control']) !!}
                 </div>
             </div>
     

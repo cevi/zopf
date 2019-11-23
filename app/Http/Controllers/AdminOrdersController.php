@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
+use App\Action;
+use App\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AdminCommandsController extends Controller
+class AdminOrdersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,6 +18,16 @@ class AdminCommandsController extends Controller
     public function index()
     {
         //
+        if(!Auth::user()->isAdmin()){
+            $group = Auth::user()->group;
+            $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->get();
+            $orders = Order::where('action_id', $action['id'])->get();
+
+        }
+        else{
+            $orders = Order::all();
+        }
+        return view('admin.orders.index', compact('orders'));
     }
 
     /**
@@ -24,6 +38,30 @@ class AdminCommandsController extends Controller
     public function create()
     {
         //
+        $routes = Route::pluck('name','id')->all();
+        return view('admin.orders.create', compact('routes'));
+    }
+
+    public function searchResponseAddress(Request $request)
+    {
+        $query = $request->get('term','');
+        $addresses=\DB::table('addresses');
+        if($request->type=='address_name'){
+            $addresses->where('name','LIKE','%'.$query.'%');
+        }
+        if($request->type=='address_firstname'){
+            $addresses->where('firstname','LIKE','%'.$query.'%');
+        }
+
+        $addresses = $addresses->get();        
+        $data=array();
+        foreach ($addresses as $address) {
+                $data[]=array('name'=>$address->name,'firstname'=>$address->firstname);
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['name'=>'','firstname'=>''];
     }
 
     /**

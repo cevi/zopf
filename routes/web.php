@@ -27,11 +27,13 @@ Route::group(['middleware' => 'groupleader'], function(){
 
     Route::resource('admin/routes', 'AdminRoutesController');
 
-    Route::resource('admin/commands', 'AdminCommandsController');
+    Route::resource('admin/orders', 'AdminOrdersController');
 
     Route::resource('admin/addresses', 'AdminAddressesController');
 
-    Route::get('admin/searchajax', ['as'=>'searchajax','uses'=>'AdminAddressesController@searchResponse']);
+    Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
+
+    Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
 });
 

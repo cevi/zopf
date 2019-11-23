@@ -58,11 +58,11 @@
                 <a href="#"><i class="fa fa-list-alt fa-fw"></i>Bestellungen<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="{{route('commands.index')}}">Alle Bestellungen</a>
+                        <a href="{{route('orders.index')}}">Alle Bestellungen</a>
                     </li>
 
                     <li>
-                    <a href="{{route('commands.create')}}">Bestellung erstellen</a>
+                    <a href="{{route('orders.create')}}">Bestellung erstellen</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->

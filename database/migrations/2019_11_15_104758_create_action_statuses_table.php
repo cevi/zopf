@@ -19,6 +19,7 @@ class CreateActionStatusesTable extends Migration
             $table->timestamps();
         });
     }
+    //INSERT INTO `action_statuses` (`id`, `name`, `created_at`, `updated_at`) VALUES ('5', 'Aktiv', NULL, NULL), ('10', 'Abgeschlossen', NULL, NULL);
 
     /**
      * Reverse the migrations.

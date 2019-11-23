@@ -16,17 +16,22 @@ mix.js('resources/js/app.js', 'public/js')
 
    mix.styles([
       'resources/css/libs/jquery-ui.css',
-      'resources/css/libs/bootstrap.css',
-      'resources/css/libs/metisMenu.css',
-      'resources/css/libs/sb-admin-2.css',
-      'resources/css/libs/morris.css',
+      // 'resources/css/libs/front.css',
+      'resources/css/libs/bootstrap_4.css',
+      // 'resources/css/libs/metisMenu.css',
+      // 'resources/css/libs/sb-admin-2.css',
+      // 'resources/css/libs/morris.css',
       // 'resources/css/libs/all.css'
-      'resources/css/libs/font-awesome.css',
+      'resources/css/libs/font-awesome_new.css',
+      'resources/css/libs/fontastic.css',
+      'resources/css/libs/style.default.css',
+      'resources/css/libs/custom.css',
   ], 'public/css/libs.css');
   mix.scripts([
    'resources/js/libs/jquery.js',
    'resources/js/libs/jquery-ui.js',
-   'resources/js/libs/bootstrap.js',
-   'resources/js/libs/metisMenu.js',
-   'resources/js/libs/sb-admin-2.min.js',
+   'resources/js/libs/bootstrap_4.js',
+   // 'resources/js/libs/metisMenu.js',
+   // 'resources/js/libs/sb-admin-2.min.js',
+   'resources/js/libs/front_new.js',
 ], 'public/js/libs.js');  

@@ -20,8 +20,6 @@ class CreateAddressesTable extends Migration
             $table->string('street');
             $table->integer('city_id')->index()->unsigned()->nullable();
             $table->integer('group_id')->index()->unsigned()->nullable();
-            $table->string('lat');
-            $table->string('lng');
             $table->timestamps();
         });
     }
