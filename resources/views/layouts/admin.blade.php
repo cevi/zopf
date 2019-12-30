@@ -1,77 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Zopfaktion">
+        <meta name="author" content="Jérôme Sigg">
+        <meta name="robots" content="all,follow">
 
-    <title>Zopfaktion Zentrale</title>
+        <title>Zopfaktion Zentrale</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="{{asset('css/libs.css')}}" rel="stylesheet">
-    {{-- <link href="{{asset('css/app.css')}}" rel="stylesheet"> --}}
+        <!-- Bootstrap Core CSS -->
+        <link href="{{asset('css/libs.css')}}" rel="stylesheet">
+        {{-- <link href="{{asset('css/app.css')}}" rel="stylesheet"> --}}
 
-    @yield('styles')
+        @yield('styles')
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-</head>
+    </head>
 
-<body>
+    <body>
+        @include('includes/admin_sidenav')
+        
+        @include('includes/admin_topnav')
 
-    <div id="wrapper">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Zopfaktion Zentrale</a>
-            </div>
-            <!-- /.navbar-header -->
-            @include('includes/admin_topnav')
-
-            <!-- /.navbar-top-links -->
-            @include('includes/admin_sidenav')
-            
-        </nav>
-
-
-    </div>
-    <!-- /#wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    @yield('content')
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
+        @yield('content')
         </div>
-        <!-- /.container-fluid -->
-    </div>
-    <!-- /#page-wrapper -->
+        <footer class="main-footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <p>Design by <a href="https://bootstrapious.com/p/bootstrap-4-dashboard" class="external">Bootstrapious</a></p>
+                        <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions and it helps me to run Bootstrapious. Thank you for understanding :)-->
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
 
-    <!-- jQuery -->
-    <script src="{{asset('js/libs.js')}}"></script>
-    @yield('scripts')
-    
-</body>
+        <!-- jQuery -->
+        <script src="{{asset('js/libs.js')}}"></script>
+        @yield('scripts')
+        
+    </body>
 
 </html>

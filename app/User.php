@@ -57,4 +57,9 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    
+    public function getAction(){
+        return Action::where('group_id',$this->group['id'])->where('action_status_id',5)->first();
+    }
 }

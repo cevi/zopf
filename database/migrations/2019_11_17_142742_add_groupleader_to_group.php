@@ -15,7 +15,10 @@ class AddGroupleaderToGroup extends Migration
     {
         Schema::table('groups', function (Blueprint $table) {
             //
-            $table->integer('user_id')->index()->unsigned()->nullable();
+            $table->bigInteger('user_id')->index()->unsigned()->nullable();
+        });
+        Schema::table('groups', function (Blueprint $table) {   
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -28,6 +31,7 @@ class AddGroupleaderToGroup extends Migration
     {
         Schema::table('groups', function (Blueprint $table) {
             //
+            $table->dropForeign('groups_user_id_foreign');
             $table->dropColumn('user_id');
         });
     }

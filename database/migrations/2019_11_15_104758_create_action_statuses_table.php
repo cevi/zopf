@@ -14,10 +14,16 @@ class CreateActionStatusesTable extends Migration
     public function up()
     {
         Schema::create('action_statuses', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->Increments('id');
             $table->string('name');
             $table->timestamps();
         });
+        DB::table('action_statuses')->insert( 
+            array(
+                ['id' => 5, 'name' => 'Aktiv'],
+                ['id' => 10, 'name' => 'Abgeschlossen']
+            )
+        );
     }
     //INSERT INTO `action_statuses` (`id`, `name`, `created_at`, `updated_at`) VALUES ('5', 'Aktiv', NULL, NULL), ('10', 'Abgeschlossen', NULL, NULL);
 

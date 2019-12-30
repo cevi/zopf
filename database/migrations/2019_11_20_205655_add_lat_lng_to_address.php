@@ -17,6 +17,8 @@ class AddLatLngToAddress extends Migration
             //
             $table->float('lat');
             $table->float('lng');
+            $table->string('city');
+            $table->integer('plz');
         });
     }
 
@@ -31,6 +33,8 @@ class AddLatLngToAddress extends Migration
             //
             $table->dropColumn('lat');
             $table->dropColumn('lng');
+            $table->dropColumn('city');
+            $table->dropColumn('plz');
         });
     }
 }

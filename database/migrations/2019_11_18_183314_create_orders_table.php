@@ -16,11 +16,15 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('quantity');
-            $table->integer('route_id')->index()->unsigned()->nullable();
-            $table->integer('action_id')->index()->unsigned()->nullable();
-            $table->integer('address_id')->index()->unsigned()->nullable();
-            $table->integer('order_status_id')->index()->unsigned()->nullable();
+            $table->bigInteger('route_id')->index()->unsigned()->nullable();
+            $table->bigInteger('action_id')->index()->unsigned()->nullable();
+            $table->bigInteger('address_id')->index()->unsigned()->nullable();
+            $table->bigInteger('order_status_id')->index()->unsigned()->nullable();
             $table->timestamps();
+        });
+        Schema::table('orders', function (Blueprint $table) {
+            $table->foreign('action_id')->references('id')->on('actions')->onDelete('cascade');  
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');  
         });
     }
 
@@ -31,6 +35,11 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
+        Schema::table('orders', function (Blueprint $table) {
+            //
+            $table->dropForeign('orders_action_id_foreign');
+            $table->dropForeign('orders_address_id_foreign');
+        });
         Schema::dropIfExists('orders');
     }
 }

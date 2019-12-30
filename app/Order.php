@@ -11,7 +11,7 @@ class Order extends Model
         'quantity', 'route_id', 'action_id', 'address_id', 'order_status_id'
     ];
 
-    public function adress(){
+    public function address(){
         return $this->belongsTo('App\Address');
     } 
 

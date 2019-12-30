@@ -24,20 +24,29 @@ Route::group(['middleware' => 'groupleader'], function(){
     Route::resource('admin/users', 'AdminUsersController');
 
     Route::resource('admin/actions', 'AdminActionsController');
+    Route::get('admin/actions/complete/{id}', ['as'=>'actions.complete','uses'=>'AdminActionsController@complete']);
 
     Route::resource('admin/routes', 'AdminRoutesController');
 
     Route::resource('admin/orders', 'AdminOrdersController');
+    Route::post('admin/orders/createRoute', ['as'=>'orders.createRoute','uses'=>'AdminOrdersController@createRoute']);
 
     Route::resource('admin/addresses', 'AdminAddressesController');
 
-    Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
+    // Route::get('admin/orders/bulkdelete', ['as'=>'orders.bulkdelete','uses'=>'AdminOrdersController@bulkdelete']);
 
-    Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
+    // Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
+
+    // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
 });
 
 Route::group(['middleware' => 'admin'], function(){
     Route::resource('admin/groups', 'AdminGroupsController');
 });
+
+Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);
+Route::get('actions/createDataTables', ['as'=>'actions.CreateDataTables','uses'=>'AdminActionsController@createDataTables']);
+Route::get('groups/createDataTables', ['as'=>'groups.CreateDataTables','uses'=>'AdminGroupsController@createDataTables']);
+Route::get('orders/createDataTables', ['as'=>'orders.CreateDataTables','uses'=>'AdminOrdersController@createDataTables']);
 

@@ -18,6 +18,14 @@ class CreateOrderStatusesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        DB::table('order_statuses')->insert( 
+            array(
+                ['id' => 5, 'name' => 'Offen'],
+                ['id' => 10, 'name' => 'Unterwegs'],
+                ['id' => 20, 'name' => 'Ausgeliefert'],
+                ['id' => 25, 'name' => 'Hinterlegt']
+            )
+        );
     }
 
     /**

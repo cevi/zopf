@@ -45,24 +45,19 @@ class AdminAddressesController extends Controller
 
     public function searchResponseCity(Request $request)
     {
+        // $cities=\DB::table('cities');
         $query = $request->get('term','');
-        $cities=\DB::table('cities');
-        if($request->type=='city_name'){
-            $cities->where('name','LIKE','%'.$query.'%');
-        }
-        if($request->type=='city_plz'){
-            $cities->where('plz','LIKE','%'.$query.'%');
-        }
-
-           $cities=$cities->get();        
-        $data=array();
+        // $cities->where('plz','LIKE','%'.$query.'%')->orWhere('name','LIKE','%'.$query.'%');
+        //    $cities=$cities->get();        
+        // $data=array();
+        $cities = City::search($request->get('term'))->get();
         foreach ($cities as $city) {
-                $data[]=array('name'=>$city->name,'plz'=>$city->plz);
+                $data[]=array('name'=>$city->name,'plz'=>$city->plz,'id'=>$city->id);
         }
         if(count($data))
              return $data;
         else
-            return ['name'=>'','plz'=>''];
+            return ['name'=>'','plz'=>'','id'=>''];
     }
 
     /**
@@ -74,7 +69,7 @@ class AdminAddressesController extends Controller
     public function store(Request $request)
     {
         //
-        $city=City::Where('name',$request->city_name)->Where('plz',$request->city_plz)->first();
+        $city=City::Where('id',$request->city_id)->first();
         if(!$city){
             return back()->withInput()->withErrors(['errors' => ['Ortschaft nicht gefunden.']]);
         }
@@ -119,10 +114,12 @@ class AdminAddressesController extends Controller
         //
         $address = Address::findOrFail($id);
         $groups = Group::pluck('name','id')->all();
-        $city_name = City::Where('id',$address->city_id)->first()->name;
-        $city_plz =City::Where('id',$address->city_id)->first()->plz;
+        $city_id = $address->city_id;
+        $city = City::Where('id',$city_id)->first();
+        $city_name = $city->name;
+        $city_plz = $city->plz;
 
-        return view('admin.addresses.edit', compact('address','groups', 'city_name', 'city_plz'));
+        return view('admin.addresses.edit', compact('address','groups', 'city_id', 'city_name', 'city_plz'));
     }
 
     /**

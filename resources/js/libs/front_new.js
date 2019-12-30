@@ -88,12 +88,12 @@ $(document).ready(function () {
     // ------------------------------------------------------- //
     // Jquery Progress Circle
     // ------------------------------------------------------ //
-    var progress_circle = $("#progress-circle").gmpc({
-        color: brandPrimary,
-        line_width: 5,
-        percent: 80
-    });
-    progress_circle.gmpc('animate', 80, 3000);
+    // var progress_circle = $("#progress-circle").gmpc({
+    //     color: brandPrimary,
+    //     line_width: 5,
+    //     percent: 80
+    // });
+    // progress_circle.gmpc('animate', 80, 3000);
 
     // ------------------------------------------------------- //
     // External links to new window
@@ -104,35 +104,4 @@ $(document).ready(function () {
         e.preventDefault();
         window.open($(this).attr("href"));
     });
-
-    // ------------------------------------------------------ //
-    // For demo purposes, can be deleted
-    // ------------------------------------------------------ //
-
-    var stylesheet = $('link#theme-stylesheet');
-    $("<link id='new-stylesheet' rel='stylesheet'>").insertAfter(stylesheet);
-    var alternateColour = $('link#new-stylesheet');
-
-    if ($.cookie("theme_csspath")) {
-        alternateColour.attr("href", $.cookie("theme_csspath"));
-    }
-
-    $("#colour").change(function () {
-
-        if ($(this).val() !== '') {
-
-            var theme_csspath = 'css/style.' + $(this).val() + '.css';
-
-            alternateColour.attr("href", theme_csspath);
-
-            $.cookie("theme_csspath", theme_csspath, {
-                expires: 365,
-                path: document.URL.substr(0, document.URL.lastIndexOf('/'))
-            });
-
-        }
-
-        return false;
-    });
-
 });

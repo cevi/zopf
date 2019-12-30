@@ -17,9 +17,12 @@ class CreateActionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('year');
-            $table->integer('group_id')->index()->unsigned()->nullable();
+            $table->bigInteger('group_id')->index()->unsigned()->nullable();
             $table->integer('action_status_id')->index()->unsigned()->nullable();
             $table->timestamps();
+        });
+        Schema::table('actions', function (Blueprint $table) {    
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
         });
     }
 
@@ -30,6 +33,10 @@ class CreateActionsTable extends Migration
      */
     public function down()
     {
+        Schema::table('actions', function (Blueprint $table) {
+            $table->dropForeign('actions_group_id_foreign');
+        });
+
         Schema::dropIfExists('actions');
     }
 }

@@ -16,10 +16,15 @@ class CreateRoutesTable extends Migration
         Schema::create('routes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('action_id')->index()->unsigned()->nullable();
-            $table->integer('user_id')->index()->unsigned()->nullable();
-            $table->integer('route_status_id')->index()->unsigned()->nullable();
+            $table->bigInteger('action_id')->index()->unsigned()->nullable();
+            $table->bigInteger('user_id')->index()->unsigned()->nullable();
+            $table->bigInteger('route_status_id')->index()->unsigned()->nullable();
             $table->timestamps();
+        });
+        Schema::table('routes', function (Blueprint $table) {
+            //
+            $table->foreign('action_id')->references('id')->on('actions')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -30,6 +35,11 @@ class CreateRoutesTable extends Migration
      */
     public function down()
     {
+        Schema::table('routes', function (Blueprint $table) {
+            //
+            $table->dropForeign('routes_action_id_foreign');
+            $table->dropForeign('routes_user_id_foreign');
+        });
         Schema::dropIfExists('routes');
     }
 }

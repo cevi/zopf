@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Group;
 use App\User;
 use Illuminate\Http\Request;
+use DataTables;
 
 class AdminGroupsController extends Controller
 {
@@ -16,9 +17,28 @@ class AdminGroupsController extends Controller
     public function index()
     {
         //
-        $groups = Group::all();
         $users = User::pluck('username','id')->all();
-        return view('admin.groups.index', compact('groups','users'));
+        return view('admin.groups.index', compact('users'));
+    }
+
+    public function createDataTables()
+    {
+        //
+        $groups = Group::all();
+
+
+        return DataTables::of($groups)
+            ->addColumn('groupleader', function ($groups) {
+                return $groups->user['username'];})
+            ->addColumn('Actions', function($groups) {
+                return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                <button data-remote='.\URL::route('groups.destroy', $groups->id).' class="btn btn-danger btn-sm">Löschen</button>';
+            })
+            // ->addColumn('checkbox', function ($users) {
+                // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
+            // })
+            ->rawColumns(['Actions'])
+            ->make(true);
     }
 
     /**

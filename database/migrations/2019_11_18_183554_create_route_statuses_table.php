@@ -18,6 +18,14 @@ class CreateRouteStatusesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        DB::table('route_statuses')->insert( 
+            array(
+                ['id' => 5, 'name' => 'Geplant'],
+                ['id' => 10, 'name' => 'Vorbereitet'],
+                ['id' => 15, 'name' => 'Unterwegs'],
+                ['id' => 20, 'name' => 'Abgeschlossen'],
+            )
+        );
     }
 
     /**

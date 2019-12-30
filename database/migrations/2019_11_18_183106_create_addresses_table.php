@@ -18,9 +18,15 @@ class CreateAddressesTable extends Migration
             $table->string('name');
             $table->string('firstname');
             $table->string('street');
-            $table->integer('city_id')->index()->unsigned()->nullable();
-            $table->integer('group_id')->index()->unsigned()->nullable();
+            $table->bigInteger('city_id')->index()->unsigned()->nullable();
+            $table->bigInteger('group_id')->index()->unsigned()->nullable();
             $table->timestamps();
+        });
+        
+        Schema::table('addresses', function (Blueprint $table) {
+        
+            $table->foreign('city_id')->references('id')->on('cities');
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
         });
     }
 
@@ -31,6 +37,10 @@ class CreateAddressesTable extends Migration
      */
     public function down()
     {
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->dropForeign('addresses_city_id_foreign');
+            $table->dropForeign('addresses_group_id_foreign');
+        });
         Schema::dropIfExists('addresses');
     }
 }

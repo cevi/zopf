@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Role;
 use App\User;
 use App\Group;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,13 @@ class AdminUsersController extends Controller
     public function index()
     {
         //
+        return view('admin.users.index');
+        // return view('admin.users.index', compact('users'));
+    }
+
+    public function createDataTables()
+    {
+        //
         if(!Auth::user()->isAdmin()){
             $group = Auth::user()->group;
             $users = User::where('group_id', $group['id'])->get();
@@ -25,7 +33,29 @@ class AdminUsersController extends Controller
         else{
             $users = User::all();
         }
-        return view('admin.users.index', compact('users'));
+
+        return DataTables::of($users)
+            ->addColumn('group', function (User $user) {
+                return $user->group['name'];})
+            ->addColumn('role', function (User $user) {
+                return $user->role['name'];})
+            ->addColumn('active', function (User $user) {
+                if($user->is_active){
+                    return 'Aktiv';
+                }
+                else{
+                    return 'Inaktiv';
+                }})
+            ->addIndexColumn()
+            ->addColumn('Actions', function($users) {
+                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                <button data-remote='.\URL::route('users.destroy', $users->id).' class="btn btn-danger btn-sm">Löschen</button>';
+            })
+            // ->addColumn('checkbox', function ($users) {
+                // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
+            // })
+            ->rawColumns(['Actions'])
+            ->make(true);
     }
 
     /**
