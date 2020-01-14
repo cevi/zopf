@@ -38,6 +38,9 @@
                         <li>
                         <a href="{{route('orders.create')}}">Bestellung erstellen</a>
                         </li>
+                        <li>
+                            <a href="{{route('orders.map')}}">Karte ansehen</a>
+                        </li>
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>

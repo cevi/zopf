@@ -164,6 +164,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Spatie\Geocoder\GeocoderServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        GoogleMaps\ServiceProvider\GoogleMapsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -230,6 +231,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Geocoder' => Spatie\Geocoder\Facades\Geocoder::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'GoogleMaps' => GoogleMaps\Facade\GoogleMapsFacade::class,
  
 
     ],

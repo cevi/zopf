@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\City;
 use App\Order;
 use App\Route;
 use App\Action;
 use App\Address;
+use App\OrderStatus;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,8 +97,41 @@ class AdminOrdersController extends Controller
     public function create()
     {
         //
-        $routes = Route::pluck('name','id')->all();
+        $routes = Route::where('route_status_id',5)->get();
+        $routes = $routes->pluck('name','id')->all();
         return view('admin.orders.create', compact('routes'));
+    }
+
+    public function map()
+    {
+        $group = Auth::user()->group;
+        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();         
+        $orders = Order::where('action_id', $action['id'])->get();
+        $cities = $action->addresses->unique('city')->pluck('city');
+        $statuses = OrderStatus::pluck('name')->all();
+        return view('admin.orders.map', compact('orders', 'cities', 'statuses'));
+    }
+
+    public function mapfilter(Request $request)
+    {
+        $group = Auth::user()->group;
+        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
+        $addresses = $action->addresses;
+        $city = $request->city;
+        $status = $request->status;
+        $orders = Order::where('action_id', $action['id']);
+        if(isset($city) and $city!="Alle"){
+            $addresses_id = $addresses->where('city',$city)->pluck('id')->all();
+            $orders = $orders->whereIn('address_id', $addresses_id);
+        }
+
+        if(isset($status) and $status!="Alle"){
+            $order_status = OrderStatus::where('name',$status)->first();
+            $orders->where('order_status_id',$order_status['id'])->get();
+        }
+        
+        $orders = $orders->with('address')->get();
+        return $orders;
     }
 
     // public function searchResponseAddress(Request $request)

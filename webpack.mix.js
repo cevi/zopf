@@ -30,5 +30,6 @@ mix.js('resources/js/app.js', 'public/js')
    'resources/js/libs/datatables.js',
    'resources/js/libs/jquery.mCustomScrollbar.js',
    'resources/js/libs/front_new.js',
+   'resources/js/libs/markerCluster.js',
    'resources/js/libs/custom.js',
 ], 'public/js/libs.js');  

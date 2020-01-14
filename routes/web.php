@@ -25,11 +25,16 @@ Route::group(['middleware' => 'groupleader'], function(){
 
     Route::resource('admin/actions', 'AdminActionsController');
     Route::get('admin/actions/complete/{id}', ['as'=>'actions.complete','uses'=>'AdminActionsController@complete']);
-
+    
+    Route::get('admin/routes/{id}/overview', ['as'=>'routes.overview','uses'=>'AdminRoutesController@overview']);
+    Route::get('admin/routes/map', ['as'=>'routes.map','uses'=>'AdminRoutesController@map']);
+    Route::post('admin/routes/{id}/send', ['as'=>'routes.send','uses'=>'AdminRoutesController@send']);
     Route::resource('admin/routes', 'AdminRoutesController');
 
-    Route::resource('admin/orders', 'AdminOrdersController');
+    Route::get('admin/orders/map', ['as'=>'orders.map','uses'=>'AdminOrdersController@map']);
+    Route::get('admin/orders/mapfilter', ['as'=>'orders.mapfilter','uses'=>'AdminOrdersController@mapfilter']);
     Route::post('admin/orders/createRoute', ['as'=>'orders.createRoute','uses'=>'AdminOrdersController@createRoute']);
+    Route::resource('admin/orders', 'AdminOrdersController');
 
     Route::resource('admin/addresses', 'AdminAddressesController');
 
@@ -49,4 +54,5 @@ Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'Ad
 Route::get('actions/createDataTables', ['as'=>'actions.CreateDataTables','uses'=>'AdminActionsController@createDataTables']);
 Route::get('groups/createDataTables', ['as'=>'groups.CreateDataTables','uses'=>'AdminGroupsController@createDataTables']);
 Route::get('orders/createDataTables', ['as'=>'orders.CreateDataTables','uses'=>'AdminOrdersController@createDataTables']);
+Route::get('routes/createDataTables', ['as'=>'routes.CreateDataTables','uses'=>'AdminRoutesController@createDataTables']);
 

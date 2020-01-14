@@ -34,5 +34,9 @@ class Address extends Model
     
     public function group(){
         return $this->belongsTo('App\Group');
+    }
+    
+    public function orders(){
+        return $this->hasMany('App\Order');
     }  
 }

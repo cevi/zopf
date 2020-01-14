@@ -4,8 +4,118 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1fddb0b3812e9e4ba6a25b32e0f713d",
+    "content-hash": "8a0d8992ede460be09d4738590a0b389",
     "packages": [
+        {
+            "name": "alexpechkarev/geometry-library",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexpechkarev/geometry-library.git",
+                "reference": "ebbf02c3e907e0bd19c9474fd5eb77b9ca1ce414"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexpechkarev/geometry-library/zipball/ebbf02c3e907e0bd19c9474fd5eb77b9ca1ce414",
+                "reference": "ebbf02c3e907e0bd19c9474fd5eb77b9ca1ce414",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GeometryLibrary\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Pechkarev",
+                    "email": "alexpechkarev@gmail.com"
+                }
+            ],
+            "description": "PHP Geometry library provides utility functions for the computation of geometric data on the surface of the Earth.",
+            "homepage": "https://alexpechkarev.github.io/geometry-library/",
+            "keywords": [
+                "computations polygons and polylines",
+                "encoding and decoding polyline paths utilities",
+                "google maps geometry library",
+                "php geometry library",
+                "spherical geometry utilities"
+            ],
+            "time": "2015-09-11T15:40:41+00:00"
+        },
+        {
+            "name": "alexpechkarev/google-maps",
+            "version": "6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexpechkarev/google-maps.git",
+                "reference": "a2fc1ffa4d382b847af0172d429bfeb77b7533b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexpechkarev/google-maps/zipball/a2fc1ffa4d382b847af0172d429bfeb77b7533b7",
+                "reference": "a2fc1ffa4d382b847af0172d429bfeb77b7533b7",
+                "shasum": ""
+            },
+            "require": {
+                "alexpechkarev/geometry-library": "1.0.0",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "illuminate/config": "^6.0",
+                "illuminate/support": "^6.0",
+                "jbroadway/urlify": "^1.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GoogleMaps\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Pechkarev",
+                    "email": "alexpechkarev@gmail.com"
+                }
+            ],
+            "description": "Collection of Google Maps API Web Services for Laravel",
+            "homepage": "https://alexpechkarev.github.io/google-maps/",
+            "keywords": [
+                "Google Maps API",
+                "directions api",
+                "distance matrix api",
+                "elevation api",
+                "geocoding api",
+                "geolocation api",
+                "google maps api for laravel",
+                "google maps web service for laravel",
+                "laravel google maps api",
+                "places api web service",
+                "roads api",
+                "time zone api"
+            ],
+            "time": "2019-09-21T15:40:59+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -655,6 +765,65 @@
             ],
             "description": "Highlight PHP code in terminal",
             "time": "2018-09-29T18:48:56+00:00"
+        },
+        {
+            "name": "jbroadway/urlify",
+            "version": "1.2.0-stable",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jbroadway/urlify.git",
+                "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jbroadway/urlify/zipball/b917c8c9274a9784a2eb30c657fc386ad591fdcd",
+                "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "voku/portable-ascii": "^1.4",
+                "voku/stop-words": "^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "URLify": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause-Clear"
+            ],
+            "authors": [
+                {
+                    "name": "Johnny Broadway",
+                    "email": "johnny@johnnybroadway.com",
+                    "homepage": "http://www.johnnybroadway.com/"
+                }
+            ],
+            "description": "PHP port of URLify.js from the Django project. Transliterates non-ascii characters for use in URLs.",
+            "homepage": "https://github.com/jbroadway/urlify",
+            "keywords": [
+                "encode",
+                "iconv",
+                "link",
+                "slug",
+                "translit",
+                "transliterate",
+                "transliteration",
+                "url",
+                "urlify"
+            ],
+            "time": "2019-12-13T19:53:11+00:00"
         },
         {
             "name": "laravel/framework",
@@ -3346,6 +3515,98 @@
                 "environment"
             ],
             "time": "2019-09-10T21:37:39+00:00"
+        },
+        {
+            "name": "voku/portable-ascii",
+            "version": "1.4.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/portable-ascii.git",
+                "reference": "8b23920025c9b040301e3d1443b302547560f48d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/8b23920025c9b040301e3d1443b302547560f48d",
+                "reference": "8b23920025c9b040301e3d1443b302547560f48d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0"
+            },
+            "suggest": {
+                "ext-intl": "Use Intl for transliterator_transliterate() support"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "voku\\": "src/voku/",
+                    "voku\\tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "http://www.moelleken.org/"
+                }
+            ],
+            "description": "Portable ASCII library - performance optimized (ascii) string functions for php.",
+            "homepage": "https://github.com/voku/portable-ascii",
+            "keywords": [
+                "ascii",
+                "clean",
+                "php"
+            ],
+            "time": "2019-12-23T12:30:26+00:00"
+        },
+        {
+            "name": "voku/stop-words",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/stop-words.git",
+                "reference": "8e63c0af20f800b1600783764e0ce19e53969f71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/stop-words/zipball/8e63c0af20f800b1600783764e0ce19e53969f71",
+                "reference": "8e63c0af20f800b1600783764e0ce19e53969f71",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "voku\\": "src/voku/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "http://www.moelleken.org/"
+                }
+            ],
+            "description": "Stop-Words via PHP",
+            "keywords": [
+                "stop words",
+                "stop-words"
+            ],
+            "time": "2018-11-23T01:37:27+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",

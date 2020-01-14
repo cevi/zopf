@@ -17,5 +17,13 @@ class Action extends Model
     
     public function action_status(){
         return $this->belongsTo('App\ActionStatus');
-    }
+    }    
+
+    public function orders(){
+        return $this->hasMany('App\Order');
+    }  
+
+    public function addresses(){
+        return $this->belongsToMany('App\Address', 'orders');
+    }  
 }

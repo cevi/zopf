@@ -106,7 +106,7 @@ class AdminActionsController extends Controller
     public function edit($id)
     {
         //
-        $action = ACtion::findOrFail($id);
+        $action = Action::findOrFail($id);
         $action_statuses = ActionStatus::pluck('name','id')->all();
 
         return view('admin.actions.edit', compact('action', 'action_statuses'));
