@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeysToOrders extends Migration
+class AddSequenceToOrders extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,7 @@ class AddForeignKeysToOrders extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             //
-            $table->foreign('order_status_id')->references('id')->on('order_statuses');
-            $table->foreign('route_id')->references('id')->on('routes')->onDelete('set null');
+            $table->integer('sequence')->nullable;
         });
     }
 
@@ -29,8 +28,7 @@ class AddForeignKeysToOrders extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             //
-            $table->dropForeign('orders_order_status_id_foreign');
-            $table->dropForeign('orders_route_id_foreign');
+            $table->dropColumn('sequence');
         });
     }
 }

@@ -16,9 +16,16 @@
             <header> 
                 <h1 class="h3 display">Routen</h1>
             </header>
+
             <div class="row">
     
                 <div class="col-sm-6">
+                    @if ($route->route_status_id==10)
+                    <div class="alert alert-danger">Verantwortliche Person beachten.</div>    
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
                     {!! Form::model($route, ['method' => 'Patch', 'action'=>['AdminRoutesController@update',$route->id]]) !!}
                         <div class="form-group">
                             {!! Form::label('name', 'Name:') !!}
@@ -27,6 +34,10 @@
                         <div class="form-group">
                             {!! Form::label('user_id', 'Verantwortlicher:') !!}
                             {!! Form::select('user_id', $users, null, ['class' => 'form-control']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('route_type_id', 'Rolle:') !!}
+                            {!! Form::select('route_type_id', $route_types, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('route_status_id', 'Rolle:') !!}

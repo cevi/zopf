@@ -11,12 +11,17 @@ class Route extends Model
     'name',
     'action_id',
     'route_status_id',
-    'user_id'
+    'user_id',
+    'route_type_id'
     ];
 
         
     public function route_status(){
         return $this->belongsTo('App\RouteStatus');
+    }
+
+    public function route_type(){
+        return $this->belongsTo('App\RouteType');
     }
 
     public function zopf_count(){

@@ -6,61 +6,61 @@
         <div class="container-fluid">
             <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/admin/orders">Bestellungen</a></li>
+            <li class="breadcrumb-item"><a href="/admin/routes">Routen</a></li>
             <li class="breadcrumb-item active">Karte</li>
             </ul>
         </div>
     </div>
     <section>
         <div class="container-fluid">
-            <!-- Page Header-->
-
             <div class="row">  
                 <div class="col-sm-3">
-                    <header> 
-                        <h1 class="h3 display">Karte der Bestellungen</h1>
-                    </header>
-                    <table class="table table-borderless" id="btns">
-                        <tbody>
-                            <td>
-                                <table class="table table-borderless" id="city_btn">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <button class="btn btn-outline-primary btn-sm active">Alle</button>    
+        
+                <!-- Page Header-->
+                <header> 
+                    <h1 class="h3 display">Karte der Routen</h1>
+                </header>
+                        <table class="table table-borderless" id="btns">
+                            <tbody>
+                                <td>
+                                    <table class="table table-borderless" id="route_btn">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-outline-primary btn-sm active">Alle</button>    
+                                                </td>
+                                            </tr>
+                                            @foreach ($routes as $route)
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-outline-primary btn-sm">{{$route}}</button>
+                                                </td>
+                                            </tr>
+                                            @endforeach 
+                                        </tbody>
+                                    </table>
+                                    
+                                </td>
+                                <td>
+                                    <table class="table table-borderless"  id="status_btn">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-outline-secondary btn-sm active">Alle</button>    
+                                                </td>
+                                            </tr>
+                                            @foreach ($statuses as $status)
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-outline-secondary btn-sm">{{$status}}</button>
                                             </td>
                                         </tr>
-                                        @foreach ($cities as $city)
-                                        <tr>
-                                            <td>
-                                                <button class="btn btn-outline-primary btn-sm">{{$city}}</button>
-                                            </td>
-                                        </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>
-                                <table class="table table-borderless"  id="status_btn">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <button class="btn btn-outline-secondary btn-sm active">Alle</button>    
-                                            </td>
-                                        </tr>
-                                        @foreach ($statuses as $status)
-                                        <tr>
-                                            <td>
-                                                <button class="btn btn-outline-secondary btn-sm">{{$status}}</button>
-                                        </td>
-                                    </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tbody>
-                    </table>
-                </div>
+                                            @endforeach 
+                                        </tbody>
+                                    </table>
+                                </td>
+                        </table>
+                    </div>
                 <div class="col-sm-9">
                     <div style="height: 800px" id="map-canvas"></div>
                 </div>
@@ -74,15 +74,15 @@
     <script>
 
     // Get the container element
-    var btnContainer_city = document.getElementById("city_btn");
+    var btnContainer_route = document.getElementById("route_btn");
 
     // Get all buttons with class="btn" inside the container
-    var btns_city = btnContainer_city.getElementsByClassName("btn");
+    var btns_route = btnContainer_route.getElementsByClassName("btn");
 
     // Loop through the buttons and add the active class to the current/clicked button
-    for (var i = 0; i < btns_city.length; i++) {
-        btns_city[i].addEventListener("click", function() {
-        var current = btnContainer_city.getElementsByClassName("active");
+    for (var i = 0; i < btns_route.length; i++) {
+        btns_route[i].addEventListener("click", function() {
+        var current = btnContainer_route.getElementsByClassName("active");
         // If there's no active class
         if (current.length > 0) {
             current[0].className = current[0].className.replace(" active", "");
@@ -122,12 +122,12 @@
     for (var i = 0; i < btns.length; i++) {
         btns[i].addEventListener("click", function() {
             active_btn = btnContainer.getElementsByClassName("active");
-            city_btn = active_btn[0];
+            route_btn = active_btn[0];
             status_btn = active_btn[1];
             $.ajax({
-                url: "{!! route('orders.mapfilter')!!}",
+                url: "{!! route('routes.mapfilter')!!}",
                 data: {
-                    city: city_btn.textContent,
+                    route: route_btn.textContent,
                     status: status_btn.textContent
                 },
                 success:function(response){
@@ -189,6 +189,7 @@
             var gData = new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']);
             LatLngList.push(gData);
         }
+
         
         var bounds = new google.maps.LatLngBounds ();
         map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
@@ -203,6 +204,7 @@
                 infowindow.close();
             });	 
         }
+
 
         var html = "<p><b>"+center['name']+"</b> <br/>"+center['street'];
         var marker = new mapIcons.Marker({
@@ -221,13 +223,15 @@
         });
         markers.push(marker), bindInfoWindow(marker, map, html);
 
-        for (var i = 0, order_len = orders.length; i < order_len; i++) {
 
+        for (var i = 0, order_len = orders.length; i < order_len; i++) {
+            var icon_url = (order) => order.route_id==null ? "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "http://maps.gstatic.com/mapfiles/markers2/marker.png";
             var html = "<p><b>"+orders[i].address['firstname']+" "+orders[i].address['name']+"</b> <br/>"+orders[i].address['street']+"<br/> Zopf: "+orders[i]['quantity'];
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']),
                 map: map,
-                html : html                
+                html : html,
+                icon: new google.maps.MarkerImage(icon_url(orders[i]))              
             });
             markers.push(marker), bindInfoWindow(marker, map, html);
         }

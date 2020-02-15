@@ -8,7 +8,7 @@ class Action extends Model
 {
     //
     protected $fillable = [
-    'name', 'group_id', 'year', 'action_status_id'
+    'name', 'group_id', 'year', 'action_status_id', 'address_id'
     ];
     
     public function group(){
@@ -26,4 +26,8 @@ class Action extends Model
     public function addresses(){
         return $this->belongsToMany('App\Address', 'orders');
     }  
+
+    public function address(){
+        return $this->belongsTo('App\Address');
+    } 
 }

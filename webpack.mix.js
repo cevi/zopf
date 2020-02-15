@@ -21,6 +21,7 @@ mix.js('resources/js/app.js', 'public/js')
       'resources/css/libs/font-awesome_new.css',
       'resources/css/libs/fontastic.css',
       'resources/css/libs/style.blue.css',
+      'resources/css/libs/map-icons.css',
       'resources/css/libs/custom.css',
   ], 'public/css/libs.css');
   mix.scripts([
@@ -30,6 +31,7 @@ mix.js('resources/js/app.js', 'public/js')
    'resources/js/libs/datatables.js',
    'resources/js/libs/jquery.mCustomScrollbar.js',
    'resources/js/libs/front_new.js',
+   'resources/js/libs/map-icons.js',
    'resources/js/libs/markerCluster.js',
    'resources/js/libs/custom.js',
 ], 'public/js/libs.js');  

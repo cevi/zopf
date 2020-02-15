@@ -29,6 +29,23 @@
                         {!! Form::text('year', null, ['class' => 'form-control']) !!}
                     </div>
 
+                    <div class="form-group">
+                        {!! Form::label('street', 'Strasse:') !!}
+                        {!! Form::text('street', null, ['class' => 'form-control ']) !!}
+                        {!! Form::hidden('address_id', null, ['class' => 'form-control']) !!}
+                    </div>
+
+                    <div class="form-row">
+                            <div class="form-group col-md-3">  
+                            {!! Form::label('plz', 'PLZ:') !!}
+                            {!! Form::text('plz', null, ['class' => 'form-control']) !!}
+                        </div>
+                        <div class="form-group col-md-9">
+                            {!! Form::label('city', 'Ort:') !!}
+                            {!! Form::text('city', null, ['class' => 'form-control']) !!}
+                        </div>
+                    </div>
+
 
                     @if (Auth::user()->isAdmin())
                         <div class="form-group">

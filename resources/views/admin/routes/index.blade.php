@@ -26,6 +26,7 @@
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Verantwortlich</th>
+                                <th scope="col">Routen Art</th>
                                 <th scope="col">Anz. Zöpfe</th>
                                 <th scope="col">Anz. Bestellungen</th>
                                 <th scope="col">Status</th>
@@ -54,6 +55,7 @@
             columns: [
                    { data: 'name', name: 'name' },
                    { data: 'user', name: 'user' },
+                   { data: 'routetype', name: 'routetype' },
                    { data: 'zopf_count', name: 'zopf_count' },
                    { data: 'order_count', name: 'order_count' },
                    { data: 'status', name: 'status'},

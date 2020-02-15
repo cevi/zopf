@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\Action;
+use DataTables;
+use App\Address;
 use App\ActionStatus;
 use Illuminate\Http\Request;
+use Spatie\Geocoder\Facades\Geocoder;
 use Illuminate\Support\Facades\Auth;
-use DataTables;
 
 class AdminActionsController extends Controller
 {
@@ -73,12 +75,27 @@ class AdminActionsController extends Controller
     public function store(Request $request)
     {
         //
-        $input = $request->all();
 
-        if(!Auth::user()->isAdmin()){
-            $group = Auth::user()->group;
-            $input['group_id'] = $group['id'];
+        $address=Address::Where('id',$request->address_id)->first();
+        if(!$address){
+            $input = $request->all();
+            if(!Auth::user()->isAdmin()){
+                $group = Auth::user()->group;
+                $input['group_id'] = $group['id'];
+            }
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+            $input['lat'] = $geocode['lat'];
+            $input['lng'] = $geocode['lng'];
+            $input['center'] = true;
+
+            // return $input;
+
+            $address = Address::create($input);
         }
+        else{
+            $input = $request->all(); 
+        }
+        $input['address_id'] = $address['id']; 
 
         $input['action_status_id'] = 5;
         Action::create($input);
@@ -122,7 +139,34 @@ class AdminActionsController extends Controller
     public function update(Request $request, $id)
     {
         //
-        Action::findOrFail($id)->update($request->all());
+        $action = Action::findOrFail($id);
+        $address=$action->address;
+        if($address){
+            $input = $request->all();
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+            $input['lat'] = $geocode['lat'];
+            $input['lng'] = $geocode['lng'];
+            $input['center'] = true;
+            
+            $address->update($input);
+        }   
+        else{            
+            $input = $request->all();
+            if(!Auth::user()->isAdmin()){
+                $group = Auth::user()->group;
+                $input['group_id'] = $group['id'];
+            }
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+            $input['lat'] = $geocode['lat'];
+            $input['lng'] = $geocode['lng'];
+            $input['center'] = true;
+
+            // return $input;
+
+            $address = Address::create($input);  
+            $input['address_id'] = $address['id'];
+        }      
+        $action->update($input);
         return redirect('/admin/actions');
     }
 

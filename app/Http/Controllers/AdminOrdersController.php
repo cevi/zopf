@@ -79,6 +79,7 @@ class AdminOrdersController extends Controller
             $input['name'] = $request->name;
             $input['action_id'] =  $action['id'];
             $input['route_status_id'] = 5;
+            $input['user_id'] = Auth::user()->id;
             $route = Route::create($input);
 
                
@@ -109,7 +110,9 @@ class AdminOrdersController extends Controller
         $orders = Order::where('action_id', $action['id'])->get();
         $cities = $action->addresses->unique('city')->pluck('city');
         $statuses = OrderStatus::pluck('name')->all();
-        return view('admin.orders.map', compact('orders', 'cities', 'statuses'));
+        $center = $action->address;
+
+        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center'));
     }
 
     public function mapfilter(Request $request)
@@ -234,7 +237,21 @@ class AdminOrdersController extends Controller
             $input['lng'] = $geocode['lng'];
             
             $address->update($input);
-        }        
+        }  
+        else{
+            $input = $request->all();
+            if(!Auth::user()->isAdmin()){
+                $group = Auth::user()->group;
+                $input['group_id'] = $group['id'];
+            }
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+            $input['lat'] = $geocode['lat'];
+            $input['lng'] = $geocode['lng'];
+
+            // return $input;
+
+            $address = Address::create($input);
+        }      
         $order->update($input);
 
         return redirect('/admin/orders');

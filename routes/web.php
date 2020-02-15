@@ -27,7 +27,9 @@ Route::group(['middleware' => 'groupleader'], function(){
     Route::get('admin/actions/complete/{id}', ['as'=>'actions.complete','uses'=>'AdminActionsController@complete']);
     
     Route::get('admin/routes/{id}/overview', ['as'=>'routes.overview','uses'=>'AdminRoutesController@overview']);
+    Route::get('admin/routes/{id}/downloadPDF', ['as'=>'routes.downloadPDF','uses'=>'AdminRoutesController@downloadPDF']);
     Route::get('admin/routes/map', ['as'=>'routes.map','uses'=>'AdminRoutesController@map']);
+    Route::get('admin/routes/mapfilter', ['as'=>'routes.mapfilter','uses'=>'AdminRoutesController@mapfilter']);
     Route::post('admin/routes/{id}/send', ['as'=>'routes.send','uses'=>'AdminRoutesController@send']);
     Route::resource('admin/routes', 'AdminRoutesController');
 

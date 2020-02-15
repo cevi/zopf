@@ -26,6 +26,9 @@
                         <li>
                         <a href="{{route('routes.create')}}">Route erstellen</a>
                         </li>
+                        <li>
+                            <a href="{{route('routes.map')}}">Karte ansehen</a>
+                        </li>
                     </ul>
                         <!-- /.nav-second-level -->
                 </li>

@@ -31,6 +31,11 @@
                     </div>
 
                     <div class="form-group">
+                        {!! Form::label('route_type_id', 'Routen Art:') !!}
+                        {!! Form::select('route_type_id', [''=>'Wähle Routen Art'] + $route_types, null, ['class' => 'form-control']) !!}
+                    </div>
+
+                    <div class="form-group">
                         {!! Form::submit('Route Erstellen', ['class' => 'btn btn-primary'])!!}
                     </div>
                 {!! Form::close()!!}

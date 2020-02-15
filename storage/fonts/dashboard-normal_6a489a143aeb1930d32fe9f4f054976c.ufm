@@ -1,0 +1,49 @@
+StartFontMetrics 4.1
+Notice Converted by PHP-font-lib
+Comment https://github.com/PhenX/php-font-lib
+EncodingScheme FontSpecific
+FontName dashboard
+FontSubfamily Regular
+UniqueID FontForge 2.0 : dashboard : 15-5-2017
+FullName dashboard
+Version Version 1.0
+PostScriptName dashboard
+Weight Medium
+ItalicAngle 0
+IsFixedPitch true
+UnderlineThickness 0
+UnderlinePosition 0
+FontHeightOffset 90
+Ascender 1000
+Descender 0
+FontBBox 0 0 1000 1000
+StartCharMetrics 30
+U 65 ; WX 1000 ; N page ; G 27
+U 97 ; WX 1000 ; N form ; G 4
+U 98 ; WX 1000 ; N home ; G 3
+U 99 ; WX 1000 ; N list ; G 5
+U 100 ; WX 1000 ; N mail ; G 23
+U 101 ; WX 1000 ; N presentation ; G 6
+U 102 ; WX 1000 ; N bill ; G 7
+U 103 ; WX 1000 ; N check ; G 8
+U 104 ; WX 1000 ; N list-1 ; G 9
+U 105 ; WX 1000 ; N padnote ; G 10
+U 106 ; WX 1000 ; N pencil-case ; G 11
+U 107 ; WX 1000 ; N user ; G 12
+U 108 ; WX 1000 ; N bars ; G 13
+U 109 ; WX 1000 ; N flask ; G 15
+U 110 ; WX 1000 ; N grid ; G 16
+U 111 ; WX 1000 ; N picture ; G 17
+U 112 ; WX 1000 ; N line-chart ; G 14
+U 113 ; WX 1000 ; N website ; G 18
+U 114 ; WX 1000 ; N screen ; G 19
+U 115 ; WX 1000 ; N interface-windows ; G 20
+U 116 ; WX 1000 ; N clock ; G 21
+U 117 ; WX 1000 ; N rss-feed ; G 22
+U 118 ; WX 1000 ; N ios-email-outline ; G 24
+U 119 ; WX 1000 ; N paper-airplane ; G 25
+U 120 ; WX 1000 ; N ios-email ; G 26
+U 121 ; WX 1000 ; N close ; G 28
+U 122 ; WX 1000 ; N search ; G 29
+EndCharMetrics
+EndFontMetrics

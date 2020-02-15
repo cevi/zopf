@@ -29,6 +29,22 @@
                             {!! Form::text('year', null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('street', 'Strasse:') !!}
+                            {!! Form::text('street', $action->address['street'], ['class' => 'form-control ']) !!}
+                        </div>
+    
+                        <div class="form-row">
+                                <div class="form-group col-md-3">  
+                                {!! Form::label('plz', 'PLZ:') !!}
+                                {!! Form::text('plz', $action->address['plz'], ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="form-group col-md-9">
+                                {!! Form::label('city', 'Ort:') !!}
+                                {!! Form::text('city', $action->address['city'], ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             {!! Form::label('action_status_id', 'Rolle:') !!}
                             {!! Form::select('action_status_id', $action_statuses, null, ['class' => 'form-control']) !!}
                         </div>
