@@ -16,6 +16,10 @@ Route::get('/', 'HomeController@index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/routes/{id}', ['as'=>'home.routes','uses'=>'HomeController@routes']);
+Route::get('/maps/{id}', ['as'=>'home.maps','uses'=>'HomeController@maps']);
+Route::get('/routes/order/{id}/delivered', ['as'=>'home.delivered','uses'=>'HomeController@delivered']);
+Route::get('/routes/order/{id}/deposited', ['as'=>'home.deposited','uses'=>'HomeController@deposited']);
 
 Route::group(['middleware' => 'groupleader'], function(){
 

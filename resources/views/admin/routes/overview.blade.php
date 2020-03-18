@@ -39,13 +39,13 @@
                     @foreach ($orders as $order)
                         <tbody>
                             <tr>
-                                <td>{{$order->address['name']}}</a></td>
-                                <td>{{$order->address['firstname']}}</a></td>
-                                <td>{{$order->address['street']}}</a></td>
-                                <td>{{$order->address['plz']}}</a></td>
-                                <td>{{$order->address['city']}}</a></td>
-                                <td>{{$order['quantity']}}</a></td>
-                                <td>{{$order->order_status['name']}}</a></td>
+                                <td>{{$order->address['name']}}</td>
+                                <td>{{$order->address['firstname']}}</td>
+                                <td>{{$order->address['street']}}</td>
+                                <td>{{$order->address['plz']}}</td>
+                                <td>{{$order->address['city']}}</td>
+                                <td>{{$order['quantity']}}</td>
+                                <td>{{$order->order_status['name']}}</td>
                             </tr>
                         </tbody>
                     @endforeach

@@ -7,3 +7,11 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+#login_page {
+    background:url(/images/DSC_0301.JPG); 
+    padding: 240px;
+    background-size: cover;
+}
+
+@import '../css/libs/map-icons.css';
