@@ -3009,7 +3009,11 @@
                 "mime",
                 "mime-type"
             ],
+<<<<<<< HEAD
             "time": "2020-01-04T14:08:26+00:00"
+=======
+            "time": "2020-01-04T13:00:46+00:00"
+>>>>>>> d383a119d09ac79a7f0ffde90a0fcb9babdc4210
         },
         {
             "name": "symfony/polyfill-ctype",
