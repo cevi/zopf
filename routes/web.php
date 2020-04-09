@@ -23,7 +23,7 @@ Route::get('/routes/order/{id}/deposited', ['as'=>'home.deposited','uses'=>'Home
 
 Route::group(['middleware' => 'groupleader'], function(){
 
-    Route::get('/admin','AdminController@index');
+    Route::get('/admin',['as'=>'admin.index','uses'=>'AdminController@index']);
 
     Route::resource('admin/users', 'AdminUsersController');
 

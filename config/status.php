@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'action_aktiv' => 5,
+    'action_geplant' => 5,
+    'action_aktiv' => 10,
     'action_abgeschlossen' => 20,
 
     
@@ -9,6 +10,7 @@ return [
     'order_unterwegs' => 15,
     'order_ausgeliefert' => 20,
     'order_hinterlegt' => 25,
+    'order_abgeholt' => 30,
 
     
     'route_geplant' => 5,

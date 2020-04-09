@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('action_id')->index()->unsigned()->nullable();
             $table->bigInteger('address_id')->index()->unsigned()->nullable();
             $table->bigInteger('order_status_id')->index()->unsigned()->nullable();
+            $table->boolean('pick_up');
             $table->timestamps();
         });
         Schema::table('orders', function (Blueprint $table) {

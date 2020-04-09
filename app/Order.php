@@ -8,7 +8,7 @@ class Order extends Model
 {
     //
     protected $fillable = [
-        'quantity', 'route_id', 'action_id', 'address_id', 'order_status_id', 'sequence'
+        'quantity', 'route_id', 'action_id', 'address_id', 'order_status_id', 'sequence', 'pickup'
     ];
 
     public function address(){

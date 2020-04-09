@@ -20,10 +20,11 @@ class CreateOrderStatusesTable extends Migration
         });
         DB::table('order_statuses')->insert( 
             array(
-                ['id' => 5, 'name' => 'Offen'],
-                ['id' => 10, 'name' => 'Unterwegs'],
-                ['id' => 20, 'name' => 'Ausgeliefert'],
-                ['id' => 25, 'name' => 'Hinterlegt']
+                ['id' => config('status.order_offen'), 'name' => 'Offen'],
+                ['id' => config('status.order_unterwegs'), 'name' => 'Unterwegs'],
+                ['id' => config('status.order_ausgeliefert'), 'name' => 'Ausgeliefert'],
+                ['id' => config('status.order_hinterlegt'), 'name' => 'Hinterlegt'],
+                ['id' => config('status.order_abgeholt'), 'name' => 'Abgeholt']
             )
         );
     }

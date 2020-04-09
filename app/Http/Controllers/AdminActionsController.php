@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use App\Order;
 use App\Action;
 use DataTables;
 use App\Address;
+use App\Logbook;
 use App\ActionStatus;
 use Illuminate\Http\Request;
-use Spatie\Geocoder\Facades\Geocoder;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Geocoder\Facades\Geocoder;
 
 class AdminActionsController extends Controller
 {
@@ -97,8 +99,9 @@ class AdminActionsController extends Controller
         }
         $input['address_id'] = $address['id']; 
 
-        $input['action_status_id'] = 5;
-        Action::create($input);
+        $input['action_status_id'] = config('status.action_geplant');
+        $action = Action::create($input);
+        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde geplant.']);
 
         return redirect('admin/actions');
     }
@@ -165,7 +168,16 @@ class AdminActionsController extends Controller
 
             $address = Address::create($input);  
             $input['address_id'] = $address['id'];
-        }      
+        }     
+        $status_id = (int)$input['action_status_id'];
+        if($status_id!=$action['action_status_id']){
+            if($status_id === config('status.action_aktiv')){
+                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde gestartet.']); 
+            }
+            if($status_id === config('status.action_abgeschlossen')){
+                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde abgeschlossen.']); 
+            }
+        }
         $action->update($input);
         return redirect('/admin/actions');
     }

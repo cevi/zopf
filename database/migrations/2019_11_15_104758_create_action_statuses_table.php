@@ -20,6 +20,7 @@ class CreateActionStatusesTable extends Migration
         });
         DB::table('action_statuses')->insert( 
             array(
+                ['id' => config('status.action_geplant'), 'name' => 'Geplant'],
                 ['id' => config('status.action_aktiv'), 'name' => 'Aktiv'],
                 ['id' => config('status.action_abgeschlossen'), 'name' => 'Abgeschlossen']
             )
