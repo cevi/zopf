@@ -25,11 +25,13 @@ mix.js('resources/js/app.js', 'public/js')
       'resources/css/libs/grasp_mobile_progress_circle-1.0.0.css',
       'resources/css/libs/jquery.mCustomScrollbar.css',
       'resources/css/libs/style.default.premium.css',
+      'resources/css/libs/dropify.min.css',
       'resources/css/libs/custom.css',
   ], 'public/css/libs.css');
   mix.scripts([
    'resources/js/libs/jquery.js',
    'resources/js/libs/jquery-ui.js',
+   'resources/js/libs/dropify.min.js',
    'resources/js/libs/bootstrap.js',
    'resources/js/libs/grasp_mobile_progress_circle-1.0.0.min.js',
    'resources/js/libs/chart.min.js',

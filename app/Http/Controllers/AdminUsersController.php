@@ -36,9 +36,9 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('group', function (User $user) {
-                return $user->group['name'];})
+                return $user->group ?$user->group['name'] : '';})
             ->addColumn('role', function (User $user) {
-                return $user->role['name'];})
+                return $user->role ? $user->role['name'] : '';})
             ->addColumn('active', function (User $user) {
                 if($user->is_active){
                     return 'Aktiv';

@@ -80,3 +80,8 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;}
+
+  .open-routes{
+    height: 500px;
+    overflow: auto;
+  }

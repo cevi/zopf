@@ -38,7 +38,8 @@
                     <div class="form-group">
                         {!! Form::submit('Route Erstellen', ['class' => 'btn btn-primary'])!!}
                     </div>
-                {!! Form::close()!!}
+                    {!! Form::close()!!}
+                </div>
             </div>
         </div>
     </section>

@@ -59,6 +59,11 @@
                     </div>
 
                     <div class="form-group">
+                        {!! Form::label('comment', 'Bemerkung:') !!}
+                        {!! Form::text('comment', null, ['class' => 'form-control']) !!}
+                    </div>
+
+                    <div class="form-group">
                         {!! Form::submit('Adresse Erstellen', ['class' => 'btn btn-primary'])!!}
                     </div>
                 {!! Form::close()!!}

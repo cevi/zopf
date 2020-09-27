@@ -15,8 +15,8 @@ class AddLatLngToAddress extends Migration
     {
         Schema::table('addresses', function (Blueprint $table) {
             //
-            $table->float('lat');
-            $table->float('lng');
+            $table->float('lat', 8, 6);
+            $table->float('lng', 8, 6);
             $table->string('city');
             $table->integer('plz');
         });

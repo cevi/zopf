@@ -8,7 +8,7 @@ class Logbook extends Model
 {
     //
     protected $fillable = [
-        'comments', 'user_id', 'action_id', 'cut', 'quantity'
+        'comments', 'user_id', 'action_id', 'cut', 'quantity', 'wann'
     ];
 
 

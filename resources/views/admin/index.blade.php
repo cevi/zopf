@@ -38,7 +38,7 @@
           <div class="wrapper count-title d-flex">
             <div class="icon"><i class="icon-bill"></i></div>
             <div class="name"><strong class="text-uppercase">Offen</strong>
-              <div class="count-number">{{$orders_open_delivery}}</div>
+              <div class="count-number">{{$orders_open + $orders_delivery}}</div>
             </div>
           </div>
         </div>
@@ -70,8 +70,7 @@
         <!-- Pie Chart-->
         <div class="col-lg-5 col-md-12">
           <div class="card project-progress">
-            <h2 class="display h4">Project Beta progress</h2>
-            <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            <h2 class="display h4">Übersicht</h2>
             <div class="pie-chart">
               <canvas id="pieChartZopf" width="300" height="300"> </canvas>
             </div>
@@ -80,8 +79,7 @@
         <!-- Line Chart -->
         <div class="col-lg-5 col-md-12 flex-lg-last flex-md-first align-self-baseline">
           <div class="card sales-report">
-            <h2 class="display h4">Sales marketing report</h2>
-            <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor amet officiis</p>
+            <h2 class="display h4">Zeitlicher Verlauf</h2>
             <div class="line-chart">
               <canvas id="lineChart"></canvas>
             </div>
@@ -95,24 +93,23 @@
     <div class="container-fluid">
       <div class="row d-flex">
         <div class="col-lg-6 col-md-6">
-          <!-- User Actibity-->
-          <div class="card user-activity">
-            <h2 class="display h4">Offene Routen</h2>
-            <h3 class="h4 display">Routen Name 1</h3>
-            <div class="progress">
-              <div role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
+          <div id="open-routes-wrapper" class="card updates user-activity">
+            <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
+              <h2 class="h5 display"><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box">Offene Routen</a></h2><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box"><i class="fa fa-angle-down"></i></a>
             </div>
-            <div class="page-statistics d-flex justify-content-between">
-              <div class="page-statistics-left"><span>Zöpfe Total</span><strong>230</strong></div>
-              <div class="page-statistics-right"><span>Noch Offen</span><strong>73.4%</strong></div>
-            </div>
-            <h3 class="h4 display">Routen Name 2</h3>
-            <div class="progress">
-              <div role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
-            </div>
-            <div class="page-statistics d-flex justify-content-between">
-              <div class="page-statistics-left"><span>Zöpfe Total</span><strong>230</strong></div>
-              <div class="page-statistics-right"><span>Noch Offen</span><strong>73.4%</strong></div>
+            <div id="open-routes-box" role="tabpanel" class="open-routes collapse show">
+              @if($open_routes)
+                @foreach ($open_routes as $route)
+                  <h3 class="h4 display">{{$route->name}}</h3>
+                  <div class="progress">
+                    <div role="progressbar" style="width:  {{$route->route_done_percent()}}%" aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
+                  </div>
+                  <div class="page-statistics d-flex justify-content-between">
+                    <div class="page-statistics-left"><span>Zöpfe Total</span><strong>{{$route->zopf_count()}}</strong></div>
+                    <div class="page-statistics-right"><span>Noch Offen</span><strong>{{$route->zopf_open_count()}}</strong></div>
+                  </div>
+                @endforeach
+              @endif
             </div>
           </div>
         </div>
@@ -125,24 +122,49 @@
             <div id="activities-box" role="tabpanel" class="collapse show">
               <ul class="activities list-unstyled">
                 <!-- Item-->
-                @foreach ($logbooks as $logbook)
-                  <li>
-                    <div class="row">
-                      <div class="col-4 date-holder text-right">
-                        <div class="icon"><i class="icon-clock"></i></div>
-                        <div class="date"> <span>{{$logbook->created_at->toTimeString()}}</span><span class="text-info">{{$logbook->created_at->diffForHumans()}}</span></div>
+                @if($logbooks)
+                  @foreach ($logbooks as $logbook)
+                    <li>
+                      <div class="row">
+                        <div class="col-4 date-holder text-right">
+                          <div class="icon"><i class="icon-clock"></i></div>
+                          <div class="date"> <span>{{$logbook->created_at->toTimeString()}}</span><span class="text-info">{{$logbook->created_at->diffForHumans()}}</span></div>
+                        </div>
+                        <div class="col-8 content"><strong>{{$logbook->user['username']}}</strong>
+                        <p>{{$logbook->comments}}</p>
+                        </div>
                       </div>
-                      <div class="col-8 content"><strong>{{$logbook->user['username']}}</strong>
-                      <p>{{$logbook->comments}}</p>
-                      </div>
-                    </div>
-                  </li>    
-                @endforeach
+                    </li>    
+                  @endforeach
+                @endif
               </ul>
             </div>  
             <div role="tabpanel">
-              <h2 class="display h4">Sales marketing report</h2>
-              Form für Logbuch
+              <h2 class="display h4">Form</h2>
+              @include('includes.form_error')
+              {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
+                <div class="form-row">
+                  <div class="form-group col-md-3">  
+                      {!! Form::label('wann', 'Wann:') !!}
+                      {!! Form::time('wann', now(), ['class' => 'form-control']) !!}
+                  </div>
+                  <div class="form-group col-md-6">  
+                      {!! Form::label('user_id', 'Verantwortlicher:') !!}
+                      {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' => 'form-control']) !!}
+                  </div>
+                  <div class="form-group col-md-3">  
+                      {!! Form::label('cut', 'Anzahl Aufgeschnitten:') !!}
+                      {!! Form::text('cut', null, ['class' => 'form-control']) !!}
+                  </div>
+                </div>
+                <div class="form-group">
+                  {!! Form::label('comments', 'Kommentar:') !!}
+                  {!! Form::text('comments', null, ['class' => 'form-control']) !!}
+                </div>
+                <div class="form-group">
+                    {!! Form::submit('Eintrag Erstellen', ['class' => 'btn btn-primary'])!!}
+                </div>
+              {!! Form::close()!!}
             </div>
           </div>
         </div>
@@ -154,13 +176,52 @@
 
 @section('scripts')
 <script>
+// setInterval(function() { 
+//   console.log('Hallo');
+//   $.get("/admin", function(data, status){ 
+// 	  $("body").html(data); 
+//   }); 
+// }, 10000); // will refresh every 5 seconds = 5000 ms 
 $(document).ready(function () {
 
 'use strict';
 
 var brandPrimary = '#74C5AD';
 
-var PIECHARTZOPF    = $('#pieChartZopf')
+var LINECHART   = $('#lineChart'),
+    PIECHARTZOPF    = $('#pieChartZopf');
+
+var lineChart = new Chart(LINECHART, {
+        type: 'line',
+        data: {
+            labels: @json($graphs_time),
+            datasets: [
+                {
+                    label: "Anzahl Zöpfe",
+                    fill: true,
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(51, 179, 90, 0.38)",
+                    borderColor: brandPrimary,
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: brandPrimary,
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: brandPrimary,
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: @json($graphs_sum),
+                    spanGaps: false
+                }
+            ]
+        }
+    });
 
   var pieChartZopf = new Chart(PIECHARTZOPF, {
         type: 'doughnut',
@@ -168,13 +229,13 @@ var PIECHARTZOPF    = $('#pieChartZopf')
             labels: [
                 "Offen",
                 "Unterwegs",
-                "Abzuholen",
+                "Abholen",
                 "Aufgeschnitten",
                 "Abgeschlossen"
             ],
             datasets: [
                 {
-                    data: [{{$cut}}, {{$cut}}, {{$cut}}, {{$cut}}, {{$cut}}],
+                    data: [{{$orders_open}}, {{$orders_delivery}}, {{$orders_open_pickup}}, {{$cut}}, {{$orders_finished}}],
                     borderWidth: [1, 1, 1, 1],
                     backgroundColor: [
                         "#E6DADA",

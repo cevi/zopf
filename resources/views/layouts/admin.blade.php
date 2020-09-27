@@ -40,7 +40,7 @@
                   <p>Amigo &copy; 2020</p>
                 </div>
                 <div class="col-sm-6 text-right">
-                  <p>Version 0.0.1</p>
+                  <p>Version 0.1.0</p>
                 </div>
               </div>
             </div>

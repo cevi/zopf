@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCommentsToOrders extends Migration
+class AddTimeToLogbook extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddCommentsToOrders extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('logbooks', function (Blueprint $table) {
             //
-            $table->string('comments')->nullable();
+            $table->Time('wann');
         });
     }
 
@@ -26,9 +26,9 @@ class AddCommentsToOrders extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('logbooks', function (Blueprint $table) {
             //
-            $table->dropColumn('comments');
+            $table->dropColumn('wann');
         });
     }
 }

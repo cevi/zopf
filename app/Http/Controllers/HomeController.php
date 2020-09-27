@@ -30,9 +30,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $routes = Route::where('user_id', $user->id)->where('route_status_id', 15)->get();
-   
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
+        $action = Auth::user()->getAction();  
         return view('home', compact('user','routes', 'action'));
     }
 
@@ -49,13 +47,12 @@ class HomeController extends Controller
     public function maps($id)
     {        
         $user = Auth::user();
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',config('status.action_aktiv'))->first();  
+        $action = Auth::user()->getAction();  
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();  
         $route = Route::FindOrFail($id); 
         $orders = Order::where('route_id',$route['id']);
         $orders = $orders->with('address')->get();
-        $center = $action->address;
+        $center = $action->center;
         return view('home.map', compact('orders', 'route','routes','center'));
     }
 
@@ -72,8 +69,7 @@ class HomeController extends Controller
     public function check_route($id, $new_status)
     {    
         $order = Order::findOrFail($id);
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',config('status.action_aktiv'))->first();  
+        $action = Auth::user()->getAction();  
         $route_id = $order['route_id']; 
         if($order['quantity']===1){
             $text = 'Ein Zopf';
@@ -90,12 +86,12 @@ class HomeController extends Controller
         {
             $text = $text.' übergeben.';
         }
-        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => $text]);
+        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => $text, 'quantity' => $order['quantity'], 'wann' => now()]);
         $order->update(['order_status_id' => $new_status]);
         $orders = Order::where('route_id',$route_id);
         if($orders->min('order_status_id') > config('status.order_unterwegs')){
             $route = Route::FindOrFail($route_id);
-            Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Route '.$route['name'].' wurde abgeschlossen']);
+            Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Route '.$route['name'].' wurde abgeschlossen', 'wann' => now()]);
             $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
             return redirect('/');
         }

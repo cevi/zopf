@@ -30,17 +30,17 @@
                         </div>
                         <div class="form-group">
                             {!! Form::label('street', 'Strasse:') !!}
-                            {!! Form::text('street', $action->address['street'], ['class' => 'form-control ']) !!}
+                            {!! Form::text('street', $action->center['street'], ['class' => 'form-control ']) !!}
                         </div>
     
                         <div class="form-row">
                                 <div class="form-group col-md-3">  
                                 {!! Form::label('plz', 'PLZ:') !!}
-                                {!! Form::text('plz', $action->address['plz'], ['class' => 'form-control']) !!}
+                                {!! Form::text('plz', $action->center['plz'], ['class' => 'form-control']) !!}
                             </div>
                             <div class="form-group col-md-9">
                                 {!! Form::label('city', 'Ort:') !!}
-                                {!! Form::text('city', $action->address['city'], ['class' => 'form-control']) !!}
+                                {!! Form::text('city', $action->center['city'], ['class' => 'form-control']) !!}
                             </div>
                         </div>
 

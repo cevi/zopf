@@ -32,56 +32,64 @@ class AdminRoutesController extends Controller
     public function createDataTables()
     {
         if(!Auth::user()->isAdmin()){
-            $group = Auth::user()->group;
-            $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
-            $routes = Route::where('action_id', $action['id'])->get();
-
+            $action = Auth::user()->getAction();
+            if($action){
+                $routes = Route::where('action_id', $action['id'])->get();
+            }
+            else{
+                $routes = null;
+            }
         }
         else{
             $routes = Route::all();
         }
 
-        return DataTables::of($routes)
-        ->addColumn('status', function ($routes) {
-            return $routes->route_status['name'];
-        })
-        ->addColumn('user', function ($routes) {
-            return $routes->user['username'];
-        })
-        ->addColumn('routetype', function ($routes) {
-            return $routes->route_type['name'];
-        })
-        ->addColumn('zopf_count', function ($routes) {
-            return $routes->zopf_count();
-        })
-        ->addColumn('order_count', function ($routes) {
-            return $routes->order_count();
-        })
-        ->addColumn('Actions', function($routes) {
-            $buttons = '<a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
-            <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
-            // if($routes->route_status['id']==5){
-            //     $buttons = $buttons .'
-            //     <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
-            // };
-            // if($routes->route_status['id']==10){
-            //     $buttons = $buttons .'
-            //     <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Lossenden</button>';
-            // };
-            return $buttons;
-        })
-        ->rawColumns(['Actions'])
-        ->make(true);
+        if($routes){
+            return DataTables::of($routes)
+            ->addColumn('status', function ($routes) {
+                return $routes->route_status ? $routes->route_status['name'] : '';
+            })
+            ->addColumn('user', function ($routes) {
+                return $routes->user ? $routes->user['username'] : '';
+            })
+            ->addColumn('routetype', function ($routes) {
+                return $routes->route_type ? $routes->route_type['name'] : ''; 
+            })
+            ->addColumn('zopf_count', function ($routes) {
+                return $routes->zopf_count();
+            })
+            ->addColumn('order_count', function ($routes) {
+                return $routes->order_count();
+            })
+            ->addColumn('Actions', function($routes) {
+                $buttons = '<a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
+                if($routes->route_status['id']==5){
+                    $buttons = $buttons .'
+                    <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button></form>';
+                    // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
+                };
+                if($routes->route_status['id']==10){
+                    $buttons = $buttons .'
+                    <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button></form>';
+                };
+                return $buttons;
+            })
+            ->rawColumns(['Actions'])
+            ->make(true);
+        }
+        else{
+            return [];
+        }
 
     }
 
     public function overview($id)
     {
         //
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();      
+        $action = Auth::user()->getAction();    
         $route = Route::findOrFail($id);
-        $center = $action->address;
+        $center = $action->center;
         $orders = $route->orders;
         $routetype = $route->route_type;
         return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype'));
@@ -89,9 +97,9 @@ class AdminRoutesController extends Controller
 
     public function downloadPDF($id) {
         $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();      
+        $action = Auth::user()->getAction();     
         $route = Route::findOrFail($id);
-        $center = $action->address;
+        $center = $action->center;
         $orders = $route->orders;
 
         $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
@@ -130,20 +138,18 @@ class AdminRoutesController extends Controller
     
     public function map()
     {
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();         
+        $action = Auth::user()->getAction();        
         $orders = Order::where('action_id', $action['id'])->get();
         $routes = Route::where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name')->all();
         $statuses = OrderStatus::pluck('name')->all();
-        $center = $action->address;
+        $center = $action->center;
         return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center'));
     }
 
     public function mapfilter(Request $request)
     {
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
+        $action = Auth::user()->getAction();   
         $route = $request->route;
         $status = $request->status;
         $orders = Order::where('action_id', $action['id']);
@@ -185,8 +191,7 @@ class AdminRoutesController extends Controller
     public function store(Request $request)
     {
         //
-        $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
+        $action = Auth::user()->getAction();
         $input['name'] = $request->name;
         $input['action_id'] =  $action['id'];
         $input['route_status_id'] = 5;
@@ -223,7 +228,7 @@ class AdminRoutesController extends Controller
         //
         $route = Route::findOrFail($id);
         $group = Auth::user()->group;
-        $action = Action::where('group_id', $group['id'])->where('action_status_id',5)->first();
+        $action = Auth::user()->getAction();
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username','id')->all();
         $route_statuses = RouteStatus::pluck('name','id')->all();
@@ -251,7 +256,16 @@ class AdminRoutesController extends Controller
     {
         //
         $route = Route::findOrFail($id);
-        $route->update(['route_status_id' =>  $route->route_status['id']  + 5]);
+        if($route->route_status['id'] === config('status.route_geplant')){
+            $route->update(['route_status_id' =>   config('status.route_vorbereitet')]);
+        }
+        else{
+            $orders = $route->orders();
+            $orders->update(['order_status_id' => config('status.order_unterwegs')]);
+            $route->update(['route_status_id' => config('status.route_unterwegs')]);
+
+        }
+        return redirect('/admin/routes');
     }
 
     /**

@@ -52,14 +52,21 @@ class User extends Authenticatable
     }
 
     public function isGroupleader(){
-        if(($this->role['is_groupleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
-            return true;
+        if($this->role){
+            if(($this->role['is_groupleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
+                return true;
+            }
         }
         return false;
     }
 
     
     public function getAction(){
-        return Action::where('group_id',$this->group['id'])->where('action_status_id',5)->first();
+        if($this->group){
+            return Action::where('group_id',$this->group['id'])->where('action_status_id','<=',config('status.action_aktiv'))->first();
+        }
+        else{
+            return null;
+        }
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Group;
-use App\Order;
 use App\Action;
 use DataTables;
 use App\Address;
@@ -101,7 +100,7 @@ class AdminActionsController extends Controller
 
         $input['action_status_id'] = config('status.action_geplant');
         $action = Action::create($input);
-        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde geplant.']);
+        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde geplant.', 'wann' => now()]);
 
         return redirect('admin/actions');
     }
@@ -143,7 +142,7 @@ class AdminActionsController extends Controller
     {
         //
         $action = Action::findOrFail($id);
-        $address=$action->address;
+        $address=$action->center;
         if($address){
             $input = $request->all();
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
@@ -172,10 +171,10 @@ class AdminActionsController extends Controller
         $status_id = (int)$input['action_status_id'];
         if($status_id!=$action['action_status_id']){
             if($status_id === config('status.action_aktiv')){
-                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde gestartet.']); 
+                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde gestartet.', 'wann' => now()]); 
             }
             if($status_id === config('status.action_abgeschlossen')){
-                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde abgeschlossen.']); 
+                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde abgeschlossen.', 'wann' => now()]); 
             }
         }
         $action->update($input);

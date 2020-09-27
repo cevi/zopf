@@ -27,7 +27,7 @@ class Action extends Model
         return $this->belongsToMany('App\Address', 'orders');
     }  
 
-    public function address(){
-        return $this->belongsTo('App\Address');
+    public function center(){
+        return $this->belongsTo('App\Address','address_id');
     } 
 }

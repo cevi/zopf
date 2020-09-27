@@ -20,6 +20,7 @@
                 </a>
                 {{-- <button data-remote='{{route('orders.createRoute')}}' id="createRoute" class="btn btn-info btn-sm">Route hinzufügen</button> --}}
                 <button id="chooseRoute" class="btn btn-info btn-sm">Route hinzufügen</button>
+                {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
 
 
             </header>
@@ -31,16 +32,29 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Vorname</th>
                                 <th scope="col">Strasse</th>
-                                <th scope="col">PLZ</th>
+                                <th scope="col" style="width: 10px">PLZ</th>
                                 <th scope="col">Ort</th>
-                                <th scope="col">Anzahl</th>
+                                <th scope="col" style="width: 10px">Anzahl</th>
                                 <th scope="col">Route</th>
+                                <th scope="col">Abholung</th>
+                                <th scope="col">Bemerkung</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Auswahl</th>
+                                <th scope="col" style="width: 10px">Auswahl</th>
                                 <th scope="col">Aktionen</th>
                             </tr>
                         </thead>
                     </table>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-4">
+                    {!! Form::open(['action' => 'AdminOrdersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                        <div class="form-group">
+                            {{ Form::file('csv_file',['class' => 'dropify'])}}
+                        </div>
+                        {{ Form::submit('Bestellungen hochladen', ['class' => 'btn btn-primary']) }}  
+                    {!! Form::close() !!}
                 </div>
             </div>
 
@@ -61,11 +75,13 @@
                                 <select class="form-control" name="routes_id">
    
                                     <option>Wähle Route</option>
-                                    @foreach ($routes as $route)
-                                      <option value="{{ $route->id }}"> 
-                                          {{ $route->name }} 
-                                      </option>
-                                    @endforeach    
+                                    @if($routes)
+                                        @foreach ($routes as $route)
+                                        <option value="{{ $route->id }}"> 
+                                            {{ $route->name }} 
+                                        </option>
+                                        @endforeach    
+                                    @endif
                                   </select>
                             </div>
                         {{-- @endif  --}}
@@ -86,6 +102,7 @@
 @section('scripts')
     <script>
     $(document).ready(function(){
+        $('.dropify').dropify();
           $('#datatable').DataTable({
             responsive: true,
             processing: true,
@@ -102,6 +119,8 @@
                    { data: 'city', name: 'city' },
                    { data: 'quantity', name: 'quantity' },
                    { data: 'route', name: 'route' },
+                   { data: 'pick_up', name: 'pick_up' },
+                   { data: 'comments', name: 'comments' },
                    { data: 'status', name: 'status' },
                    { data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
                    { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
@@ -173,6 +192,7 @@
                route_id: $('#modal-form select[name="routes_id"]').val()},
             success:function(data)
             {   
+                $('#modal-form').trigger('reset');
                 $('#ajaxModel').modal('hide');
                 $('#datatable').DataTable().ajax.reload();
             }

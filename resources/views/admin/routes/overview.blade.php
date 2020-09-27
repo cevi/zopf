@@ -17,10 +17,26 @@
             <h1 class="h3 display">Übersicht {{$route['name']}}</h1>
                 Total Anzahl Zöpfe: {{$orders->sum('quantity')}}    <br>          
                 Routen Art: {{$routetype['name']}}                  <br>
-                @if ($route->route_status['id']>5)
+                @if ($route->route_status['id']> config('status.route_offen'))
                     <a type="button" class="btn btn-info btn-sm" href="{{route('routes.downloadPDF', $route->id)}}">Download PDF</a>
                 @endif
             </header>
+            @if($route->route_status['id'] === config('status.route_offen'))
+            {!! Form::model($route, ['method' => 'POST', 'action'=>['AdminRoutesController@send',$route->id]]) !!}
+                        
+                <div class="form-group">
+                    {!! Form::submit('Vorbereitet', ['class' => 'btn btn-primary'])!!}
+                </div>
+            {!! Form::close()!!}      
+            @endif
+            @if($route->route_status['id'] === config('status.route_vorbereitet'))
+            {!! Form::model($route, ['method' => 'POST', 'action'=>['AdminRoutesController@send',$route->id]]) !!}
+                        
+                <div class="form-group">
+                    {!! Form::submit('Lossenden', ['class' => 'btn btn-primary'])!!}
+                </div>
+            {!! Form::close()!!}     
+            @endif
             <div class="row">
                 <div class="col-sm-6">
                     @if ($orders)

@@ -26,7 +26,6 @@ class AdminGroupsController extends Controller
         //
         $groups = Group::all();
 
-
         return DataTables::of($groups)
             ->addColumn('groupleader', function ($groups) {
                 return $groups->user['username'];})

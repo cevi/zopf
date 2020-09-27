@@ -1084,8 +1084,14 @@ nav.navbar a.menu-btn:hover {
 }
 
 /* Activities  ------------------- */
+.activities{
+  height: 300px;
+  overflow: auto;
+}
+
 .activities li {
-  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .activities .date-holder {

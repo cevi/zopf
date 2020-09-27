@@ -28,6 +28,16 @@ class Route extends Model
         return Order::where('route_id',$this->id)->count();
     }
 
+    public function zopf_open_count(){
+        return Order::where('route_id',$this->id)->where('order_status_id', '<=', config('status.order_unterwegs'))->count();
+    }
+
+    public function route_done_percent(){
+        $done = Order::where('route_id',$this->id)->where('order_status_id', '>', config('status.order_unterwegs'))->count();
+        $all = Order::where('route_id',$this->id)->count();
+        return $done/$all * 100;
+    }
+
     public function order_count(){
         return Order::where('route_id',$this->id)->sum('quantity');
     }

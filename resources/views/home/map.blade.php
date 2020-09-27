@@ -51,6 +51,13 @@
     window.onload = loadScript;
 
     function initialize(orders) {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsRenderer = new google.maps.DirectionsRenderer(
+            {
+            suppressMarkers: true
+
+            }
+        )
         var mapOptions = {
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -67,6 +74,30 @@
         var bounds = new google.maps.LatLngBounds ();
         infoWindowClosed = true;
         map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+
+        directionsRenderer.setMap(map);
+        var waypts = [];
+        for (var i = 1; i < LatLngList.length; i++) {
+            waypts.push({
+                location: LatLngList[i],
+                stopover: true
+            });
+        }
+        directionsService.route({
+            origin: LatLngList[0],
+            destination: LatLngList[0],
+            waypoints: waypts,
+            optimizeWaypoints: true,
+            travelMode:  '{{$route->routetype ? $route->routetype['travelmode'] : 'DRIVING' }}'
+        }, function(response, status) {
+            if (status === 'OK') {
+            directionsRenderer.setDirections(response);
+            var route = response.routes[0];
+            } else {
+            window.alert('Directions request failed due to ' + status);
+            }
+        });
+        
         var markers = [];
         var infowindow = new google.maps.InfoWindow();		
         function bindInfoWindow(marker, map, html) {
