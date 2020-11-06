@@ -15,7 +15,7 @@ class AddSmartsUpKeyToActions extends Migration
     {
         Schema::table('actions', function (Blueprint $table) {
             //
-            $table->string('SmartsuppToken');
+            $table->string('SmartsuppToken')->nullable();
         });
     }
 

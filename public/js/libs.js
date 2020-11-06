@@ -46299,13 +46299,26 @@ function initialize() {
 	};
 
 	var LatLngList = new Array;
+	var LatLngFinishList = new Array;
+
 	if(center != null){
 		var gData = new google.maps.LatLng(center['lat'], center['lng']);
 		LatLngList.push(gData);
+		if(latitude != center['lat']){
+			var gData = new google.maps.LatLng(latitude, longitude);
+		}
+		LatLngList.push(gData);
 	}
+
 	for (var i = 0, order_len = orders.length; i < order_len; i++) {
 		var gData = new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']);
-		LatLngList.push(gData);
+		if(orders[i].order_status_id <= 15){
+			LatLngList.push(gData);
+		}
+		else
+		{
+			LatLngFinishList.push(gData);
+		}
 	}
 	
 	var bounds = new google.maps.LatLngBounds ();
@@ -46321,31 +46334,35 @@ function initialize() {
 			});
 		}
 		directionsService.route({
-			origin: LatLngList[0],
+			origin: LatLngList[1],
 			destination: LatLngList[0],
 			waypoints: waypts,
 			optimizeWaypoints: true,
 			travelMode: travelMode
 		}, function(response, status) {
 			if (status === 'OK') {
-			directionsRenderer.setDirections(response);
-			var route = response.routes[0];
+				directionsRenderer.setDirections(response);
 			} else {
-			window.alert('Directions request failed due to ' + status);
+				window.alert('Directions request failed due to ' + status);
 			}
 		});
 	};
 	
 	var markers = [];
-	var infowindow = new google.maps.InfoWindow();		
+	var infowindow = new google.maps.InfoWindow();	
+	var infoWindowClosed = true;			
 	function bindInfoWindow(marker, map, html) {
-		google.maps.event.addListener(marker, 'mouseover', function() {
-			infowindow.setContent(html);
-			infowindow.open(map, marker);
+		google.maps.event.addListener(marker, 'click', function() {
+			if (infoWindowClosed) {
+				infowindow.setContent(html);
+				infowindow.open(map, marker);
+				infoWindowClosed = false;
+			} else {
+				infowindow.close(map, marker);
+				infoWindowClosed = true;
+			}
 		});
-		google.maps.event.addListener(marker, 'mouseout', function() {
-			infowindow.close();
-		});	 
+		 
 	}
 
 	if(center != null){

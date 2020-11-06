@@ -14,7 +14,7 @@
 
     <!-- Smartsupp Live Chat script -->
     <script type="text/javascript">
-        if(@json($smartsupp_token)){
+        @if(isset($smartsupp_token))
             var _smartsupp = _smartsupp || {};
             _smartsupp.key = @json($smartsupp_token);
             window.smartsupp||(function(d) {
@@ -23,7 +23,7 @@
             c.type='text/javascript';c.charset='utf-8';c.async=true;
             c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
             })(document);
-        }
+        @endif
     </script>
 
     @yield('styles')

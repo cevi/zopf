@@ -86,7 +86,7 @@ class AdminActionsController extends Controller
             }
             $user = Auth::user();
             $action = $user->getAction();
-            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setApiKey($request['APIKey']);
             GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];
@@ -149,7 +149,7 @@ class AdminActionsController extends Controller
         $address=$action->center;
         if($address){
             $input = $request->all();
-            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setApiKey($request['APIKey']);
             GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];

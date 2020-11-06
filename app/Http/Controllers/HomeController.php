@@ -44,7 +44,7 @@ class HomeController extends Controller
         $orders = $route->orders;
         $smartsupp_token = $action['SmartsuppToken'];
 
-        return view('home.main', compact('route', 'orders', 'routes', 'SmartsuppToken'));
+        return view('home.main', compact('route', 'orders', 'routes', 'smartsupp_token'));
     }
 
     public function maps($id)
@@ -58,7 +58,7 @@ class HomeController extends Controller
         $center = $action->center;
         $key = $action['APIKey'];
         $smartsupp_token = $action['SmartsuppToken'];
-        return view('home.map', compact('orders', 'route','routes','center', 'key', 'SmartsuppToken'));
+        return view('home.map', compact('orders', 'route','routes','center', 'key', 'smartsupp_token'));
     }
 
     public function delivered($id)
