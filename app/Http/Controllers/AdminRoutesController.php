@@ -62,7 +62,12 @@ class AdminRoutesController extends Controller
                 return $routes->order_count();
             })
             ->addColumn('Actions', function($routes) {
-                $buttons = '<a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                $buttons = '';
+                if($routes->route_status['id']<10){
+                    $buttons = $buttons .'
+                    <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+                };
+                $buttons = $buttons .'
                 <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
                 if($routes->route_status['id']==5){
                     $buttons = $buttons .'
@@ -92,7 +97,8 @@ class AdminRoutesController extends Controller
         $center = $action->center;
         $orders = $route->orders;
         $routetype = $route->route_type;
-        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype'));
+        $key = $action['APIKey'];
+        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key'));
     }
 
     public function downloadPDF($id) {
@@ -101,28 +107,30 @@ class AdminRoutesController extends Controller
         $route = Route::findOrFail($id);
         $center = $action->center;
         $orders = $route->orders;
+        $key = $action['APIKey'];
 
         $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
         $url = $url . '&destination=' . $center['lat'] . ',' . $center['lng'];
-        $url = $url . '&waypoints=';
+        $url = $url . '&mode='. $route->route_type['travelmode'];
+        $url = $url . '&waypoints=optimize:true|';
         foreach ($orders as $order){
             $address = Address::findOrFail($order['address_id']);
             $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
         }
         $url = rtrim($url, "| ");
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']); 
-        $request = $client->get($url . '&optimize:true&key=AIzaSyANAmxiZYaDqNi7q5xxC6RicESrCmQFutw');
+        $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
+        $request = $client->get($url . '&key='. $key);
         $response = json_decode($request->getBody(), true);
         $path = $response['routes'][0]['overview_polyline']['points'];
+        $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='. $route->route_type['travelmode'].'&markers=color:red%7C' . $center['lat'] . ',' . $center['lng'];
 
-        $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&markers=color:red%7C' . $center['lat'] . ',' . $center['lng'];
-
+        
         foreach ($orders as $order){
             $address = Address::findOrFail($order['address_id']);
             $url = $url . '&markers=color:red%7C' . $address['lat'] . ',' . $address['lng'];
         }
         $url = $url . '&path=enc:' . $path;
-        $url = $url . '&key=AIzaSyANAmxiZYaDqNi7q5xxC6RicESrCmQFutw';
+        $url = $url . '&key='. $key;
         $image = file_get_contents($url);
         $folder = 'images/' . $group['name'] . '/' . $action['name'] .'_'. $action['year'] . '/'; 
         if (!Storage::disk('public')->exists($folder)) {
@@ -131,6 +139,10 @@ class AdminRoutesController extends Controller
         $path = $folder.$route['name'].'.png';
         Storage::disk('public')->put($path, $image);
         $routetype = $route->route_type;
+        foreach ($orders as $key=>$order){
+            $order->update(['sequence' => $response['routes'][0]['waypoint_order'][$key]]);
+        }
+        $orders = $orders->sortBy('sequence');
         $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path')); 
         // return view('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));       
         return $pdf->download($route['name'].'.pdf');
@@ -139,12 +151,14 @@ class AdminRoutesController extends Controller
     public function map()
     {
         $action = Auth::user()->getAction();        
-        $orders = Order::where('action_id', $action['id'])->get();
+        $orders = Order::where('action_id', $action['id'])->with('address')->get();
         $routes = Route::where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name')->all();
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
-        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center'));
+        $key = $action['APIKey'];
+
+        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key'));
     }
 
     public function mapfilter(Request $request)
@@ -194,7 +208,13 @@ class AdminRoutesController extends Controller
         $action = Auth::user()->getAction();
         $input['name'] = $request->name;
         $input['action_id'] =  $action['id'];
-        $input['route_status_id'] = 5;
+        $input['route_status_id'] = config('status.route_geplant');
+        if($request->route_type_id==null){
+            $input['route_type_id'] =  config('status.route_type_driving');
+        }
+        else{
+            $input['route_type_id'] =  $request->route_type_id;
+        }
         if($request->user_id==null){
             $input['user_id'] = Auth::user()->id;
         }
@@ -233,8 +253,18 @@ class AdminRoutesController extends Controller
         $users = $users->pluck('username','id')->all();
         $route_statuses = RouteStatus::pluck('name','id')->all();
         $route_types = RouteType::pluck('name','id')->all();
+        $orders = $route->orders;
 
-        return view('admin.routes.edit', compact('route', 'users','route_statuses','route_types'));
+        $open_orders = Order::where([
+                ['action_id', $action['id']],
+                ['order_status_id', config('status.order_offen')],
+                ['pick_up', false],
+                ['route_id', NULL]])
+            ->join('addresses', 'orders.address_id', '=', 'addresses.id')
+            ->orderBy('plz')->orderBy('street')->orderBy('name')
+            ->get('orders.*');
+        
+        return view('admin.routes.edit', compact('route', 'users','route_statuses','route_types', 'orders', 'open_orders'));
     }
 
     /**
@@ -250,7 +280,25 @@ class AdminRoutesController extends Controller
         $route = Route::findOrFail($id);
         $route->update($request->all());
         return redirect('/admin/routes');
+    }   
+
+    public function AssignOrders(Request $request)
+    {
+        //
+        $orders = Order::WhereIn('id', $request['id']);
+        $orders->update(['route_id' => $request['route_id']]);
+
+        return redirect('/admin/routes/edit');
     }
+
+    public function RemoveOrder(Request $Request)
+    {
+        //
+        $order = Order::findOrFail($Request['order_id']);
+        $order->update(['route_id' => null]);
+        return redirect()->to('/admin/routes/'.$Request['route_id'].'/edit');
+    }
+
 
     public function send($id)
     {

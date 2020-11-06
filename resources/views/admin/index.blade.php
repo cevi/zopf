@@ -139,33 +139,35 @@
                 @endif
               </ul>
             </div>  
-            <div role="tabpanel">
-              <h2 class="display h4">Form</h2>
-              @include('includes.form_error')
-              {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
-                <div class="form-row">
-                  <div class="form-group col-md-3">  
-                      {!! Form::label('wann', 'Wann:') !!}
-                      {!! Form::time('wann', now(), ['class' => 'form-control']) !!}
+            @if($users)
+              <div role="tabpanel">
+                <h2 class="display h4">Form</h2>
+                @include('includes.form_error')
+                {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
+                  <div class="form-row">
+                    <div class="form-group col-md-3">  
+                        {!! Form::label('wann', 'Wann:') !!}
+                        {!! Form::time('wann', now(), ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="form-group col-md-6">  
+                        {!! Form::label('user_id', 'Verantwortlicher:') !!}
+                        {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="form-group col-md-3">  
+                        {!! Form::label('cut', 'Anzahl Aufgeschnitten:') !!}
+                        {!! Form::text('cut', null, ['class' => 'form-control']) !!}
+                    </div>
                   </div>
-                  <div class="form-group col-md-6">  
-                      {!! Form::label('user_id', 'Verantwortlicher:') !!}
-                      {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' => 'form-control']) !!}
+                  <div class="form-group">
+                    {!! Form::label('comments', 'Kommentar:') !!}
+                    {!! Form::text('comments', null, ['class' => 'form-control']) !!}
                   </div>
-                  <div class="form-group col-md-3">  
-                      {!! Form::label('cut', 'Anzahl Aufgeschnitten:') !!}
-                      {!! Form::text('cut', null, ['class' => 'form-control']) !!}
+                  <div class="form-group">
+                      {!! Form::submit('Eintrag Erstellen', ['class' => 'btn btn-primary'])!!}
                   </div>
-                </div>
-                <div class="form-group">
-                  {!! Form::label('comments', 'Kommentar:') !!}
-                  {!! Form::text('comments', null, ['class' => 'form-control']) !!}
-                </div>
-                <div class="form-group">
-                    {!! Form::submit('Eintrag Erstellen', ['class' => 'btn btn-primary'])!!}
-                </div>
-              {!! Form::close()!!}
-            </div>
+                {!! Form::close()!!}
+              </div>
+            @endif
           </div>
         </div>
       </div>

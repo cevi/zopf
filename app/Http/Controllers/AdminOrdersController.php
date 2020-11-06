@@ -95,7 +95,7 @@ class AdminOrdersController extends Controller
         {
             $input['name'] = $request->name;
             $input['action_id'] =  $action['id'];
-            $input['route_status_id'] = 5;
+            $input['route_status_id'] = config('status.route_geplant');
             $input['user_id'] = Auth::user()->id;
             $route = Route::create($input);
 
@@ -103,7 +103,7 @@ class AdminOrdersController extends Controller
         }
         Order::WhereIn('id',$request->id)->update(['route_id' => $route['id']]);
 
-        $routes = Route::where('action_id', $action['id'])->where('route_status_id',5)->get(); 
+        $routes = Route::where('action_id', $action['id'])->where('route_status_id', config('status.route_geplant'))->get(); 
         return view('admin.orders.index', compact('routes'));
     }
 
@@ -115,7 +115,7 @@ class AdminOrdersController extends Controller
     public function create()
     {
         //
-        $routes = Route::where('route_status_id',5)->get();
+        $routes = Route::where('route_status_id', config('status.route_geplant'))->get();
         $routes = $routes->pluck('name','id')->all();
         return view('admin.orders.create', compact('routes'));
     }
@@ -123,12 +123,14 @@ class AdminOrdersController extends Controller
     public function map()
     {
         $action= Auth::user()->getaction();        
-        $orders = Order::where('action_id', $action['id'])->get();
+        $orders = Order::where('action_id', $action['id']);
+        $orders = $orders->with('address')->get();
         $cities = $action->addresses->unique('city')->pluck('city');
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
+        $key = $action['APIKey'];
 
-        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center'));
+        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center', 'key'));
     }
 
     public function mapfilter(Request $request)
@@ -145,7 +147,7 @@ class AdminOrdersController extends Controller
 
         if(isset($status) and $status!="Alle"){
             $order_status = OrderStatus::where('name',$status)->first();
-            $orders->where('order_status_id',$order_status['id'])->get();
+            $orders->where('order_status_id',$order_status['id']);
         }
         
         $orders = $orders->with('address')->get();
@@ -164,6 +166,10 @@ class AdminOrdersController extends Controller
             $user = Auth::user();
             $action = $user->getAction();
             $center = $action->center;
+            $user = Auth::user();
+            $action = $user->getAction();
+            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setCountry('CH');
             foreach($importData_arr as $importData){
                 // return $importData; 
                 $importData['abholung'] = $importData['abholung'] === "x" ? 1 : 0;
@@ -175,7 +181,9 @@ class AdminOrdersController extends Controller
                         "street" => $center['street'],
                         "group_id"=> $user->group['id'],
                         "city" => $center['city'],
-                        "plz" => $center['plz']);
+                        "plz" => $center['plz'],
+                        "lat" => $center['lat'],
+                        "lng" => $center['lng']);
                 }
                 else{
                     $insertAddress = array(                   
@@ -190,38 +198,40 @@ class AdminOrdersController extends Controller
                 $address = Address::firstOrCreate(['name' => $importData['name'], 'firstname' => $importData['vorname']], $insertAddress);
 
                 if($address){
-                $geocode = Geocoder::getCoordinatesForAddress($address['street'] . ', ' .$address['plz'] . ' '.$address['city']);
-                $lat = $geocode['lat'];
-                $lng = $geocode['lng'];
-                
-                $address->update(['lat' => $lat, 'lng' => $lng]);
+                    if(!$importData['abholung']){
+                        $geocode = Geocoder::getCoordinatesForAddress($address['street'] . ', ' .$address['plz'] . ' '.$address['city']);
+                        $lat = $geocode['lat'];
+                        $lng = $geocode['lng'];
+                        
+                        $address->update(['lat' => $lat, 'lng' => $lng]);
+                    }
 
-                if($importData['route']){
-                    $insertRoute = array(                   
-                        "name"=> $importData['route'],
-                        "action_id" => $user->getAction,
-                        "route_status_id" => config('status.route_geplant'));
+                    if($importData['route']){
+                        $insertRoute = array(                   
+                            "name"=> $importData['route'],
+                            "action_id" => $user->getAction,
+                            "route_status_id" => config('status.route_geplant'));
 
-                    $route = Route::firstOrCreate(['name' => $importData['route'],], $insertRoute);
-                    $route_id = $route['id'];
-                }
-                else
-                {
-                    $route_id = null;
-                }
-    
+                        $route = Route::firstOrCreate(['name' => $importData['route'],], $insertRoute);
+                        $route_id = $route['id'];
+                    }
+                    else
+                    {
+                        $route_id = null;
+                    }
+        
 
-                $insertOrder = array(
-                    
-                    "quantity"=> $importData['anzahl'],
-                    "route_id" => $route_id,
-                    "action_id" => $action['id'],
-                    "address_id"=> $address['id'],
-                    "order_status_id" => config('status.order_offen'),
-                    "pick_up" => $importData['abholung'],
-                    "comments" => $importData['bemerkung']);
+                    $insertOrder = array(
+                        
+                        "quantity"=> $importData['anzahl'],
+                        "route_id" => $route_id,
+                        "action_id" => $action['id'],
+                        "address_id"=> $address['id'],
+                        "order_status_id" => config('status.order_offen'),
+                        "pick_up" => $importData['abholung'],
+                        "comments" => $importData['bemerkung']);
                 }
-                Order::firstOrCreate(['action_id' => $action['id'], 'address_id' => $address['id']], $insertOrder);
+                Order::firstOrCreate(['action_id' => $action['id'], 'address_id' => $address['id'], 'quantity' => $importData['anzahl'], 'comments' => $importData['bemerkung']], $insertOrder);
             
     
             }
@@ -262,6 +272,10 @@ class AdminOrdersController extends Controller
                 $group = Auth::user()->group;
                 $input['group_id'] = $group['id'];
             }
+            $user = Auth::user();
+            $action = $user->getAction();
+            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
@@ -276,7 +290,7 @@ class AdminOrdersController extends Controller
         $input['address_id'] = $address->id; 
         $action = Auth::user()->getAction();
         $input['action_id'] = $action['id'];
-        $input['order_status_id'] = 5;
+        $input['order_status_id'] = config('status.order_offen');
         
         Order::create($input);
 
@@ -305,7 +319,7 @@ class AdminOrdersController extends Controller
     {
         //
         $action = Auth::user()->getAction();
-        $routes = Route::where('action_id', $action['id'])->where('route_status_id',5)->get(); 
+        $routes = Route::where('action_id', $action['id'])->where('route_status_id',  config('status.route_unterwegs'))->get(); 
         $routes = $routes->pluck('name','id')->all();
         $order = Order::findOrFail($id);
 
@@ -324,6 +338,10 @@ class AdminOrdersController extends Controller
         //
         $order = Order::findOrFail($id);
         $address=$order->address;
+        $user = Auth::user();
+        $action = $user->getAction();
+        GeoCoder::setApiKey($action['APIKey']);
+        GeoCoder::setCountry('CH');
         if($address){
             $input = $request->all();
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);

@@ -2,22 +2,31 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="description" content="Zopfaktion">
+    <meta name="author" content="Jérôme Sigg">
+    <meta name="robots" content="all,follow">
     <title>{{ config('app.name', 'Zopfaktion') }}</title>
-
-    <!-- Scripts -->
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    {{-- <script src="{{asset('js/smartsupp.js')}}"></script> --}}
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Smartsupp Live Chat script -->
+    <script type="text/javascript">
+        if(@json($smartsupp_token)){
+            var _smartsupp = _smartsupp || {};
+            _smartsupp.key = @json($smartsupp_token);
+            window.smartsupp||(function(d) {
+            var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+            s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+            c.type='text/javascript';c.charset='utf-8';c.async=true;
+            c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+            })(document);
+        }
+    </script>
+
+    @yield('styles')
 </head>
 <body>
     <div id="app">
@@ -78,7 +87,7 @@
         </main>
     </div>
     <!-- jQuery -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     @yield('scripts')
 </body>
 </html>

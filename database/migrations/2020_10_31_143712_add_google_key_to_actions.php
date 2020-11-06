@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAmountToLogbook extends Migration
+class AddGoogleKeyToActions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class AddAmountToLogbook extends Migration
      */
     public function up()
     {
-        Schema::table('logbooks', function (Blueprint $table) {
+        Schema::table('actions', function (Blueprint $table) {
             //
-            $table->integer('quantity');
-            $table->integer('cut');
+            $table->string('APIKey');
         });
     }
 
@@ -27,10 +26,9 @@ class AddAmountToLogbook extends Migration
      */
     public function down()
     {
-        Schema::table('logbooks', function (Blueprint $table) {
+        Schema::table('actions', function (Blueprint $table) {
             //
-            $table->dropColumn('quantity');
-            $table->dropColumn('cut');
+            $table->dropColumn('APIKey');
         });
     }
 }

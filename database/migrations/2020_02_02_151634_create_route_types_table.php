@@ -21,9 +21,9 @@ class CreateRouteTypesTable extends Migration
         });
         DB::table('route_types')->insert( 
             array(
-                ['id' => 5, 'name' => 'Zu Fuss', 'travelmode' => 'WALKING'],
-                ['id' => 10, 'name' => 'Fahrrad', 'travelmode' => 'BICYCLING'],
-                ['id' => 15, 'name' => 'Auto', 'travelmode' => 'DRIVING'],
+                ['id' => config('status.route_type_walking'), 'name' => 'Zu Fuss', 'travelmode' => 'WALKING'],
+                ['id' => config('status.route_type_cycling'), 'name' => 'Fahrrad', 'travelmode' => 'BICYCLING'],
+                ['id' => config('status.route_type_driving'), 'name' => 'Auto', 'travelmode' => 'DRIVING'],
             )
         );
     }

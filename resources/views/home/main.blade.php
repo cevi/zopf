@@ -9,19 +9,19 @@
     </div> <br>                     
     <!-- Author -->
     @if ($orders)
-        @if($orders->min('order_status_id')<20)
+        @if($orders->min('order_status_id')<  config('status.order_ausgeliefert'))
                                 
             <div class="panel-group" id="accordion"> <!-- accordion 1 -->
-                @foreach ($orders as $order)
+                @foreach ($orders as $key=>$order)
                     <div class="panel panel-primary">
                         <div class="panel-heading"> <!-- panel-heading -->
                             <h4 class="panel-title"> <!-- title 1 -->
                             <a data-toggle="collapse" data-parent="#accordion" href="#accordion{{$order->id}}">
-                                {{$order->address['firstname']}} {{$order->address['name']}}
+                                {{$order['sequence']+1}}. {{$order->address['firstname']}} {{$order->address['name']}}
                                 
-                                @if($order['order_status_id']===25)
+                                @if($order['order_status_id'] === config('status.order_hinterlegt'))
                                 (Hinterlegt)
-                            @elseif ($order['order_status_id']===20)
+                            @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
                                 (Übergeben)
                             @endif
                             </a>
@@ -53,9 +53,9 @@
                                     </tr>
                                     <tr>
                                         <td>Aktion: </td>
-                                        @if($order['order_status_id']===25)
+                                        @if($order['order_status_id'] === config('status.order_hinterlegt'))
                                             <td>Hinterlegt</td>
-                                        @elseif ($order['order_status_id']===20)
+                                        @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
                                             <td>Übergeben</td>
                                         @else
                                             <td><a type="button" class="btn btn-info btn-sm" href="{{route('home.delivered', $order->id)}}">Übergeben</a>

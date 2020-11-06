@@ -7015,7 +7015,7 @@ a.close.disabled {
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 500px;
+    max-width: 1000px;
     margin: 1.75rem auto;
   }
   .modal-dialog-scrollable {
@@ -15317,6 +15317,8 @@ table.dataTable tbody td.selected a {
 .map-icon-zoom-out:before {
 	content: "\e8ae";
 }
+
+.gmpc{position:relative}.gmpc-percent-text{position:absolute;width:100%;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 
 /*
 == malihu jquery custom scrollbar plugin ==

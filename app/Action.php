@@ -8,7 +8,7 @@ class Action extends Model
 {
     //
     protected $fillable = [
-    'name', 'group_id', 'year', 'action_status_id', 'address_id'
+    'name', 'group_id', 'year', 'action_status_id', 'address_id', 'APIKey', 'SmartsuppToken'
     ];
     
     public function group(){

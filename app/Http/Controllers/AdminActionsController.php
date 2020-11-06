@@ -84,6 +84,10 @@ class AdminActionsController extends Controller
                 $group = Auth::user()->group;
                 $input['group_id'] = $group['id'];
             }
+            $user = Auth::user();
+            $action = $user->getAction();
+            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
@@ -145,6 +149,8 @@ class AdminActionsController extends Controller
         $address=$action->center;
         if($address){
             $input = $request->all();
+            GeoCoder::setApiKey($action['APIKey']);
+            GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
@@ -191,7 +197,7 @@ class AdminActionsController extends Controller
     {
         //
         $action = Action::findOrFail($id);
-        $action->action_status_id = 10;
+        $action->action_status_id = config('status.action_aktiv');
         $action->update($request->all());
         return redirect('/admin/actions');
     }

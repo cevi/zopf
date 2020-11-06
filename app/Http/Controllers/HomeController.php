@@ -29,19 +29,22 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $routes = Route::where('user_id', $user->id)->where('route_status_id', 15)->get();
+        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $action = Auth::user()->getAction();  
-        return view('home', compact('user','routes', 'action'));
+        $smartsupp_token = $action['SmartsuppToken'];
+        return view('home', compact('user','routes', 'action', 'smartsupp_token'));
     }
 
     public function routes($id)
     {
         $user = Auth::user();
-        $routes = Route::where('user_id', $user->id)->where('route_status_id', 15)->get(); 
+        $action = Auth::user()->getAction();  
+        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get(); 
         $route = Route::FindOrFail($id); 
         $orders = $route->orders;
+        $smartsupp_token = $action['SmartsuppToken'];
 
-        return view('home.main', compact('route', 'orders', 'routes'));
+        return view('home.main', compact('route', 'orders', 'routes', 'SmartsuppToken'));
     }
 
     public function maps($id)
@@ -53,7 +56,9 @@ class HomeController extends Controller
         $orders = Order::where('route_id',$route['id']);
         $orders = $orders->with('address')->get();
         $center = $action->center;
-        return view('home.map', compact('orders', 'route','routes','center'));
+        $key = $action['APIKey'];
+        $smartsupp_token = $action['SmartsuppToken'];
+        return view('home.map', compact('orders', 'route','routes','center', 'key', 'SmartsuppToken'));
     }
 
     public function delivered($id)

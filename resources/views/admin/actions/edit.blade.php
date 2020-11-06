@@ -43,6 +43,14 @@
                                 {!! Form::text('city', $action->center['city'], ['class' => 'form-control']) !!}
                             </div>
                         </div>
+                        <div class="form-group">
+                            {!! Form::label('APIKey', 'Google API Key:') !!}
+                            {!! Form::text('APIKey', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('SmartsuppToken', 'Smartsupp-Key Code:') !!}
+                            {!! Form::text('SmartsuppToken', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
 
                         <div class="form-group">
                             {!! Form::label('action_status_id', 'Rolle:') !!}

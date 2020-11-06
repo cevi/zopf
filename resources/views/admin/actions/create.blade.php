@@ -45,8 +45,14 @@
                             {!! Form::text('city', null, ['class' => 'form-control']) !!}
                         </div>
                     </div>
-
-
+                    <div class="form-group">
+                        {!! Form::label('APIKey', 'Google API Key:') !!}
+                        {!! Form::text('APIKey', null, ['class' => 'form-control', 'required']) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('SmartsuppToken', 'Smartsupp-Key Code:') !!}
+                        {!! Form::text('SmartsuppToken', null, ['class' => 'form-control', 'required']) !!}
+                    </div>
                     @if (Auth::user()->isAdmin())
                         <div class="form-group">
                             {!! Form::label('group_id', 'Gruppe:') !!}

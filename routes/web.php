@@ -46,6 +46,8 @@ Route::group(['middleware' => 'groupleader'], function(){
     Route::get('admin/routes/map', ['as'=>'routes.map','uses'=>'AdminRoutesController@map']);
     Route::get('admin/routes/mapfilter', ['as'=>'routes.mapfilter','uses'=>'AdminRoutesController@mapfilter']);
     Route::post('admin/routes/{id}/send', ['as'=>'routes.send','uses'=>'AdminRoutesController@send']);
+    Route::post('admin/routes/AssignOrders', ['as'=>'routes.AssignOrders','uses'=>'AdminRoutesController@AssignOrders']);
+    Route::patch('admin/routes/RemoveOrder/{id}', ['as'=>'routes.RemoveOrder','uses'=>'AdminRoutesController@RemoveOrder']);
     Route::resource('admin/routes', 'AdminRoutesController');
 
     Route::get('admin/orders/map', ['as'=>'orders.map','uses'=>'AdminOrdersController@map']);
@@ -67,12 +69,10 @@ Route::group(['middleware' => 'groupleader'], function(){
 
 Route::group(['middleware' => 'admin'], function(){
     Route::resource('admin/groups', 'AdminGroupsController');
-
-    
-    Route::get('admin/run-migrations', function () {
-    	return Artisan::call('migrate', ["--force" => true ]);
-	});
 });
 
+Route::get('admin/run-migrations', function () {
+    return Artisan::call('migrate', ["--force" => true ]);
+});
 
 

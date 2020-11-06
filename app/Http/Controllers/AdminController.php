@@ -40,26 +40,31 @@ class AdminController extends Controller
             //     array_push($graphs_sum, $graph->sum);    
             // }
             $graphs = $graphs->where('quantity', '>',0)->get()->sortBy('wann');
-            $graphs_time_min = $graphs->first()->wann;
-            $graphs_time_max = $graphs->last()->wann;
-            $graphs_time_max = date('H:i:s', (ceil(strtotime($graphs_time_max)/1800)*1800));
+            if(count($graphs)>0){
+                $graphs_time_min = $graphs->first()->wann;
+                $graphs_time_max = $graphs->last()->wann;
+                $graphs_time_max = date('H:i:s', (ceil(strtotime($graphs_time_max)/1800)*1800));
 
-            $diff = ceil((strtotime($graphs_time_max)-strtotime($graphs_time_min))/1800);
-            
-            $graphs_time = array();
-            $graphs_sum = array();
+                $diff = ceil((strtotime($graphs_time_max)-strtotime($graphs_time_min))/1800);
+                
+                $graphs_time = array();
+                $graphs_sum = array();
 
-            array_push($graphs_time, date('H:i:s', (floor(strtotime($graphs_time_min)/1800)*1800)));
+                array_push($graphs_time, date('H:i:s', (floor(strtotime($graphs_time_min)/1800)*1800)));
 
-            for($i = 0;$i <= $diff; $i++){
-                if($i > 0){
-                    array_push($graphs_time, date('H:i:s', strtotime($graphs_time[$i - 1])+1800));
+                for($i = 0;$i <= $diff; $i++){
+                    if($i > 0){
+                        array_push($graphs_time, date('H:i:s', strtotime($graphs_time[$i - 1])+1800));
+                    }
+                    $graph_sum = Logbook::where('action_id', $action['id'])->whereTime('wann', '>', date('H:i:s', strtotime($graphs_time[$i])-900))
+                    ->whereTime('wann', '<', date('H:i:s', strtotime($graphs_time[$i])+900));   
+                    array_push($graphs_sum, $graph_sum->sum('quantity'));
                 }
-                $graph_sum = Logbook::where('action_id', $action['id'])->whereTime('wann', '>', date('H:i:s', strtotime($graphs_time[$i])-900))
-                ->whereTime('wann', '<', date('H:i:s', strtotime($graphs_time[$i])+900));   
-                array_push($graphs_sum, $graph_sum->sum('quantity'));
             }
-
+            else{
+            $graphs_time = 0;
+            $graphs_sum = 0;
+            }
             $total = $action->orders->sum('quantity') + $cut;
 
             $routes = Route::where('action_id', $action['id'])->get();
@@ -74,15 +79,17 @@ class AdminController extends Controller
         else{
             $total = 0;
             $orders_count = 0;
-            $orders_open_delivery = 0;
-            $orders_on_route = 0;
+            $routes_count = 0;
+            $orders_open = 0;
+            $orders_delivery = 0;
             $orders_open_pickup = 0;
             $orders_finished = 0;
             $cut = 0;
             $logbooks = 0;
-            $routes_count = 0;
             $open_routes = 0;
             $users = 0;
+            $graphs_time = 0;
+            $graphs_sum = 0;
         }
 
         return view('admin/index', compact('total', 'orders_count', 'routes_count', 'orders_open', 'orders_delivery','orders_open_pickup', 

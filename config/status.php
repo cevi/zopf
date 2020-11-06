@@ -18,5 +18,9 @@ return [
     'route_unterwegs' => 15,
     'route_abgeschlossen' => 20,
 
+    'route_type_walking' => 5,
+    'route_type_cycling' => 10,
+    'route_type_driving' => 15,
+
 ]
 ?>

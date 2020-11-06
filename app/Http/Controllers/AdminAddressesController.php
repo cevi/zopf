@@ -69,6 +69,8 @@ class AdminAddressesController extends Controller
     public function store(Request $request)
     {
         //
+        $user = Auth::user();
+        $action = $user->getAction();
         $city=City::Where('id',$request->city_id)->first();
         if(!$city){
             return back()->withInput()->withErrors(['errors' => ['Ortschaft nicht gefunden.']]);
@@ -81,7 +83,9 @@ class AdminAddressesController extends Controller
             $group = Auth::user()->group;
             $input['group_id'] = $group['id'];
         }
-        $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
+        GeoCoder::setApiKey($action['APIKey']);
+        GeoCoder::setCountry('CH');
+        $geocode =  GeoCoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
         $input['lat'] = $geocode['lat'];
         $input['lng'] = $geocode['lng'];
 
@@ -141,6 +145,10 @@ class AdminAddressesController extends Controller
             $input = $request->all();
             $input['city_id'] = $city->id; 
         }
+        $user = Auth::user();
+        $action = $user->getAction();
+        GeoCoder::setApiKey($action['APIKey']);
+        GeoCoder::setCountry('CH');
 
         $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
         $input['lat'] = $geocode['lat'];

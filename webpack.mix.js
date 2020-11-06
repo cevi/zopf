@@ -11,7 +11,15 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.scripts([
+      'resources/js/libs/jquery.js',
+      'resources/js/libs/jquery-ui.js',
+      'resources/js/libs/bootstrap.js',
+      'resources/js/libs/map-icons.js',
+      'resources/js/libs/markerCluster.js',
+      'resources/js/libs/googlemaps.js',
+      'resources/js/libs/custom.js',
+   ], 'public/js/app.js')
    .sass('resources/sass/app.scss', 'public/css');
 
    mix.styles([
@@ -22,7 +30,7 @@ mix.js('resources/js/app.js', 'public/js')
       'resources/css/libs/font-awesome_new.css',
       'resources/css/libs/fontastic.css',
       'resources/css/libs/map-icons.css',
-      'resources/css/libs/grasp_mobile_progress_circle-1.0.0.css',
+      'resources/css/libs/grasp_mobile_progress_circle.min.css',
       'resources/css/libs/jquery.mCustomScrollbar.css',
       'resources/css/libs/style.default.premium.css',
       'resources/css/libs/dropify.min.css',
@@ -41,5 +49,6 @@ mix.js('resources/js/app.js', 'public/js')
    'resources/js/libs/map-icons.js',
    'resources/js/libs/markerCluster.js',
    'resources/js/libs/front.js',
+   'resources/js/libs/googlemaps.js',
    'resources/js/libs/custom.js',
 ], 'public/js/libs.js');  
