@@ -47,6 +47,21 @@
                             @if (Auth::user()->isGroupleader())
                                 <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>                 
                             @endif
+                            <li class="nav-item dropdown">
+                                <a id="RoutesDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Routen <span class="caret"></span>
+                                </a>
+    
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="RoutesDropdown">
+                                    @if ($routes)
+                                        <ul class="list-unstyled">
+                                            @foreach ($routes as $route)
+                                                <li><a href="{{route('home.routes',$route->id)}}">{{$route->name}}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            </li>     
                         @endguest
                     </div>
 

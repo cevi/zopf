@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use AddAmountToLogbook;
 use App\Group;
 use App\Action;
 use DataTables;
 use App\Address;
 use App\Logbook;
 use App\ActionStatus;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Geocoder\Facades\Geocoder;
@@ -104,7 +106,8 @@ class AdminActionsController extends Controller
 
         $input['action_status_id'] = config('status.action_geplant');
         $action = Action::create($input);
-        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde geplant.', 'wann' => now()]);
+        $comment = 'Aktion '.$action['name'].' wurde geplant.';
+        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
 
         return redirect('admin/actions');
     }
@@ -177,10 +180,12 @@ class AdminActionsController extends Controller
         $status_id = (int)$input['action_status_id'];
         if($status_id!=$action['action_status_id']){
             if($status_id === config('status.action_aktiv')){
-                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde gestartet.', 'wann' => now()]); 
+                $comment = 'Aktion '.$action['name'].' wurde gestartet.';
+                Helper::CreateLogEntry(Auth::user()->id, $action['id'] ,$comment, now());
             }
             if($status_id === config('status.action_abgeschlossen')){
-                Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Aktion '.$action['name'].' wurde abgeschlossen.', 'wann' => now()]); 
+                $comment = 'Aktion '.$action['name'].' wurde abgeschlossen.';
+                Helper::CreateLogEntry(Auth::user()->id, $action['id'] ,$comment, now());
             }
         }
         $action->update($input);

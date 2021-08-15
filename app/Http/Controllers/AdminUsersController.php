@@ -66,7 +66,12 @@ class AdminUsersController extends Controller
     public function create()
     {
         //
-        $roles = Role::pluck('name','id')->all();
+        if(!Auth::user()->isAdmin()){
+            $roles = Role::where('is_admin', false)->pluck('name','id')->all();
+        } else {
+            $roles = Role::pluck('name','id')->all();
+
+        }
         $groups = Group::pluck('name','id')->all();
         return view('admin.users.create', compact('roles','groups'));
     

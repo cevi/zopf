@@ -11,6 +11,10 @@ class Order extends Model
         'quantity', 'route_id', 'action_id', 'address_id', 'order_status_id', 'sequence', 'pick_up', 'comments'
     ];
 
+    protected $casts = [
+        'pick_up' => 'boolean'
+    ];
+
     public function address(){
         return $this->belongsTo('App\Address');
     } 

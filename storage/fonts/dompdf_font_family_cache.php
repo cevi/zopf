@@ -78,15 +78,15 @@
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'fontawesome' => array(
-    'normal' => $fontDir . '/fontawesome-normal_099c551533ec52a3d4474f6fc44c58ac',
+    'normal' => $fontDir . '/fontawesome_normal_099c551533ec52a3d4474f6fc44c58ac',
   ),
   'dashboard' => array(
-    'normal' => $fontDir . '/dashboard-normal_34e3053f0de200617b507b0e86523c7f',
+    'normal' => $fontDir . '/dashboard_normal_34e3053f0de200617b507b0e86523c7f',
   ),
   'map-icons' => array(
-    'normal' => $fontDir . '/map-icons-normal_01ceda670ba1eb83541097b471b2ce59',
+    'normal' => $fontDir . '/map_icons_normal_01ceda670ba1eb83541097b471b2ce59',
   ),
   'dropify' => array(
-    'normal' => $fontDir . '/dropify-normal_d7d7721dfd5f4ae5869740130b810c6b',
+    'normal' => $fontDir . '/dropify_normal_d7d7721dfd5f4ae5869740130b810c6b',
   ),
 ) ?>

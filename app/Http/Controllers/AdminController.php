@@ -7,6 +7,7 @@ use App\Order;
 use App\Route;
 use App\Action;
 use App\Logbook;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,7 @@ class AdminController extends Controller
         $action = Auth::user()->getAction();
         if($action){
             $orders_count = count($action->orders);
+            $orders_count_open =  count($action->orders->where('order_status_id', config('status.order_offen')));
             $orders_delivery = $action->orders->where('order_status_id', config('status.order_unterwegs'))->where('pick_up',false)->sum('quantity');
             $orders_open =  $action->orders->where('order_status_id', config('status.order_offen'))->where('pick_up',false)->sum('quantity');
             $orders_open_pickup =  $action->orders->where('order_status_id', '<', config('status.order_ausgeliefert'))->where('pick_up',true)->sum('quantity');
@@ -27,18 +29,8 @@ class AdminController extends Controller
             $cut = clone $logbooks;
             $graphs = clone $logbooks;
             $cut = $cut->where('cut', true)->sum('quantity');
-            $logbooks =$logbooks->get()->sortByDesc('created_at');
+            $logbooks =$logbooks->get()->sortByDesc('wann');
 
-
-            // $graphs = $graphs->where('quantity', '>',0)->selectRaw('sec_to_time((time_to_sec(time(`wann`)) div 1800)*1800) as halfhour, sum(quantity) as sum')
-            // ->groupBy('halfhour')
-            // ->get();
-            // $graphs_time = array();
-            // $graphs_sum = array();
-            // foreach($graphs as $graph){
-            //     array_push($graphs_time, $graph->halfhour);  
-            //     array_push($graphs_sum, $graph->sum);    
-            // }
             $graphs = $graphs->where('quantity', '>',0)->get()->sortBy('wann');
             if(count($graphs)>0){
                 $graphs_time_min = $graphs->first()->wann;
@@ -70,7 +62,7 @@ class AdminController extends Controller
             $routes = Route::where('action_id', $action['id'])->get();
             $routes_count = count($routes);
 
-            $open_routes = Route::where('action_id', $action['id'])->where('route_status_id', config('status.route_unterwegs'))->get();
+            $open_routes = Route::where('action_id', $action['id'])->where('route_status_id', '<=', config('status.route_unterwegs'))->get()->sortByDesc('route_status_id');
             
             $group = Auth::user()->group;
             $users = User::where('group_id', $group['id'])->get();
@@ -79,6 +71,7 @@ class AdminController extends Controller
         else{
             $total = 0;
             $orders_count = 0;
+            $orders_count_open = 0;
             $routes_count = 0;
             $orders_open = 0;
             $orders_delivery = 0;
@@ -86,13 +79,46 @@ class AdminController extends Controller
             $orders_finished = 0;
             $cut = 0;
             $logbooks = 0;
-            $open_routes = 0;
+            $open_routes = [];
             $users = 0;
             $graphs_time = 0;
             $graphs_sum = 0;
         }
 
-        return view('admin/index', compact('total', 'orders_count', 'routes_count', 'orders_open', 'orders_delivery','orders_open_pickup', 
+        $icon_array = collect([
+            (object) [
+                'icon' => 'icon-padnote',
+                'name' => 'Zöpfe',
+                'number' => $orders_finished + $cut . ' / ' . $total
+            ],
+            (object) [
+                'icon' => 'icon-website',
+                'name' => 'Bestellungen',
+                'number' => $orders_count_open . ' / ' . $orders_count
+            ],
+            (object) [
+                'icon' => 'icon-line-chart',
+                'name' => 'Routen',
+                'number' => count($open_routes) . ' / ' . $routes_count
+            ],
+            (object) [
+                'icon' => 'icon-home',
+                'name' => 'Offen',
+                'number' => $orders_open
+            ],
+            (object) [
+                'icon' => 'icon-paper-airplane',
+                'name' => 'Unterwegs',
+                'number' => $orders_delivery
+            ],   
+            (object) [
+                'icon' => 'icon-user',
+                'name' => 'Abholen',
+                'number' => $orders_open_pickup
+            ],        
+        ]);
+
+        return view('admin/index', compact('icon_array', 'orders_open', 'orders_delivery', 'orders_open_pickup', 
         'orders_finished', 'cut', 'logbooks', 'open_routes', 'users', 'graphs_time', 'graphs_sum'));
     }
 
@@ -113,8 +139,7 @@ class AdminController extends Controller
                 $input['cut'] = false;
                 $input['quantity'] = 0;
             }
-            $input['action_id'] = $action['id'];
-            Logbook::create($input);
+            Helper::CreateLogEntry($input['user_id'], $action['id'], $input['comments'], $input['wann'], $input['quantity'], $input['cut']);
         }
 
         return redirect('admin/');

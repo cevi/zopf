@@ -7,6 +7,8 @@ use App\Route;
 use App\Action;
 use DataTables;
 use App\Address;
+use App\Helper\Helper;
+use App\Logbook;
 use App\OrderStatus;
 use Illuminate\Http\Request;
 use App\Imports\OrdersImport;
@@ -69,8 +71,14 @@ class AdminOrdersController extends Controller
             ->addColumn('pick_up', function ($orders) {
                 return $orders['pick_up'] ? 'Ja' : 'Nein';})
             ->addColumn('Actions', function($orders) {
-                return '<a href='.\URL::route('orders.edit', $orders->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                $buttons = '<a href='.\URL::route('orders.edit', $orders->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
                 <button data-remote='.\URL::route('orders.destroy', $orders->id).' class="btn btn-danger btn-sm">Löschen</button>';
+                if($orders['pick_up'] && ($orders['order_status_id']==config('status.order_offen'))){
+                    $buttons = $buttons .'  
+                    <form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-info btn-sm">Abgeholt</button></form>';
+                };
+                
+                return $buttons;
             })
             ->addColumn('checkbox', function ($orders) {
                 return '<input type="checkbox" name="checkbox[]" value="'.$orders->id.'"/>';
@@ -112,6 +120,25 @@ class AdminOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function pickup($id)
+    {
+        //
+        $order = Order::findorFail($id);
+        $order->update(['order_status_id' => config('status.order_abgeholt')]);
+        $action= Auth::user()->getaction();   
+        if($order['quantity']===1){
+            $text = 'Ein Zopf wurde';
+        }
+        else
+        {
+            $text = $order['quantity'].' Zöpfe wurden';
+        }
+        $text = $text.' von '.$order->address['firstname'].' '.$order->address['name']. 'abgeholt.';
+        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(),  $order['quantity']);
+        return redirect('/admin/orders');
+    }
+
     public function create()
     {
         //
@@ -265,30 +292,46 @@ class AdminOrdersController extends Controller
     public function store(Request $request)
     {
         //
+        $user = Auth::user();
+        $action = $user->getAction();
         $address=Address::Where('id',$request->address_id)->first();
-        if(!$address){
+        if(!$address){        
             $input = $request->all();
-            if(!Auth::user()->isAdmin()){
-                $group = Auth::user()->group;
+
+            if(!$user->isAdmin()){
+                $group = $user->group;
                 $input['group_id'] = $group['id'];
             }
-            $user = Auth::user();
-            $action = $user->getAction();
-            GeoCoder::setApiKey($action['APIKey']);
-            GeoCoder::setCountry('CH');
-            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
-            $input['lat'] = $geocode['lat'];
-            $input['lng'] = $geocode['lng'];
+
+            if($request->has('pick_up')){
+                $center = $action->center;
+                $input['street'] = $center['street'];
+                $input['plz'] = $center['plz'];
+                $input['city'] = $center['city'];
+                $input['lat'] = $center['lat'];
+                $input['lng'] = $center['lng'];
+                $input['lng'] = $center['lng'];
+                $input['pick_up'] = true;
+            }
+            else{
+    
+                GeoCoder::setApiKey($action['APIKey']);
+                GeoCoder::setCountry('CH');
+                $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+                $input['lat'] = $geocode['lat'];
+                $input['lng'] = $geocode['lng'];
+                
+            }
+            $address = Address::create($input);
 
             // return $input;
 
-            $address = Address::create($input);
         }
         else{
             $input = $request->all(); 
         }
+
         $input['address_id'] = $address->id; 
-        $action = Auth::user()->getAction();
         $input['action_id'] = $action['id'];
         $input['order_status_id'] = config('status.order_offen');
         

@@ -31,20 +31,30 @@
                         </div>
                         {!! Form::hidden('address_id', null, ['class' => 'form-control']) !!}
                     </div>
-
                     <div class="form-group">
-                        {!! Form::label('street', 'Strasse:') !!}
-                        {!! Form::text('street', null, ['class' => 'form-control ']) !!}
+                        {!! Form::label('pick_up', 'Abholen:') !!}
+                        {!! Form::checkbox('pick_up', 'yes',  false) !!}
                     </div>
-
-                    <div class="form-row">
-                            <div class="form-group col-md-3">  
-                            {!! Form::label('plz', 'PLZ:') !!}
-                            {!! Form::text('plz', null, ['class' => 'form-control']) !!}
+                    <div class="address">
+                        <div class="form-group">
+                            {!! Form::label('street', 'Strasse:') !!}
+                            {!! Form::text('street', null, ['class' => 'form-control ']) !!}
                         </div>
-                        <div class="form-group col-md-9">
-                            {!! Form::label('city', 'Ort:') !!}
-                            {!! Form::text('city', null, ['class' => 'form-control']) !!}
+
+                        <div class="form-group">
+                            {!! Form::label('street', 'Strasse:') !!}
+                            {!! Form::text('street', null, ['class' => 'form-control ']) !!}
+                        </div>
+
+                        <div class="form-row">
+                                <div class="form-group col-md-3">  
+                                {!! Form::label('plz', 'PLZ:') !!}
+                                {!! Form::text('plz', null, ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="form-group col-md-9">
+                                {!! Form::label('city', 'Ort:') !!}
+                                {!! Form::text('city', null, ['class' => 'form-control']) !!}
+                            </div>
                         </div>
                     </div>
 
@@ -73,53 +83,58 @@
 @endsection
 
 
-{{-- @section('scripts')
+@section('scripts')
     <script type="text/javascript">
+     $(document).ready(function() { 
+        $('input[type="checkbox"]').click(function() { 
 
-    //autocomplete script
-    $(document).on('focus','.autocomplete_txt',function(){
-    type = $(this).attr('name');
-
-    $(this).autocomplete({
-        minLength: 2,
-        highlight: true,
-        source: function( request, response ) {
-                $.ajax({
-                    url: "{{ route('searchajaxaddress') }}",
-                    dataType: "json",
-                    data: {
-                        term : request.term
-                    },
-                    success: function(data) {
-                        var array = $.map(data, function (item) {
-                        return {
-                            label: function(item) {
-                             if(item['name']!=undefined){
-                                return item['firstname'] + ' ' + item['name'] + ', ' + item['street'] + ', ' + item['city_plz'] + ' ' + item['city_name']
-                                } else{
-                                    return "Nichts gefunden";
-                                }},
-                            value: item['id'],
-                            data : item
-                        }
-                    });
-                        response(array)
-                    }
-                });
-        },
-        select: function( event, ui ) {
-            
-            var data = ui.item.data;  
-            $("[name='address_name']").val(data.name);
-            $("[name='address_firstname']").val(data.firstname);
-            $("[name='address_id']").val(data.address_id);
-            $("[name='address_street']").val(data.street);
-            $("[name='address_city_name']").val(data.city_name);
-            $("[name='address_city_plz']").val(data.city_plz);
-        }
-    });
-    
-    
-    });
+            $(".address").toggle(); 
+        }); 
+    }); 
     </script>    
-@endsection --}}
+@endsection 
+{{--  //autocomplete script
+    // $(document).on('focus','.autocomplete_txt',function(){
+    // type = $(this).attr('name');
+
+    // $(this).autocomplete({
+    //     minLength: 2,
+    //     highlight: true,
+    //     source: function( request, response ) {
+    //             $.ajax({
+    //                 url: "{{ route('searchajaxaddress') }}",
+    //                 dataType: "json",
+    //                 data: {
+    //                     term : request.term
+    //                 },
+    //                 success: function(data) {
+    //                     var array = $.map(data, function (item) {
+    //                     return {
+    //                         label: function(item) {
+    //                          if(item['name']!=undefined){
+    //                             return item['firstname'] + ' ' + item['name'] + ', ' + item['street'] + ', ' + item['city_plz'] + ' ' + item['city_name']
+    //                             } else{
+    //                                 return "Nichts gefunden";
+    //                             }},
+    //                         value: item['id'],
+    //                         data : item
+    //                     }
+    //                 });
+    //                     response(array)
+    //                 }
+    //             });
+    //     },
+    //     select: function( event, ui ) {
+            
+    //         var data = ui.item.data;  
+    //         $("[name='address_name']").val(data.name);
+    //         $("[name='address_firstname']").val(data.firstname);
+    //         $("[name='address_id']").val(data.address_id);
+    //         $("[name='address_street']").val(data.street);
+    //         $("[name='address_city_name']").val(data.city_name);
+    //         $("[name='address_city_plz']").val(data.city_plz);
+    //     }
+    // });
+    
+    
+    // });--}}

@@ -51,7 +51,7 @@
                     </div>
                     <div class="form-group">
                         {!! Form::label('SmartsuppToken', 'Smartsupp-Key Code:') !!}
-                        {!! Form::text('SmartsuppToken', null, ['class' => 'form-control', 'required']) !!}
+                        {!! Form::text('SmartsuppToken', null, ['class' => 'form-control']) !!}
                     </div>
                     @if (Auth::user()->isAdmin())
                         <div class="form-group">

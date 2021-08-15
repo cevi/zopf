@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\Route;
 use App\Action;
 use App\Logbook;
-use App\Order;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,12 @@ class HomeController extends Controller
         $user = Auth::user();
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $action = Auth::user()->getAction();  
-        $smartsupp_token = $action['SmartsuppToken'];
+        if($action){
+            $smartsupp_token = $action['SmartsuppToken'];
+        }
+        else{
+            $smartsupp_token = null;
+        }
         return view('home', compact('user','routes', 'action', 'smartsupp_token'));
     }
 
@@ -77,13 +83,13 @@ class HomeController extends Controller
         $action = Auth::user()->getAction();  
         $route_id = $order['route_id']; 
         if($order['quantity']===1){
-            $text = 'Ein Zopf';
+            $text = 'Ein Zopf wurde';
         }
         else
         {
-            $text = $order['quantity'].' Zöpfe';
+            $text = $order['quantity'].' Zöpfe wurden';
         }
-        $text = $text.' wurden an '.$order->address['firstname'].' '.$order->address['name'];
+        $text = $text.' an '.$order->address['firstname'].' '.$order->address['name'];
         if($new_status===config('status.order_hinterlegt')){
             $text = $text.' hinterlegt.';
         }
@@ -91,12 +97,12 @@ class HomeController extends Controller
         {
             $text = $text.' übergeben.';
         }
-        Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => $text, 'quantity' => $order['quantity'], 'wann' => now()]);
+        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(),  $order['quantity']);
         $order->update(['order_status_id' => $new_status]);
         $orders = Order::where('route_id',$route_id);
         if($orders->min('order_status_id') > config('status.order_unterwegs')){
             $route = Route::FindOrFail($route_id);
-            Logbook::create(['user_id' => Auth::user()->id, 'action_id' => $action['id'], 'comments' => 'Route '.$route['name'].' wurde abgeschlossen', 'wann' => now()]);
+            Helper::CreateLogEntry(Auth::user()->id, $action['id'], 'Route '.$route['name'].' wurde abgeschlossen', now());
             $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
             return redirect('/');
         }

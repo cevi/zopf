@@ -232,6 +232,7 @@ return [
         'Geocoder' => Spatie\Geocoder\Facades\Geocoder::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'GoogleMaps' => GoogleMaps\Facade\GoogleMapsFacade::class,
+        'Helper' => App\Helper\Helper::class,
  
 
     ],

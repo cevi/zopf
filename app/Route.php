@@ -15,6 +15,9 @@ class Route extends Model
     'route_type_id'
     ];
 
+    public function action(){
+        return $this->belongsTo('App\Action');
+    }
         
     public function route_status(){
         return $this->belongsTo('App\RouteStatus');
@@ -35,7 +38,12 @@ class Route extends Model
     public function route_done_percent(){
         $open = $this->zopf_open_count();
         $all = $this->zopf_count();
-        return ($all-$open)/$all * 100;
+        if($all>0){
+            return ($all-$open)/$all * 100;
+        }
+        else{
+            return 0;
+        }
     }
 
     public function order_count(){

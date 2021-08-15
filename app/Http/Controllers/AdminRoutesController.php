@@ -6,12 +6,12 @@ use PDF;
 use App\User;
 use App\Order;
 use App\Route;
-use App\Action;
 use DataTables;
 use App\Address;
 use App\RouteType;
 use App\OrderStatus;
 use App\RouteStatus;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -69,12 +69,12 @@ class AdminRoutesController extends Controller
                 };
                 $buttons = $buttons .'
                 <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
-                if($routes->route_status['id']==5){
+                if(($routes->route_status['id']==config('status.route_geplant'))){
                     $buttons = $buttons .'
                     <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button></form>';
                     // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
                 };
-                if($routes->route_status['id']==10){
+                if($routes->route_status['id']==config('status.route_vorbereitet')){
                     $buttons = $buttons .'
                     <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button></form>';
                 };
@@ -95,7 +95,7 @@ class AdminRoutesController extends Controller
         $action = Auth::user()->getAction();    
         $route = Route::findOrFail($id);
         $center = $action->center;
-        $orders = $route->orders;
+        $orders = $route->orders->sortBy('sequence');
         $routetype = $route->route_type;
         $key = $action['APIKey'];
         return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key'));
@@ -109,18 +109,8 @@ class AdminRoutesController extends Controller
         $orders = $route->orders;
         $key = $action['APIKey'];
 
-        $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
-        $url = $url . '&destination=' . $center['lat'] . ',' . $center['lng'];
-        $url = $url . '&mode='. $route->route_type['travelmode'];
-        $url = $url . '&waypoints=optimize:true|';
-        foreach ($orders as $order){
-            $address = Address::findOrFail($order['address_id']);
-            $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
-        }
-        $url = rtrim($url, "| ");
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
-        $request = $client->get($url . '&key='. $key);
-        $response = json_decode($request->getBody(), true);
+        $response = Helper::CreateRouteSequence($route);
+        return $response;
         $path = $response['routes'][0]['overview_polyline']['points'];
         $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='. $route->route_type['travelmode'].'&markers=color:red%7C' . $center['lat'] . ',' . $center['lng'];
 
@@ -139,12 +129,9 @@ class AdminRoutesController extends Controller
         $path = $folder.$route['name'].'.png';
         Storage::disk('public')->put($path, $image);
         $routetype = $route->route_type;
-        foreach ($orders as $key=>$order){
-            $order->update(['sequence' => $response['routes'][0]['waypoint_order'][$key]]);
-        }
+
         $orders = $orders->sortBy('sequence');
-        $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path')); 
-        // return view('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));       
+        $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));      
         return $pdf->download($route['name'].'.pdf');
 }
     
@@ -221,9 +208,9 @@ class AdminRoutesController extends Controller
         else{
             $input['user_id'] =  $request->user_id;
         }
-        Route::create($input);
+        $route = Route::create($input);
 
-        return redirect('/admin/routes/create');
+        return redirect()->to('/admin/routes/'.$route['id'].'/edit');
     }
 
     /**
@@ -308,6 +295,10 @@ class AdminRoutesController extends Controller
             $route->update(['route_status_id' =>   config('status.route_vorbereitet')]);
         }
         else{
+            $action = Auth::user()->getAction();
+            $text = 'Route '.$route['name'].' wurde gestartet.';
+            Helper::CreateRouteSequence($route);
+            Helper::CreateLogEntry($route->user['id'], $action['id'], $text, now());
             $orders = $route->orders();
             $orders->update(['order_status_id' => config('status.order_unterwegs')]);
             $route->update(['route_status_id' => config('status.route_unterwegs')]);
@@ -315,6 +306,8 @@ class AdminRoutesController extends Controller
         }
         return redirect('/admin/routes');
     }
+
+    
 
     /**
      * Remove the specified resource from storage.

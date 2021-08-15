@@ -88,6 +88,7 @@ function initialize() {
 		}, function(response, status) {
 			if (status === 'OK') {
 				directionsRenderer.setDirections(response);
+				// console.log(response);
 			} else {
 				window.alert('Directions request failed due to ' + status);
 			}

@@ -24778,6 +24778,7 @@ function initialize() {
 		}, function(response, status) {
 			if (status === 'OK') {
 				directionsRenderer.setDirections(response);
+				// console.log(response);
 			} else {
 				window.alert('Directions request failed due to ' + status);
 			}
@@ -24830,24 +24831,6 @@ function initialize() {
 			markers.push(marker), bindInfoWindow(marker, map, html);
 		}
 	}
-
-	// function icon_url(order){
-	// 	if(((travelMode != null) && (order.route_id==null) || ((travelMode != null) && (order.route_id==null) 
-	// 			return "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"
-	// 		}
-	// 		else{
-	// 			return "http://maps.gstatic.com/mapfiles/markers2/marker.png";
-	// 		}
-	// 	}
-	// 	else{
-	// 		if(order.route_id==null){
-	// 			return "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"
-	// 		}
-	// 		else{
-	// 			return "http://maps.gstatic.com/mapfiles/markers2/marker.png";
-	// 		}
-	// 	}
-	// };
 
 	var icon_url = (order) => ((travelMode != null) && (orders[i].order_status_id > 15)) || ((travelMode == null) && (order.route_id==null)) ? "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "http://maps.gstatic.com/mapfiles/markers2/marker.png";
             

@@ -6,60 +6,16 @@
 	<section class="dashboard-counts section-padding">
     <div class="container-fluid">
       <div class="row">
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-padnote"></i></div>
-            <div class="name"><strong class="text-uppercase">Zöpfe</strong>
-              <div class="count-number">{{$total ?? ''}}</div>
+        @foreach ($icon_array as $icon)
+          <div class="col-xl-2 col-md-4 col-6">
+            <div class="wrapper count-title d-flex">
+              <div class="icon"><i class={{$icon->icon}}></i></div>
+              <div class="name"><strong class="text-uppercase">{{$icon->name}}</strong>
+                <div class="count-number">{{$icon->number}}</div>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-padnote"></i></div>
-            <div class="name"><strong class="text-uppercase">Bestellungen</strong>
-              <div class="count-number">{{$orders_count}}</div>
-            </div>
-          </div>
-        </div>
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-check"></i></div>
-            <div class="name"><strong class="text-uppercase">Routen</strong>
-              <div class="count-number">{{$routes_count}}</div>
-            </div>
-          </div>
-        </div>
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-bill"></i></div>
-            <div class="name"><strong class="text-uppercase">Offen</strong>
-              <div class="count-number">{{$orders_open + $orders_delivery}}</div>
-            </div>
-          </div>
-        </div>
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-user"></i></div>
-            <div class="name"><strong class="text-uppercase">Abholen</strong>
-              <div class="count-number">{{$orders_open_pickup}}</div>
-            </div>
-          </div>
-        </div>
-        <!-- Count item widget-->
-        <div class="col-xl-2 col-md-4 col-6">
-          <div class="wrapper count-title d-flex">
-            <div class="icon"><i class="icon-list-1"></i></div>
-            <div class="name"><strong class="text-uppercase">Aufgeschnitten</strong>
-              <div class="count-number">{{$cut}}</div>
-            </div>
-          </div>
-        </div>
+        @endforeach
       </div>
     </div>
   </section>
@@ -95,12 +51,22 @@
         <div class="col-lg-6 col-md-6">
           <div id="open-routes-wrapper" class="card updates user-activity">
             <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
-              <h2 class="h5 display"><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box">Offene Routen</a></h2><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box"><i class="fa fa-angle-down"></i></a>
+              <h2 class="h5 display"><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box">Routen</a></h2><a data-toggle="collapse" data-parent="#open-routes-wrapper" href="#open-routes-box" aria-expanded="true" aria-controls="open-routes-box"><i class="fa fa-angle-down"></i></a>
             </div>
             <div id="open-routes-box" role="tabpanel" class="open-routes collapse show">
               @if($open_routes)
-                @foreach ($open_routes as $route)
-                  <h3 class="h4 display">{{$route->name}}</h3>
+                @foreach ($open_routes as $key => $route)
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td style="width:5%"><h3 class="h4 display">{{$key + 1 }}</h3></td>
+                            <td style="width:25%"><h3 class="h4 display">{{$route->name}}</h3></td>
+                            <td style="width:25%"><h3 class="h4 display">{{$route->user['username']}}</h3></td>
+                            <td style="width:20%"><h3 class="h4 display">{{$route->route_type['name']}}</h3></td>
+                            <td style="width:25%"><h3 class="h4 display">{{$route->route_status['name']}}</h3></td>
+                        </tr>
+                    </tbody>
+                </table>
                   <div class="progress">
                     <div role="progressbar" style="width:  {{$route->route_done_percent()}}%" aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
                   </div>
@@ -128,7 +94,7 @@
                       <div class="row">
                         <div class="col-4 date-holder text-right">
                           <div class="icon"><i class="icon-clock"></i></div>
-                          <div class="date"> <span>{{$logbook->created_at->toTimeString()}}</span><span class="text-info">{{$logbook->created_at->diffForHumans()}}</span></div>
+                          <div class="date"> <span>{{$logbook->wann}}</span><span class="text-info"></span></div>
                         </div>
                         <div class="col-8 content"><strong>{{$logbook->user['username']}}</strong>
                         <p>{{$logbook->comments}}</p>
@@ -222,6 +188,15 @@ var lineChart = new Chart(LINECHART, {
                     spanGaps: false
                 }
             ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
     });
 

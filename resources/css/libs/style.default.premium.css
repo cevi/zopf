@@ -204,7 +204,7 @@ section header {
 */
 nav.navbar {
   background: #393836;
-  padding: .8rem 0;
+  padding: .55rem 0;
   /* Navbar Brand --------- */
   /*  Dropdowns ------------ */
   /* Toggle Button ---------- */
@@ -903,6 +903,7 @@ nav.navbar a.menu-btn:hover {
 
 .statistics .user-activity .page-statistics {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .statistics .user-activity .page-statistics strong {
