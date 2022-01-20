@@ -27,9 +27,10 @@
         <div class="col-lg-5 col-md-12">
           <div class="card project-progress">
             <h2 class="display h4">Übersicht</h2>
-            <div class="pie-chart">
+            <div id="chart" style="height: 300px;"></div>
+            {{-- <div class="pie-chart">
               <canvas id="pieChartZopf" width="300" height="300"> </canvas>
-            </div>
+            </div> --}}
           </div>
         </div>
         <!-- Line Chart -->
@@ -144,6 +145,19 @@
 
 @section('scripts')
 <script>
+  const chart = new Chartisan({
+    el: '#chart',
+    url: "@chart('zopf_chart')",  
+    hooks: new ChartisanHooks()
+      .datasets([
+        { type: 'pie', radius: ['40%', '80%'] },
+      ])
+      .axis(false)
+      .legend({ bottom: 0 })
+      .tooltip()
+      // .custom(() => ({
+    // }))
+  });
 // setInterval(function() { 
 //   console.log('Hallo');
 //   $.get("/admin", function(data, status){ 

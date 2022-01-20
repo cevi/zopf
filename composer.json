@@ -8,19 +8,21 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
+        "php": "^7.4.1",
         "alexpechkarev/google-maps": "6.0|^8.0",
         "barryvdh/laravel-dompdf": "^0.9.0",
+        "consoletvs/charts": "^7.2",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "6.5.5|^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^3.0",
         "laravelcollective/html": "^6.0",
+        "livewire/livewire": "^2.5",
         "maatwebsite/excel": "^3.1",
         "nicolaslopezj/searchable": "^1.12",
         "spatie/geocoder": "^3.6",
-        "yajra/laravel-datatables-oracle": "^9.8",
-        "laravel/ui": "^3.0"
+        "yajra/laravel-datatables-oracle": "^9.8"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
