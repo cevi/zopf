@@ -89,6 +89,40 @@ class AdminRoutesController extends Controller
 
     }
 
+    public function createModalDataTables()
+    {
+        $action = Auth::user()->getAction(); 
+        $orders = Order::where([
+            ['action_id', $action['id']],
+            ['order_status_id', config('status.order_offen')],
+            ['pick_up', false],
+            ['route_id', NULL]])->get();
+        if($orders){
+
+            return DataTables::of($orders)
+            ->addColumn('name', function ($orders) {
+                return $orders->address ? $orders->address['name'] : '';})
+            ->addColumn('firstname', function ($orders) {
+                return $orders->address ? $orders->address['firstname'] : '';})
+            ->addColumn('street', function ($orders) {
+                return $orders->address ? $orders->address['street'] : '';})
+            ->addColumn('city', function ($orders) {
+                return $orders->address ? $orders->address['city'] : '';})
+            ->addColumn('plz', function ($orders) {
+                return $orders->address ? $orders->address['plz'] : '';})
+            ->addColumn('checkbox', function ($orders) {
+                return '<input type="checkbox" name="checkbox[]" value="'.$orders->id.'"/>';
+            })
+            ->rawColumns(['checkbox'])
+            ->make(true);
+        }   
+        else
+        {
+            return [];
+        }
+
+    }
+
     public function overview($id)
     {
         //

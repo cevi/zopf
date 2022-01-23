@@ -12,7 +12,6 @@
 
       <!-- Bootstrap Core CSS -->
       <link href="{{asset('css/libs.css')}}" rel="stylesheet">
-      @livewireStyles
       @yield('styles')
   </head>
 
@@ -26,10 +25,10 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-sm-6">
-                <p>Amigo &copy; 2020</p>
+                <p>Amigo &copy; 2022</p>
               </div>
               <div class="col-sm-6 text-right">
-                <p>Version 1.0.0</p>
+                <p>Version {{config('app.version')}}</p>
               </div>
             </div>
           </div>
@@ -42,7 +41,6 @@
         <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
         <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
         @yield('scripts')
-        @livewireScripts
     </body>
 
 </html>

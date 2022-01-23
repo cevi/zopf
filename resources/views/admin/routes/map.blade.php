@@ -16,51 +16,51 @@
             <div class="row">  
                 <div class="col-sm-3">
         
-                <!-- Page Header-->
-                <header> 
-                    <h1 class="h3 display">Karte der Routen</h1>
-                </header>
-                        <table class="table table-borderless" id="btns">
-                            <tbody>
-                                <td>
-                                    <table class="table table-borderless" id="route_btn">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <button class="btn btn-outline-primary btn-sm active">Alle</button>    
-                                                </td>
-                                            </tr>
-                                            @foreach ($routes as $route)
-                                            <tr>
-                                                <td>
-                                                    <button class="btn btn-outline-primary btn-sm">{{$route}}</button>
-                                                </td>
-                                            </tr>
-                                            @endforeach 
-                                        </tbody>
-                                    </table>
-                                    
-                                </td>
-                                <td>
-                                    <table class="table table-borderless"  id="status_btn">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <button class="btn btn-outline-secondary btn-sm active">Alle</button>    
-                                                </td>
-                                            </tr>
-                                            @foreach ($statuses as $status)
-                                            <tr>
-                                                <td>
-                                                    <button class="btn btn-outline-secondary btn-sm">{{$status}}</button>
+                    <!-- Page Header-->
+                    <header> 
+                        <h1 class="h3 display">Karte der Routen</h1>
+                    </header>
+                    <table class="table table-borderless" id="btns">
+                        <tbody>
+                            <td>
+                                <table class="table table-borderless" id="route_btn">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <button class="btn btn-outline-primary btn-sm active">Alle</button>    
                                             </td>
                                         </tr>
-                                            @endforeach 
-                                        </tbody>
-                                    </table>
-                                </td>
-                        </table>
-                    </div>
+                                        @foreach ($routes as $route)
+                                        <tr>
+                                            <td>
+                                                <button class="btn btn-outline-primary btn-sm">{{$route}}</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach 
+                                    </tbody>
+                                </table>
+                                
+                            </td>
+                            <td>
+                                <table class="table table-borderless"  id="status_btn">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <button class="btn btn-outline-secondary btn-sm active">Alle</button>    
+                                            </td>
+                                        </tr>
+                                        @foreach ($statuses as $status)
+                                        <tr>
+                                            <td>
+                                                <button class="btn btn-outline-secondary btn-sm">{{$status}}</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach 
+                                    </tbody>
+                                </table>
+                            </td>
+                    </table>
+                </div>
                 <div class="col-sm-9">
                     <div style="height: 800px" id="map-canvas"></div>
                 </div>
@@ -72,7 +72,6 @@
 @endsection
 @section('scripts')
     <script>
-
         // Get the container element
         var btnContainer_route = document.getElementById("route_btn");
 

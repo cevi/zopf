@@ -44,13 +44,12 @@ class AdminActionsController extends Controller
         ->addColumn('status', function ($actions) {
             return $actions->action_status['name'];})
         ->addColumn('Actions', function($actions) {
-            return '<a href='.\URL::route('actions.edit', $actions->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
-            <a href='.\URL::route('actions.complete', $actions->id).' type="button" class="btn btn-info btn-sm">Abschliessen</a>
-            <button data-remote='.\URL::route('actions.destroy', $actions->id).' class="btn btn-danger btn-sm">Löschen</button>';
+            $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
+            $buttons = '<a href='.\URL::route('actions.edit', $actions->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+            $buttons .= ' <a href='.\URL::route('actions.complete', $actions->id).' type="button" class="btn btn-info btn-sm">' . $text . '</a>';
+            $buttons .= ' <button data-remote='.\URL::route('actions.destroy', $actions->id).' class="btn btn-danger btn-sm">Löschen</button>';
+            return $buttons;
         })
-        // ->addColumn('checkbox', function ($users) {
-            // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
-        // })
         ->rawColumns(['Actions'])
         ->make(true);
 
@@ -105,10 +104,7 @@ class AdminActionsController extends Controller
         $input['address_id'] = $address['id']; 
 
         $input['action_status_id'] = config('status.action_geplant');
-        $action = Action::create($input);
-        $comment = 'Aktion '.$action['name'].' wurde geplant.';
-        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
-
+        Action::create($input);
         return redirect('admin/actions');
     }
 
@@ -202,7 +198,15 @@ class AdminActionsController extends Controller
     {
         //
         $action = Action::findOrFail($id);
-        $action->action_status_id = config('status.action_aktiv');
+        if($action->action_status_id === config('status.action_geplant')){
+            $action->action_status_id = config('status.action_aktiv');
+            $comment = 'Aktion '.$action['name'].' wurde gestartet.';
+        }
+        else{
+            $action->action_status_id = config('status.action_abgeschlossen');
+            $comment = 'Aktion '.$action['name'].' wurde abgeschlossen.';
+        }
+        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
         $action->update($request->all());
         return redirect('/admin/actions');
     }

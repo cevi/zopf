@@ -61,13 +61,10 @@ function initialize() {
 	}
 
 	for (var i = 0, order_len = orders.length; i < order_len; i++) {
-		if(orders[i].order_status_id <= 15){
-			var gData = new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']);
-			LatLngList.push(gData);
-		}
+		var gData = new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']);
+		LatLngList.push(gData);
 	}
 	
-	var bounds = new google.maps.LatLngBounds ();
 	map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
 
 	if(travelMode != null){
@@ -174,6 +171,7 @@ function initialize() {
 		});
 	}
 
+	var bounds = new google.maps.LatLngBounds ();
 	for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
 		bounds.extend (LatLngList[i]);
 	}

@@ -107,6 +107,7 @@
             responsive: true,
             processing: true,
             serverSide: true,
+            pageLength: 50,
             language: {
                 "url": "/lang/Datatables.json"
             },

@@ -107,10 +107,9 @@
                     </div>
                     <form id="modal-form" method="POST" action="javascript:void(0)" style="height:800px;overflow-y:scroll">
                         @if ($open_orders)
-                            <table class="table" id="AssignOrdersTable">
+                            <table class="table table-striped table-bordered" id="modal-datatable">
                                 <thead>
                                     <tr>
-                                        <th scope="col"></th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Vorname</th>
                                         <th scope="col">Strasse</th>
@@ -118,24 +117,10 @@
                                         <th scope="col">Ort</th>
                                         <th scope="col">Anzahl</th>
                                         <th scope="col" style="width:15%">Kommentar</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
-                                @foreach ($open_orders as $order)
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="checkbox"  id="{{$order['id']}}"></td>
-                                            <td>{{$order->address['name']}}</td>
-                                            <td>{{$order->address['firstname']}}</td>
-                                            <td>{{$order->address['street']}}</td>
-                                            <td>{{$order->address['plz']}}</td>
-                                            <td>{{$order->address['city']}}</td>
-                                            <td>{{$order['quantity']}}</td>
-                                            <td>{{$order['comments']}}</td>
-                                        </tr>
-                                    </tbody>
-                                @endforeach
-                            </table>
-                    
+                            </table>                    
                         @endif
                     </form>
                 </div>
@@ -153,8 +138,8 @@
     $('#AssignOrders').on('click', function () { 
         
         var id = [];
-        $('#AssignOrdersTable input[type=checkbox]:checked').each(function(){
-            id.push(this.id);
+        $('#modal-datatable input[type=checkbox]:checked').each(function(){
+            id.push(this.value);
         });
         $.ajaxSetup({
             headers: {
@@ -175,6 +160,30 @@
                 location.reload();
             }
         });
+    });
+    $(document).ready(function(){
+          $('#modal-datatable').DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 25,
+            language: {
+                "url": "/lang/Datatables.json"
+            },
+            ajax: "{!! route('routes.CreateModalDataTables') !!}",
+            columns: [
+                   { data: 'name', name: 'name' },
+                   { data: 'firstname', name: 'firstname' },
+                   { data: 'street', name: 'street' },
+                   { data: 'plz', name: 'plz' },
+                   { data: 'city', name: 'city' },
+                   { data: 'quantity', name: 'quantity' },
+                   { data: 'comments', name: 'comments' },
+                   { data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
+                   
+                ],
+            "order":[[3, 'asc'],[2, 'asc'],  [0, 'asc']]
+       });
     });
 
     

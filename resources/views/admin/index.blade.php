@@ -24,17 +24,14 @@
     <div class="container-fluid">
       <div class="row d-flex align-items-md-stretch">       
         <!-- Pie Chart-->
-        <div class="col-lg-5 col-md-12">
+        <div class="col-lg-6 col-md-12">
           <div class="card project-progress">
             <h2 class="display h4">Übersicht</h2>
-            <div id="chart" style="height: 300px;"></div>
-            {{-- <div class="pie-chart">
-              <canvas id="pieChartZopf" width="300" height="300"> </canvas>
-            </div> --}}
+            <div id="chart" style="height: 400px;"></div>
           </div>
         </div>
         <!-- Line Chart -->
-        <div class="col-lg-5 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+        <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
           <div class="card sales-report">
             <h2 class="display h4">Zeitlicher Verlauf</h2>
             <div class="line-chart">
@@ -158,15 +155,11 @@
       // .custom(() => ({
     // }))
   });
-// setInterval(function() { 
-//   console.log('Hallo');
-//   $.get("/admin", function(data, status){ 
-// 	  $("body").html(data); 
-//   }); 
-// }, 10000); // will refresh every 5 seconds = 5000 ms 
 $(document).ready(function () {
 
 'use strict';
+
+setInterval(function() {window.location.reload(); }, 60000); 
 
 var brandPrimary = '#74C5AD';
 

@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="form-group">
-                            {!! Form::label('action_status_id', 'Rolle:') !!}
+                            {!! Form::label('action_status_id', 'Status:') !!}
                             {!! Form::select('action_status_id', $action_statuses, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
