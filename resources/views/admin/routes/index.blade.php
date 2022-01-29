@@ -24,13 +24,13 @@
                     <table class="table table-striped table-bordered" id="datatable">
                         <thead>
                             <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Verantwortlich</th>
-                                <th scope="col">Routen Art</th>
-                                <th scope="col">Anz. Zöpfe</th>
-                                <th scope="col">Anz. Bestellungen</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Aktionen</th>
+                                <th scope="col" width="20%">Name</th>
+                                <th scope="col" width="15%">Verantwortlich</th>
+                                <th scope="col" width="10%">Routen Art</th>
+                                <th scope="col" width="10%">Anz. Zöpfe</th>
+                                <th scope="col" width="10%">Anz. Bestellungen</th>
+                                <th scope="col" width="10%">Status</th>
+                                <th scope="col" width="20%">Aktionen</th>
                             </tr>
                         </thead>
                     </table>

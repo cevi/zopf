@@ -62,22 +62,19 @@ class AdminRoutesController extends Controller
                 return $routes->order_count();
             })
             ->addColumn('Actions', function($routes) {
-                $buttons = '';
+                $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field();
                 if($routes->route_status['id']<10){
-                    $buttons = $buttons .'
-                    <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+                    $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
                 };
-                $buttons = $buttons .'
-                <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
+                $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
                 if(($routes->route_status['id']==config('status.route_geplant'))){
-                    $buttons = $buttons .'
-                    <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button></form>';
+                    $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button>';
                     // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
                 };
                 if($routes->route_status['id']==config('status.route_vorbereitet')){
-                    $buttons = $buttons .'
-                    <form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button></form>';
+                    $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button>';
                 };
+                $buttons .= '</form>';
                 return $buttons;
             })
             ->rawColumns(['Actions'])
@@ -129,7 +126,7 @@ class AdminRoutesController extends Controller
         $action = Auth::user()->getAction();    
         $route = Route::findOrFail($id);
         $center = $action->center;
-        $orders = $route->orders->sortBy('sequence');
+        $orders = $route->orders;
         $routetype = $route->route_type;
         $key = $action['APIKey'];
         return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key'));
@@ -141,27 +138,32 @@ class AdminRoutesController extends Controller
         $route = Route::findOrFail($id);
         $center = $action->center;
         $orders = $route->orders;
-        $key = $action['APIKey'];
+        if($route['photo'] === ''){
+            $key = $action['APIKey'];
 
-        $response = Helper::CreateRouteSequence($route);
-        return $response;
-        $path = $response['routes'][0]['overview_polyline']['points'];
-        $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='. $route->route_type['travelmode'].'&markers=color:red%7C' . $center['lat'] . ',' . $center['lng'];
+            $response = Helper::CreateRouteSequence($route);
+            $path = $response['routes'][0]['overview_polyline']['points'];
+            $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='. strtolower($route->route_type['travelmode']).'&markers=color:red%7C' . $center['lat'] . ',' . $center['lng'];
 
-        
-        foreach ($orders as $order){
-            $address = Address::findOrFail($order['address_id']);
-            $url = $url . '&markers=color:red%7C' . $address['lat'] . ',' . $address['lng'];
+            
+            foreach ($orders as $order){
+                $address = Address::findOrFail($order['address_id']);
+                $url = $url . '&markers=color:red%7C' . $address['lat'] . ',' . $address['lng'];
+            }
+            $url = $url . '&path=enc:' . $path;
+            $url = $url . '&key='. $key;
+            $image = file_get_contents($url);
+            $folder = 'images/' . $group['name'] . '/' . $action['name'] .'_'. $action['year'] . '/'; 
+            if (!Storage::disk('public')->exists($folder)) {
+                Storage::disk('public')->makeDirectory($folder, 0775, true, true);
+            }
+            $path = $folder.$route['name'].'.png';
+            Storage::disk('public')->put($path, $image);
+            $route->update(['photo' => $path]);
         }
-        $url = $url . '&path=enc:' . $path;
-        $url = $url . '&key='. $key;
-        $image = file_get_contents($url);
-        $folder = 'images/' . $group['name'] . '/' . $action['name'] .'_'. $action['year'] . '/'; 
-        if (!Storage::disk('public')->exists($folder)) {
-            Storage::disk('public')->makeDirectory($folder, 0775, true, true);
+        else{
+            $path = $route['photo'];
         }
-        $path = $folder.$route['name'].'.png';
-        Storage::disk('public')->put($path, $image);
         $routetype = $route->route_type;
 
         $orders = $orders->sortBy('sequence');

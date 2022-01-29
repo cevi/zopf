@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPhotoIdToRoutes extends Migration
+class AddRouteSequenceDoneToRoute extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddPhotoIdToRoutes extends Migration
     {
         Schema::table('routes', function (Blueprint $table) {
             //
-            $table->string('photo')->nullable();
+            $table->boolean('sequenceDone')->default(false);
         });
     }
 
@@ -28,7 +28,7 @@ class AddPhotoIdToRoutes extends Migration
     {
         Schema::table('routes', function (Blueprint $table) {
             //
-            $table->dropColumn('photo');
+            $table->dropColumn('sequenceDone');
         });
     }
 }

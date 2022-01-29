@@ -43,56 +43,56 @@ return [
     'service' => [
 
         'geocoding' => [
-                        'url'                   => 'https://maps.googleapis.com/maps/api/geocode/',
-                        'type'                  => 'GET',
-                        'key'                   =>  null,
-                        'endpoint'              =>  true,
-                        'responseDefaultKey'    => 'place_id',
-                        'param'                 => [
-                                                    'address'       => null,
-                                                    'bounds'        => null,
-                                                    'key'           => null,
-                                                    'region'        => null,
-                                                    'language'      => null,
-                                                    'result_type'   => null,
-                                                    'location_type' => null,
-                                                    'latlng'        => null,
-                                                    'place_id'      => null,
-                                                    'components'    => [
-                                                        'route'                 => null,
-                                                        'locality'              => null,
-                                                        'administrative_area'   => null,
-                                                        'postal_code'           => null,
-                                                        'country'               => null,
-                                                        ]
-                                                    ]
+            'url'                   => 'https://maps.googleapis.com/maps/api/geocode/',
+            'type'                  => 'GET',
+            'key'                   =>  null,
+            'endpoint'              =>  true,
+            'responseDefaultKey'    => 'place_id',
+            'param'                 => [
+                'address'       => null,
+                'bounds'        => null,
+                'key'           => null,
+                'region'        => null,
+                'language'      => null,
+                'result_type'   => null,
+                'location_type' => null,
+                'latlng'        => null,
+                'place_id'      => null,
+                'components'    => [
+                    'route'                 => null,
+                    'locality'              => null,
+                    'administrative_area'   => null,
+                    'postal_code'           => null,
+                    'country'               => null,
+                    ]
+            ]
         ],
 
 
 
         'directions' => [
-                        'url'                   => 'https://maps.googleapis.com/maps/api/directions/',
-                        'type'                  => 'GET',
-                        'key'                   =>  null,
-                        'endpoint'              =>  true,
-                        'responseDefaultKey'    =>  'geocoded_waypoints',
-                        'decodePolyline'        =>  true, // true = decode overview_polyline.points to an array of points
-                        'param'                 => [
-                                                    'origin'          => null, // required
-                                                    'destination'     => null, //required
-                                                    'mode'            => null,
-                                                    'waypoints'       => null,
-                                                    'place_id'        => null,
-                                                    'alternatives'    => null,
-                                                    'avoid'           => null,
-                                                    'language'        => null,
-                                                    'units'           => null,
-                                                    'region'          => null,
-                                                    'departure_time'  => null,
-                                                    'arrival_time'    => null,
-                                                    'transit_mode'    => null,
-                                                    'transit_routing_preference' => null,
-                                                    ]
+            'url'                   => 'https://maps.googleapis.com/maps/api/directions/',
+            'type'                  => 'GET',
+            'key'                   =>  null,
+            'endpoint'              =>  true,
+            'responseDefaultKey'    =>  'geocoded_waypoints',
+            'decodePolyline'        =>  true, // true = decode overview_polyline.points to an array of points
+            'param'                 => [
+                'origin'          => null, // required
+                'destination'     => null, //required
+                'mode'            => null,
+                'waypoints'       => null,
+                'place_id'        => null,
+                'alternatives'    => null,
+                'avoid'           => null,
+                'language'        => null,
+                'units'           => null,
+                'region'          => null,
+                'departure_time'  => null,
+                'arrival_time'    => null,
+                'transit_mode'    => null,
+                'transit_routing_preference' => null,
+            ]
         ],
 
 

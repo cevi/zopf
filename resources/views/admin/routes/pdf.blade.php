@@ -1,30 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Zopfaktion">
         <meta name="author" content="Jérôme Sigg">
         <meta name="robots" content="all,follow">
-
         <title>Zopfaktion Zentrale</title>
-
         <!-- Bootstrap Core CSS -->
         <link href="{{asset('css/libs.css')}}" rel="stylesheet">
-
         @yield('styles')
-
-
     </head>
-
     <body>
-
-
         <section>
-            <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
+            <div class="container-fluid" style="page-break-inside:avoid; margin-bottom:50px">
                 <!-- Page Header-->
                 <header> 
                     <h1 class="h3 display">Übersicht {{$route['name']}}</h1>
@@ -59,12 +49,7 @@
                             </tbody>
                         @endforeach
                         </table>
-                    
-                    @endif
-                        
-                    
-
-                        
+                    @endif      
                 </div>
             </div>
             <div class="container-fluid" >
@@ -73,12 +58,7 @@
                 </div>
             </div>
         </section>
-
-        
-
         <!-- jQuery -->
         <script src="{{asset('js/libs.js')}}"></script>    
-        
-</body>
-
+    </body>
 </html>

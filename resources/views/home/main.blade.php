@@ -17,16 +17,15 @@
                     <label for="item-{{$key}}" class="aspect-label"></label>
                     <div class="aspect-content">
                         <div class="aspect-info">
-                            <div class="chart-pie">
-                                <span class="chart-pie-count">{{$order['sequence']+1}}</span>
-                            </div>
-                            
                             <span class="aspect-name">
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-2">
+                                        <span>{{$order['sequence']+1}}</span>
+                                    </div>
+                                    <div class="col-sm-4">
                                         <span>{{$order->address['firstname']}} {{$order->address['name']}}</span>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <span>{{$order->address['street']}} <br> {{$order->address['plz']}} {{$order->address['city']}}</span>
                                     </div>
                                 </div>
@@ -115,73 +114,5 @@
          Alle Bestellungen ausgeliefert. 
          Komme zurück zur Zentrale.   
         @endif
-    @endif
-    {{-- @if ($orders)
-        @if($orders->min('order_status_id')<  config('status.order_ausgeliefert'))
-                                
-            <div class="panel-group" id="accordion"> <!-- accordion 1 -->
-                @foreach ($orders as $key=>$order)
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"> <!-- panel-heading -->
-                            <h4 class="panel-title"> <!-- title 1 -->
-                            <a data-toggle="collapse" data-parent="#accordion" href="#accordion{{$order->id}}">
-                                {{$order['sequence']+1}}. {{$order->address['firstname']}} {{$order->address['name']}}
-                                
-                                @if($order['order_status_id'] === config('status.order_hinterlegt'))
-                                (Hinterlegt)
-                            @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
-                                (Übergeben)
-                            @endif
-                            </a>
-                        </h4>
-                        </div>
-                        <!-- panel body -->
-                        <div id="accordion{{$order->id}}" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <table class="table table-sm">
-                                    <tr>
-                                        <td>Name: </td>
-                                        <td>{{$order->address['firstname']}} {{$order->address['name']}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Strasse: </td>
-                                        <td>{{$order->address['street']}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ortschaft: </td>
-                                        <td>{{$order->address['plz']}} {{$order->address['city']}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anzahl: </td>
-                                        <td>{{$order['quantity']}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bemerkung: </td>
-                                        <td>{{$order['comments']}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Aktion: </td>
-                                        @if($order['order_status_id'] === config('status.order_hinterlegt'))
-                                            <td>Hinterlegt</td>
-                                        @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
-                                            <td>Übergeben</td>
-                                        @else
-                                            <td><a type="button" class="btn btn-info btn-sm" href="{{route('home.delivered', $order->id)}}">Übergeben</a>
-                                                <a type="button" class="btn btn-info btn-sm" href="{{route('home.deposited', $order->id)}}">Hinterlegt</a></td>
-                                        @endif
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            
-        @else
-         Alle Bestellungen ausgeliefert. 
-         Komme zurück zur Zentrale.   
-        @endif
-    @endif --}}
-        
+    @endif        
 @endsection

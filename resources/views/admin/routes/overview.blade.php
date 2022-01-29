@@ -60,7 +60,7 @@
                                 <td>{{$order->address['street']}}</td>
                                 <td>{{$order->address['plz']}}</td>
                                 <td>{{$order->address['city']}}</td>
-                                <td>{{$order['sequence']}}</td>
+                                <td>{{$order['quantity']}}</td>
                                 <td>{{$order->order_status['name']}}</td>
                             </tr>
                         </tbody>

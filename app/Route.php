@@ -12,7 +12,13 @@ class Route extends Model
     'action_id',
     'route_status_id',
     'user_id',
-    'route_type_id'
+    'route_type_id',
+    'sequenceDone',
+    'photo'
+    ];
+
+    protected $casts = [
+        'sequenceDone' => 'boolean'
     ];
 
     public function action(){

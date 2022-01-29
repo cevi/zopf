@@ -21,19 +21,21 @@ class Helper
 
         $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
         $url = $url . '&destination=' . $center['lat'] . ',' . $center['lng'];
-        $url = $url . '&mode='. $route->route_type['travelmode'];
+        $url = $url . '&mode='. strtolower($route->route_type['travelmode']);
         $url = $url . '&waypoints=optimize:true|';
         foreach ($orders as $order){
             $address = Address::findOrFail($order['address_id']);
             $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
         }
         $url = rtrim($url, "| ");
-        return $url;
         $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
         $request = $client->get($url . '&key='. $key);
         $response = json_decode($request->getBody(), true);
-        foreach ($orders as $key=>$order){
-            $order->update(['sequence' => $response['routes'][0]['waypoint_order'][$key]]);
+        if(!$route['sequenceDone']){
+            foreach ($response['routes'][0]['waypoint_order'] as $key=>$waypoint){
+                $orders[$waypoint]->update(['sequence' => $key]);
+            }
+            $route->update(['sequenceDone' => true]);
         }
         return $response;
     }
