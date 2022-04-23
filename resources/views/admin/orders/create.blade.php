@@ -13,7 +13,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Bestellungen erfassen</h1>
             </header>
             <div class="row">
@@ -40,14 +40,8 @@
                             {!! Form::label('street', 'Strasse:') !!}
                             {!! Form::text('street', null, ['class' => 'form-control ']) !!}
                         </div>
-
-                        <div class="form-group">
-                            {!! Form::label('street', 'Strasse:') !!}
-                            {!! Form::text('street', null, ['class' => 'form-control ']) !!}
-                        </div>
-
                         <div class="form-row">
-                                <div class="form-group col-md-3">  
+                                <div class="form-group col-md-3">
                                 {!! Form::label('plz', 'PLZ:') !!}
                                 {!! Form::text('plz', null, ['class' => 'form-control']) !!}
                             </div>
@@ -85,14 +79,14 @@
 
 @section('scripts')
     <script type="text/javascript">
-     $(document).ready(function() { 
-        $('input[type="checkbox"]').click(function() { 
+     $(document).ready(function() {
+        $('input[type="checkbox"]').click(function() {
 
-            $(".address").toggle(); 
-        }); 
-    }); 
-    </script>    
-@endsection 
+            $(".address").toggle();
+        });
+    });
+    </script>
+@endsection
 {{--  //autocomplete script
     // $(document).on('focus','.autocomplete_txt',function(){
     // type = $(this).attr('name');
@@ -125,8 +119,8 @@
     //             });
     //     },
     //     select: function( event, ui ) {
-            
-    //         var data = ui.item.data;  
+
+    //         var data = ui.item.data;
     //         $("[name='address_name']").val(data.name);
     //         $("[name='address_firstname']").val(data.firstname);
     //         $("[name='address_id']").val(data.address_id);
@@ -135,6 +129,6 @@
     //         $("[name='address_city_plz']").val(data.city_plz);
     //     }
     // });
-    
-    
+
+
     // });--}}
