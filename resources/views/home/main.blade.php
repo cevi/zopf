@@ -6,7 +6,7 @@
     <div>
         <a type="button" class="btn active btn-info btn" href="#">Liste</a>
         <a type="button" class="btn btn-info btn" href="{{route('home.maps',$route->id)}}">Karte</a>
-    </div>                 
+    </div>
     <!-- Author -->
     @if ($orders)
         @if($orders->min('order_status_id')<  config('status.order_ausgeliefert'))
@@ -76,11 +76,21 @@
                             <div>
                                 <div>
                                     <div class="opinion-header">
+                                        <span>Bemerkungen</span>
+                                    </div>
+                                    <div>
+                                        <span>{{$order['comments']}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <div class="opinion-header">
                                         <span>Anzahl</span>
                                         <span>{{$order['quantity']}}</span>
                                     </div>
                                     <div>
-                                        <span>     
+                                        <span>
                                             @if($order['order_status_id'] === config('status.order_hinterlegt'))
                                                 <td>Hinterlegt</td>
                                             @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
@@ -93,26 +103,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <div class="opinion-header">
-                                        <span>Bemerkungen</span>
-                                    </div>
-                                    <div>
-                                        <span>{{$order['comments']}}</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                   </div>
                 @endforeach
             </div>
 
-            
+
         @else
-         Alle Bestellungen ausgeliefert. 
-         Komme zurück zur Zentrale.   
+         Alle Bestellungen ausgeliefert.
+         Komme zurück zur Zentrale.
         @endif
-    @endif        
+    @endif
 @endsection

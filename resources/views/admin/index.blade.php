@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    
+
     <!-- Counts Section -->
 	<section class="dashboard-counts section-padding">
     <div class="container-fluid">
@@ -22,7 +22,7 @@
   <!-- Header Section-->
   <section class="dashboard-header section-padding">
     <div class="container-fluid">
-      <div class="row d-flex align-items-md-stretch">       
+      <div class="row d-flex align-items-md-stretch">
         <!-- Pie Chart-->
         <div class="col-lg-6 col-md-12">
           <div class="card project-progress">
@@ -58,7 +58,7 @@
                     <tbody>
                         <tr>
                             <td style="width:5%"><h3 class="h4 display">{{$key + 1 }}</h3></td>
-                            <td style="width:25%"><h3 class="h4 display">{{$route->name}}</h3></td>
+                            <td style="width:25%"><a href="{{route('routes.overview', $route->id)}}"> <h3 class="h4 display">{{$route->name}}</h3></a></td>
                             <td style="width:25%"><h3 class="h4 display">{{$route->user['username']}}</h3></td>
                             <td style="width:20%"><h3 class="h4 display">{{$route->route_type['name']}}</h3></td>
                             <td style="width:25%"><h3 class="h4 display">{{$route->route_status['name']}}</h3></td>
@@ -98,26 +98,26 @@
                         <p>{{$logbook->comments}}</p>
                         </div>
                       </div>
-                    </li>    
+                    </li>
                   @endforeach
                 @endif
               </ul>
-            </div>  
+            </div>
             @if($users)
               <div role="tabpanel">
                 <h2 class="display h4">Form</h2>
                 @include('includes.form_error')
                 {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
                   <div class="form-row">
-                    <div class="form-group col-md-3">  
+                    <div class="form-group col-md-3">
                         {!! Form::label('wann', 'Wann:') !!}
                         {!! Form::time('wann', now(), ['class' => 'form-control']) !!}
                     </div>
-                    <div class="form-group col-md-6">  
+                    <div class="form-group col-md-6">
                         {!! Form::label('user_id', 'Verantwortlicher:') !!}
                         {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' => 'form-control']) !!}
                     </div>
-                    <div class="form-group col-md-3">  
+                    <div class="form-group col-md-3">
                         {!! Form::label('cut', 'Anzahl Aufgeschnitten:') !!}
                         {!! Form::text('cut', null, ['class' => 'form-control']) !!}
                     </div>
@@ -144,7 +144,7 @@
 <script>
   const chart = new Chartisan({
     el: '#chart',
-    url: "@chart('zopf_chart')",  
+    url: "@chart('zopf_chart')",
     hooks: new ChartisanHooks()
       .datasets([
         { type: 'pie', radius: ['40%', '80%'] },
@@ -159,7 +159,7 @@ $(document).ready(function () {
 
 'use strict';
 
-setInterval(function() {window.location.reload(); }, 60000); 
+setInterval(function() {window.location.reload(); }, 60000);
 
 var brandPrimary = '#74C5AD';
 
@@ -244,6 +244,6 @@ var lineChart = new Chart(LINECHART, {
     };
   });
 </script>
-    
+
 @endsection
 

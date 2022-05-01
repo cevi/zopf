@@ -16,9 +16,9 @@
         <section>
             <div class="container-fluid" style="page-break-inside:avoid; margin-bottom:50px">
                 <!-- Page Header-->
-                <header> 
+                <header>
                     <h1 class="h3 display">Übersicht {{$route['name']}}</h1>
-                    Total Anzahl Zöpfe: {{$orders->sum('quantity')}}    <br>          
+                    Total Anzahl Zöpfe: {{$orders->sum('quantity')}}    <br>
                     Routen Art: {{$routetype['name']}}                  <br>
                 </header>
                 <div class="row">
@@ -26,7 +26,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Name</th>
+                                    <th scope="col" width="20%">Name</th>
                                     <th scope="col">Vorname</th>
                                     <th scope="col">Strasse</th>
                                     <th scope="col">PLZ</th>
@@ -49,16 +49,16 @@
                             </tbody>
                         @endforeach
                         </table>
-                    @endif      
+                    @endif
                 </div>
             </div>
             <div class="container-fluid" >
                 <div class="row">
-                    <img src="{{url('/'.$path)}}" alt="Route"/>
+                    <img src="{{public_path('/'.$path)}}" alt="Route"/>
                 </div>
             </div>
         </section>
         <!-- jQuery -->
-        <script src="{{asset('js/libs.js')}}"></script>    
+        <script src="{{asset('js/libs.js')}}"></script>
     </body>
 </html>
