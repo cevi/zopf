@@ -14,9 +14,9 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header>
-                <h1 class="h3 display">Routen</h1>
+                <h1 class="h3 display">Route {{$route->name}}</h1>
+                <a href="{{route('routes.overview', $route)}}" class="btn btn-info btn-sm">Routen Übersicht</a>
             </header>
-
             <div class="row">
 
                 <div class="col-sm-6">
@@ -44,7 +44,7 @@
                             {!! Form::select('route_status_id', $route_statuses, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::submit('Update Aktion', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::submit('Route Aktualisieren', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
 
@@ -94,6 +94,7 @@
                 </div>
             </div>
         </div>
+{{--        <div style="height: 800px" id="map-canvas"></div>--}}
     </section>
     <div class="modal fade" id="ajaxModel" aria-hidden="true">
         <div class="modal-dialog">
@@ -103,33 +104,40 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <button data-remote='{{route('routes.AssignOrders')}}' id="AssignOrders" class="btn btn-info btn-sm">Bestellungen zuweisen</button>
+                        <button id="AssignOrders" class="btn btn-info btn-sm">Bestellungen zuweisen</button>
                     </div>
-                    <form id="modal-form" method="POST" action="javascript:void(0)" style="height:800px;overflow-y:scroll">
                         @if ($open_orders)
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-6">--}}
-                                    <table class="table table-striped table-bordered" id="modal-datatable">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Vorname</th>
-                                                <th scope="col">Strasse</th>
-                                                <th scope="col">PLZ</th>
-                                                <th scope="col">Ort</th>
-                                                <th scope="col">Anzahl</th>
-                                                <th scope="col" style="width:15%">Kommentar</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-{{--                                </div>--}}
-{{--                                <div class="col-md-6">--}}
-{{--                                    <div style="height: 800px" id="map-canvas"></div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form id="modal-form" method="POST" action="javascript:void(0)" style="height:1000px;overflow-y:scroll">
+                                        <table class="table table-striped table-bordered" id="modal-datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Vorname</th>
+                                                    <th scope="col">Strasse</th>
+                                                    <th scope="col">PLZ</th>
+                                                    <th scope="col">Ort</th>
+                                                    <th scope="col">Anzahl</th>
+                                                    <th scope="col" style="width:15%">Kommentar</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button id="ResizeMap" class="btn btn-info btn-sm">Karte zentrieren</button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div style="height: 800px" id="map-canvas"></div>
+                                </div>
+                            </div>
                         @endif
-                    </form>
                 </div>
             </div>
         </div>
@@ -139,27 +147,71 @@
 @endsection
 @section('scripts')
     <script>
+        setMapsArguments(@json($open_orders), @json($key), @json($center), null, false, true);
+        loadScript();
         $('#chooseOrders').on('click', function () {
              $('#ajaxModel').modal('show');
         });
-        $('#AssignOrders').on('click', function () {
+        $('#ResizeMap').on('click', function () {
+            MapResize();
+        });
 
-            var id = [];
-            $('#modal-datatable input[type=checkbox]:checked').each(function(){
-                id.push(this.value);
+        function CheckboxClick(checkbox){
+            MapResize();
+            for (var i = 0; i < markers.length; i++) {
+                if (markers[i].id == parseInt(checkbox.value)) {
+                    var marker = markers[i];
+                }
+            }
+            ChangeClick(marker);
+        }
+
+        function MarkerClick(marker){
+            ChangeClick(marker)
+            $('#modal-datatable input[type=checkbox]').each(function(){
+                if(parseInt(this.value)===marker.id){
+                    this.checked = !this.checked;
+                }
             });
+        }
+
+        function FillIDList(id) {
+            if(clicked_markers.includes(id)) {
+                for (var i = 0; i < clicked_markers.length; i++) {
+                    if (clicked_markers[i] === id) {
+                        clicked_markers.splice(i, 1);
+                        result = false;
+                    }
+                }
+            }
+            else{
+                clicked_markers.push(id)
+            }
+            return clicked_markers.includes(id);
+        }
+
+        function ChangeClick(marker){
+            if(FillIDList(marker.id)) {
+                marker.setIcon("https://maps.gstatic.com/mapfiles/markers2/marker.png");
+            }
+            else{
+                marker.setIcon("https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" );
+            }
+        }
+
+
+        $('#AssignOrders').on('click', function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             });
-            var url = $(this).data('remote');
             // confirm then
             $.ajax({
-                url: url,
+                url:  '{{route('routes.AssignOrders')}}',
                 method: 'POST',
                 data:{
-                    id:id,
+                    id:clicked_markers,
                     route_id: @json($route['id'])},
                 success:function(data)
                 {
@@ -170,7 +222,6 @@
         });
         $(document).ready(function(){
               $('#modal-datatable').DataTable({
-                responsive: true,
                 processing: true,
                 serverSide: true,
                 pageLength: 25,
@@ -192,7 +243,5 @@
                 "order":[[3, 'asc'],[2, 'asc'],  [0, 'asc']]
            });
         });
-        {{--setMapsArguments(@json($open_orders), @json($key), @json($center))--}}
-        {{--window.onload = loadScript;--}}
     </script>
 @endsection

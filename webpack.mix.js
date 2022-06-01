@@ -27,7 +27,6 @@ mix.scripts([
       'resources/css/libs/bootstrap.css',
       'resources/css/libs/sb-admin-2.css',
       'resources/css/libs/datatables.css',
-      'resources/css/libs/font-awesome_new.css',
       'resources/css/libs/fontastic.css',
       'resources/css/libs/map-icons.css',
       'resources/css/libs/grasp_mobile_progress_circle.min.css',
@@ -51,4 +50,4 @@ mix.scripts([
    'resources/js/libs/front.js',
    'resources/js/libs/googlemaps.js',
    'resources/js/libs/custom.js',
-], 'public/js/libs.js');  
+], 'public/js/libs.js');

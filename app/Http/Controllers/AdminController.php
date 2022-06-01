@@ -17,6 +17,7 @@ class AdminController extends Controller
     //
     public function index(){
         $action = Auth::user()->getAction();
+        $title = 'Dashboard';
         if($action){
             $orders_count = count($action->orders);
             $orders_count_open =  count($action->orders->where('order_status_id', config('status.order_offen')));
@@ -24,7 +25,8 @@ class AdminController extends Controller
             $orders_open =  $action->orders->where('order_status_id', config('status.order_offen'))->where('pick_up',false)->sum('quantity');
             $orders_open_pickup =  $action->orders->where('order_status_id', '<', config('status.order_ausgeliefert'))->where('pick_up',true)->sum('quantity');
             $orders_finished =  $action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert'))->sum('quantity');
-           
+            $orders_count_finished =   count($action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert')));
+
             $logbooks = Logbook::where('action_id', $action['id']);
             $cut = clone $logbooks;
             $graphs = clone $logbooks;
@@ -38,7 +40,7 @@ class AdminController extends Controller
                 $graphs_time_max = date('H:i:s', (ceil(strtotime($graphs_time_max)/1800)*1800));
 
                 $diff = ceil((strtotime($graphs_time_max)-strtotime($graphs_time_min))/1800);
-                
+
                 $graphs_time = array();
                 $graphs_sum = array();
 
@@ -49,13 +51,13 @@ class AdminController extends Controller
                         array_push($graphs_time, date('H:i:s', strtotime($graphs_time[$i - 1])+1800));
                     }
                     $graph_sum = Logbook::where('action_id', $action['id'])->whereTime('wann', '>', date('H:i:s', strtotime($graphs_time[$i])-900))
-                    ->whereTime('wann', '<', date('H:i:s', strtotime($graphs_time[$i])+900));   
+                        ->whereTime('wann', '<', date('H:i:s', strtotime($graphs_time[$i])+900));
                     array_push($graphs_sum, $graph_sum->sum('quantity'));
                 }
             }
             else{
-            $graphs_time = 0;
-            $graphs_sum = 0;
+                $graphs_time = 0;
+                $graphs_sum = 0;
             }
             $total = $action->orders->sum('quantity') + $cut;
 
@@ -63,7 +65,9 @@ class AdminController extends Controller
             $routes_count = count($routes);
 
             $open_routes = Route::where('action_id', $action['id'])->where('route_status_id', '<=', config('status.route_unterwegs'))->get()->sortByDesc('route_status_id');
-            
+
+            $routes_finished_count = count(Route::where('action_id', $action['id'])->where('route_status_id', '=', config('status.route_abgeschlossen'))->get());
+
             $group = Auth::user()->group;
             $users = User::where('group_id', $group['id'])->get();
             $users = $users->pluck('username','id')->all();
@@ -83,6 +87,7 @@ class AdminController extends Controller
             $users = 0;
             $graphs_time = 0;
             $graphs_sum = 0;
+            $routes_finished_count = 0;
         }
 
         $icon_array = collect([
@@ -94,12 +99,12 @@ class AdminController extends Controller
             (object) [
                 'icon' => 'icon-website',
                 'name' => 'Bestellungen',
-                'number' => $orders_count_open . ' / ' . $orders_count
+                'number' => $orders_count_finished . ' / ' . $orders_count
             ],
             (object) [
                 'icon' => 'icon-line-chart',
                 'name' => 'Routen',
-                'number' => count($open_routes) . ' / ' . $routes_count
+                'number' => $routes_finished_count . ' / ' . $routes_count
             ],
             (object) [
                 'icon' => 'icon-home',
@@ -110,16 +115,16 @@ class AdminController extends Controller
                 'icon' => 'icon-paper-airplane',
                 'name' => 'Unterwegs',
                 'number' => $orders_delivery
-            ],   
+            ],
             (object) [
                 'icon' => 'icon-user',
                 'name' => 'Abholen',
                 'number' => $orders_open_pickup
-            ],        
+            ],
         ]);
 
-        return view('admin/index', compact('icon_array', 'orders_open', 'orders_delivery', 'orders_open_pickup', 
-        'orders_finished', 'cut', 'logbooks', 'open_routes', 'users', 'graphs_time', 'graphs_sum'));
+        return view('admin/index', compact('icon_array', 'orders_open', 'orders_delivery', 'orders_open_pickup',
+            'orders_finished', 'cut', 'logbooks', 'open_routes', 'users', 'graphs_time', 'graphs_sum', 'title'));
     }
 
     public function logcreate(Request $request){

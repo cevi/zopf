@@ -7,7 +7,7 @@
     <meta name="description" content="Zopfaktion">
     <meta name="author" content="Jérôme Sigg">
     <meta name="robots" content="all,follow">
-    <title>{{ config('app.name', 'Zopfaktion') }}</title>
+    <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -44,14 +44,14 @@
                     <div class="navbar-nav">
                         @auth
                             @if (Auth::user()->isGroupleader())
-                                <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>                 
+                                <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>
                             @endif
                             @if(count($routes)>0)
                                 <li class="nav-item dropdown">
                                     <a id="RoutesDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Routen <span class="caret"></span>
                                     </a>
-        
+
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="RoutesDropdown">
                                             <ul class="list-unstyled">
                                                 @foreach ($routes as $route)
@@ -59,7 +59,7 @@
                                                 @endforeach
                                             </ul>
                                     </div>
-                                </li>     
+                                </li>
                             @endif
                         @endauth
                     </div>
@@ -97,7 +97,7 @@
 
         <main class="py-4">
             @yield('content')
-            
+
         </main>
     </div>
     <!-- jQuery -->

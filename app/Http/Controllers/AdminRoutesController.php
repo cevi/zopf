@@ -46,39 +46,39 @@ class AdminRoutesController extends Controller
 
         if($routes){
             return DataTables::of($routes)
-            ->addColumn('status', function ($routes) {
-                return $routes->route_status ? $routes->route_status['name'] : '';
-            })
-            ->addColumn('user', function ($routes) {
-                return $routes->user ? $routes->user['username'] : '';
-            })
-            ->addColumn('routetype', function ($routes) {
-                return $routes->route_type ? $routes->route_type['name'] : '';
-            })
-            ->addColumn('zopf_count', function ($routes) {
-                return $routes->zopf_count();
-            })
-            ->addColumn('order_count', function ($routes) {
-                return $routes->order_count();
-            })
-            ->addColumn('Actions', function($routes) {
-                $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field();
-                if($routes->route_status['id']<10){
-                    $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
-                };
-                $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
-                if(($routes->route_status['id']==config('status.route_geplant'))){
-                    $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button>';
-                    // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
-                };
-                if($routes->route_status['id']==config('status.route_vorbereitet')){
-                    $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button>';
-                };
-                $buttons .= '</form>';
-                return $buttons;
-            })
-            ->rawColumns(['Actions'])
-            ->make(true);
+                ->addColumn('status', function ($routes) {
+                    return $routes->route_status ? $routes->route_status['name'] : '';
+                })
+                ->addColumn('user', function ($routes) {
+                    return $routes->user ? $routes->user['username'] : '';
+                })
+                ->addColumn('routetype', function ($routes) {
+                    return $routes->route_type ? $routes->route_type['name'] : '';
+                })
+                ->addColumn('zopf_count', function ($routes) {
+                    return $routes->zopf_count();
+                })
+                ->addColumn('order_count', function ($routes) {
+                    return $routes->order_count();
+                })
+                ->addColumn('Actions', function($routes) {
+                    $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field();
+                    if($routes->route_status['id']<10){
+                        $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+                    };
+                    $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
+                    if(($routes->route_status['id']==config('status.route_geplant'))){
+                        $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button>';
+                        // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
+                    };
+                    if($routes->route_status['id']==config('status.route_vorbereitet')){
+                        $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button>';
+                    };
+                    $buttons .= '</form>';
+                    return $buttons;
+                })
+                ->rawColumns(['Actions'])
+                ->make(true);
         }
         else{
             return [];
@@ -97,21 +97,21 @@ class AdminRoutesController extends Controller
         if($orders){
 
             return DataTables::of($orders)
-            ->addColumn('name', function ($orders) {
-                return $orders->address ? $orders->address['name'] : '';})
-            ->addColumn('firstname', function ($orders) {
-                return $orders->address ? $orders->address['firstname'] : '';})
-            ->addColumn('street', function ($orders) {
-                return $orders->address ? $orders->address['street'] : '';})
-            ->addColumn('city', function ($orders) {
-                return $orders->address ? $orders->address['city'] : '';})
-            ->addColumn('plz', function ($orders) {
-                return $orders->address ? $orders->address['plz'] : '';})
-            ->addColumn('checkbox', function ($orders) {
-                return '<input type="checkbox" name="checkbox[]" value="'.$orders->id.'"/>';
-            })
-            ->rawColumns(['checkbox'])
-            ->make(true);
+                ->addColumn('name', function ($orders) {
+                    return $orders->address ? $orders->address['name'] : '';})
+                ->addColumn('firstname', function ($orders) {
+                    return $orders->address ? $orders->address['firstname'] : '';})
+                ->addColumn('street', function ($orders) {
+                    return $orders->address ? $orders->address['street'] : '';})
+                ->addColumn('city', function ($orders) {
+                    return $orders->address ? $orders->address['city'] : '';})
+                ->addColumn('plz', function ($orders) {
+                    return $orders->address ? $orders->address['plz'] : '';})
+                ->addColumn('checkbox', function ($orders) {
+                    return '<input type="checkbox" name="checkbox[]" value="'.$orders->id.'" onclick="CheckboxClick(this)"/>';
+                })
+                ->rawColumns(['checkbox'])
+                ->make(true);
         }
         else
         {
@@ -169,8 +169,12 @@ class AdminRoutesController extends Controller
         $orders = $orders->sortBy('sequence');
 //        return view('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));
         $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));
-        return $pdf->download($route['name'].'.pdf');
-}
+
+        //return $pdf->download($route['name'].'.pdf');
+        return redirect()->back();
+
+
+    }
 
     public function map()
     {
@@ -192,8 +196,13 @@ class AdminRoutesController extends Controller
         $status = $request->status;
         $orders = Order::where('action_id', $action['id']);
         if(isset($route) and $route!="Alle"){
-            $route = Route::where('name',$route)->first();
-            $orders = $orders->where('route_id',$route['id']);
+            if($route != "Keine"){
+                $route = Route::where('name',$route)->first();
+                $orders = $orders->where('route_id',$route['id']);
+            }
+            else{
+                $orders = $orders->whereNull('route_id')->where('pick_up',false);
+            }
         }
 
         if(isset($status) and $status!="Alle"){
@@ -280,10 +289,10 @@ class AdminRoutesController extends Controller
         $orders = $route->orders;
 
         $open_orders = Order::where([
-                ['action_id', $action['id']],
-                ['order_status_id', config('status.order_offen')],
-                ['pick_up', false],
-                ['route_id', NULL]])
+            ['action_id', $action['id']],
+            ['order_status_id', config('status.order_offen')],
+            ['pick_up', false],
+            ['route_id', NULL]])
             ->join('addresses', 'orders.address_id', '=', 'addresses.id')
             ->orderBy('plz')->orderBy('street')->orderBy('name')
             ->with('address')

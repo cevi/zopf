@@ -8,16 +8,18 @@
       <meta name="author" content="Jérôme Sigg">
       <meta name="robots" content="all,follow">
 
-      <title>Zopfaktion Zentrale</title>
+      <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
       <!-- Bootstrap Core CSS -->
+
+      <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
       <link href="{{asset('css/libs.css')}}" rel="stylesheet">
       @yield('styles')
   </head>
 
   <body>
       @include('includes/admin_sidenav')
-      
+
       @include('includes/admin_topnav')
 
       @yield('content')
@@ -34,7 +36,7 @@
           </div>
       </footer>
   </div>
-        
+
 
         <!-- jQuery -->
         <script src="{{asset('js/libs.js')}}"></script>

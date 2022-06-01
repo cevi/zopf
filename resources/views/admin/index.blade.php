@@ -94,7 +94,7 @@
                           <div class="icon"><i class="icon-clock"></i></div>
                           <div class="date"> <span>{{$logbook->wann}}</span><span class="text-info"></span></div>
                         </div>
-                        <div class="col-8 content"><strong>{{$logbook->user['username']}}</strong>
+                        <div class="col-8 content"><strong><a href="{{route('logbooks.edit', $logbook)}}">{{$logbook->user['username']}}</a></strong>
                         <p>{{$logbook->comments}}</p>
                         </div>
                       </div>

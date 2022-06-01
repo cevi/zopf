@@ -6,12 +6,12 @@
             <!-- User Info-->
             <h2 class="h5">{{Auth::user()->username}}</h2>
         </div>
-      
+
 
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
             <h5 class="sidenav-heading">Zopfaktion</h5>
-            <ul id="side-main-menu" class="side-menu list-unstyled">                  
+            <ul id="side-main-menu" class="side-menu list-unstyled">
                 <li><a href="/admin"> <i class="icon-home"></i>Dashboard</a></li>
                 <li><a href="#RoutesDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-paper-airplane"></i>Routen</a>
                     <ul id="RoutesDropdown" class="collapse list-unstyled ">
@@ -43,6 +43,10 @@
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
+                <li>
+                    <a href="{{route('progress.index')}}"><i class="fa-solid fa-chart-area"></i> Backstuben Verlauf</a>
+                </li>
+
                 {{-- <li><a href="#AddressDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-website"></i>Adressen</a>
                     <ul id="AddressDropdown" class="collapse list-unstyled ">
                         <li>
@@ -59,7 +63,7 @@
         </div>
         <div class="admin-menu">
             <h5 class="sidenav-heading">Administration</h5>
-            <ul id="side-main-menu" class="side-menu list-unstyled">  
+            <ul id="side-main-menu" class="side-menu list-unstyled">
                 @if (Auth::user()->isAdmin())
                     <li><a href="#GroupDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-list"></i>Gruppen</a>
                         <ul id="GroupDropdown" class="collapse list-unstyled ">

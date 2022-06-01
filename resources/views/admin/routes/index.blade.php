@@ -13,13 +13,13 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Routen</h1>
                 <a href="{{route('routes.create')}}" class="btn btn-primary btn-success btn-sm">
                     <span>Erstellen</span>
                 </a>
             </header>
-            <div class="row">            
+            <div class="row">
                 <div class="col-sm-12">
                     <table class="table table-striped table-bordered" id="datatable">
                         <thead>
@@ -39,12 +39,12 @@
 
         </div>
 
-    </section>    
+    </section>
 @endsection
 @section('scripts')
     <script>
     $(document).ready(function(){
-          $('#datatable').DataTable({
+        $('#datatable').DataTable({
             responsive: true,
             processing: true,
             serverSide: true,
@@ -52,19 +52,20 @@
                 "url": "/lang/Datatables.json"
             },
             ajax: "{!! route('routes.CreateDataTables') !!}",
+            order: [[5, "asc" ],[0, "asc" ]],
             columns: [
-                   { data: 'name', name: 'name' },
-                   { data: 'user', name: 'user' },
-                   { data: 'routetype', name: 'routetype' },
-                   { data: 'zopf_count', name: 'zopf_count' },
-                   { data: 'order_count', name: 'order_count' },
-                   { data: 'status', name: 'status'},
-                   { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
-                   
-                ]
+                { data: 'name', name: 'name' },
+                { data: 'user', name: 'user' },
+                { data: 'routetype', name: 'routetype' },
+                { data: 'zopf_count', name: 'zopf_count' },
+                { data: 'order_count', name: 'order_count' },
+                { data: 'status', name: 'status'},
+                { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
+
+            ]
        });
     });
-    
-    
+
+
     </script>
 @endsection

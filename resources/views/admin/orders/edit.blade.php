@@ -7,13 +7,12 @@
             <li class="breadcrumb-item"><a href="/admin/orders">Bestellungen</a></li>
             <li class="breadcrumb-item active">Bearbeiten</li>
             </ul>
-            </ul>
         </div>
     </div>
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Bestellung Bearbeiten</h1>
             </header>
             <div class="row">
@@ -30,6 +29,10 @@
                             {!! Form::text('name', $order->address['name'], ['class' => 'form-control']) !!}
                         </div>
                     </div>
+                    <div class="form-group">
+                        {!! Form::label('pick_up', 'Abholen:') !!}
+                        {!! Form::checkbox('pick_up', '1',  $order['pick_up']) !!}
+                    </div>
 
                     <div class="form-group">
                         {!! Form::label('street', 'Strasse:') !!}
@@ -37,7 +40,7 @@
                     </div>
 
                     <div class="form-row">
-                            <div class="form-group col-md-3">  
+                            <div class="form-group col-md-3">
                             {!! Form::label('plz', 'PLZ:') !!}
                             {!! Form::text('plz', $order->address['plz'], ['class' => 'form-control']) !!}
                         </div>
@@ -63,7 +66,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Adresse Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Bestellung Aktualisieren', ['class' => 'btn btn-primary'])!!}
                     </div>
                 {!! Form::close()!!}
 
