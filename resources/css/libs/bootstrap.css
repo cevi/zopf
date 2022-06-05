@@ -5,7 +5,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --blue: #007bff;
+    --blue: #4f92c7;
+    --lightblue: #699fc9;
+    --darkblue: #3a6b91;
+    --indigo: #6610f2;
   --indigo: #6610f2;
   --purple: #6f42c1;
   --pink: #e83e8c;

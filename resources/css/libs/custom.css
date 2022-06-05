@@ -16,7 +16,7 @@
     src: local('Roboto Light'), local('Roboto-Light'), url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
- 
+
   /* latin-ext */
   @font-face {
     font-family: 'Roboto';
@@ -50,7 +50,7 @@
     src: local('Roboto Medium'), local('Roboto-Medium'), url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
- 
+
   /* latin-ext */
   @font-face {
     font-family: 'Roboto';
@@ -75,7 +75,7 @@
   #login_page {
     color: #fff;
     font: 87.5%/1.5em 'Open Sans', sans-serif;
-    background:url(images/DSC_0301.JPG)no-repeat center center fixed; 
+    background:url(images/DSC_0301.JPG)no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -85,3 +85,88 @@
     height: 500px;
     overflow: auto;
   }
+
+
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    background-color:#f8fafc;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-sm, .container-md, .container-lg, .container-xl {
+        max-width: 80%;
+    }
+}
+
+ile_user {
+    text-align: center;
+}
+
+.text-center-profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-bor {
+    width: 300px;
+    border-radius: 30px;
+    display: initial;
+}
+
+.profile_status {
+    padding: 10px !important;
+}
+
+.mainpage {
+    width: 100vw;
+}
+
+@media (min-width: 768px){
+    .col-md-5 {
+        padding-left: 3rem!important;
+    }
+}
+
+.section-features{
+    margin: 2rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+/*Hidden class for adding and removing*/
+.display-none {
+    display: none !important;
+}
+
+.dropdown-toggle{
+    margin-left: 1rem;
+}
+
+.navbar-dashboard .navbar-nav  {
+    display: block;
+}
+
+.navbar-dashboard .navbar-nav .nav-link {
+    color: var(--blue);
+}
+
+.navbar-dashboard .navbar-nav .nav-link:focus, .navbar-dashboard .navbar-nav .nav-link:hover {
+    color: var(--blue);
+}
+
+.navbar-dashboard .navbar-nav .nav-link.disabled {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.hr-label {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    margin: 1rem 0;
+
+}

@@ -2,12 +2,6 @@
 <nav class="side-navbar">
     <div class="side-navbar-wrapper">
       <!-- Sidebar Header    -->
-        <div class="sidenav-header d-flex align-items-center justify-content-center">
-            <!-- User Info-->
-            <h2 class="h5">{{Auth::user()->username}}</h2>
-        </div>
-
-
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
             <h5 class="sidenav-heading">Zopfaktion</h5>

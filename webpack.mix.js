@@ -18,9 +18,19 @@ mix.scripts([
       'resources/js/libs/map-icons.js',
       'resources/js/libs/markerCluster.js',
       'resources/js/libs/googlemaps.js',
+      'resources/js/libs/swiper-bundle.min.js',
       'resources/js/libs/custom.js',
-   ], 'public/js/app.js')
-   .sass('resources/sass/app.scss', 'public/css');
+   ], 'public/js/app.js');
+
+mix.styles([
+    'resources/css/libs/bootstrap.css',
+    'resources/css/libs/jquery-ui.css',
+    'resources/css/libs/jquery.mCustomScrollbar.css',
+    'resources/css/libs/style.default.premium.css',
+    'resources/css/libs/swiper-bundle.min.css',
+    'resources/css/libs/custom.css',
+    'resources/css/libs/welcome.css',
+], 'public/css/app.css');
 
    mix.styles([
       'resources/css/libs/jquery-ui.css',

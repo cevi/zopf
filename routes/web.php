@@ -30,6 +30,7 @@ Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'verified'], function(){
 
+
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::get('routes/createDataTables', ['as'=>'routes.CreateDataTables','uses'=>'AdminRoutesController@createDataTables']);
@@ -45,6 +46,7 @@ Route::group(['middleware' => 'verified'], function(){
     Route::get('/routes/order/{id}/deposited', ['as'=>'home.deposited','uses'=>'HomeController@deposited']);
 
 
+    Route::get('/user/{user}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
 
     Route::group(['middleware' => 'groupleader'], function(){
 
