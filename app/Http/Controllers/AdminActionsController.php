@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use AddAmountToLogbook;
-use App\Group;
-use App\Action;
-use DataTables;
-use App\Address;
-use App\Logbook;
-use App\ActionStatus;
 use App\Helper\Helper;
+use App\Models\Action;
+use App\Models\ActionStatus;
+use App\Models\ActionUser;
+use App\Models\Address;
+use App\Models\Group;
+use App\Models\Logbook;
+use App\Models\User;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Geocoder\Facades\Geocoder;
@@ -25,7 +26,8 @@ class AdminActionsController extends Controller
     {
         //
 
-        return view('admin.actions.index');
+        $title = 'Aktionen';
+        return view('admin.actions.index', compact('title'));
     }
 
     public function createDataTables()
@@ -45,7 +47,7 @@ class AdminActionsController extends Controller
             return $actions->action_status['name'];})
         ->addColumn('Actions', function($actions) {
             $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
-            $buttons = '<a href='.\URL::route('actions.edit', $actions->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+            $buttons = '<a href='.\URL::route('actions.edit', $actions->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
             $buttons .= ' <a href='.\URL::route('actions.complete', $actions->id).' type="button" class="btn btn-info btn-sm">' . $text . '</a>';
             $buttons .= ' <button data-remote='.\URL::route('actions.destroy', $actions->id).' class="btn btn-danger btn-sm">Löschen</button>';
             return $buttons;
@@ -62,10 +64,11 @@ class AdminActionsController extends Controller
      */
     public function create()
     {
-        
+
         //
+        $title = 'Aktion Erfassen';
         $groups = Group::pluck('name','id')->all();
-        return view('admin.actions.create', compact('groups'));
+        return view('admin.actions.create', compact('groups', 'title'));
     }
 
     /**
@@ -86,7 +89,6 @@ class AdminActionsController extends Controller
                 $input['group_id'] = $group['id'];
             }
             $user = Auth::user();
-            $action = $user->getAction();
             GeoCoder::setApiKey($request['APIKey']);
             GeoCoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
@@ -99,12 +101,19 @@ class AdminActionsController extends Controller
             $address = Address::create($input);
         }
         else{
-            $input = $request->all(); 
+            $input = $request->all();
         }
-        $input['address_id'] = $address['id']; 
+        $input['address_id'] = $address['id'];
 
         $input['action_status_id'] = config('status.action_geplant');
-        Action::create($input);
+        $input['user_id'] = Auth::user()->id;
+
+        $action = Action::create($input);
+        $user->update(['action_id' => $action->id, 'role_id' => config('status.role_actionleader')]);
+        ActionUser::create([
+            'user_id' => $user->id,
+            'action_id' => $action->id,
+            'role_id' => config('status.role_actionleader')]);
         return redirect('admin/actions');
     }
 
@@ -130,8 +139,9 @@ class AdminActionsController extends Controller
         //
         $action = Action::findOrFail($id);
         $action_statuses = ActionStatus::pluck('name','id')->all();
+        $title = 'Aktion Bearbeiten';
 
-        return view('admin.actions.edit', compact('action', 'action_statuses'));
+        return view('admin.actions.edit', compact('action', 'action_statuses', 'title'));
     }
 
     /**
@@ -154,10 +164,10 @@ class AdminActionsController extends Controller
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
             $input['center'] = true;
-            
+
             $address->update($input);
-        }   
-        else{            
+        }
+        else{
             $input = $request->all();
             if(!Auth::user()->isAdmin()){
                 $group = Auth::user()->group;
@@ -170,9 +180,9 @@ class AdminActionsController extends Controller
 
             // return $input;
 
-            $address = Address::create($input);  
+            $address = Address::create($input);
             $input['address_id'] = $address['id'];
-        }     
+        }
         $status_id = (int)$input['action_status_id'];
         if($status_id!=$action['action_status_id']){
             if($status_id === config('status.action_aktiv')){
@@ -198,23 +208,33 @@ class AdminActionsController extends Controller
     {
         //
         $action = Action::findOrFail($id);
+        $input = $request->all();
         if($action->action_status_id === config('status.action_geplant')){
             $action->action_status_id = config('status.action_aktiv');
             $comment = 'Aktion '.$action['name'].' wurde gestartet.';
         }
         else{
             $action->action_status_id = config('status.action_abgeschlossen');
+
+            $cut = Logbook::where('action_id', $action['id'])->where('cut', true)->sum('quantity');
+            $input['total_amount'] = $action->orders->sum('quantity') + $cut;
             $comment = 'Aktion '.$action['name'].' wurde abgeschlossen.';
         }
         Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
-        $action->update($request->all());
+        $action->update($input);
         return redirect('/admin/actions');
+    }
+
+    public function updateAction(Request $request, Action $action)
+    {
+        //
+        Helper::updateAction(Auth::user(), $action);
+        return redirect('/home');
     }
 
     public function destroy($id)
     {
         //
-        Action::findOrFail($id)->delete();
         return redirect('/admin/actions');
     }
 }

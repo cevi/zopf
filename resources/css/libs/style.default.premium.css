@@ -880,7 +880,7 @@ input.input-material.is-invalid {
 }
 
 input.input-material:focus {
-    border-color: #33b35a;
+    border-color: var(--blue);
     outline: none;
 }
 
@@ -898,7 +898,7 @@ input.input-material ~ label {
 input.input-material ~ label.active {
     font-size: 0.8rem;
     top: -10px;
-    color: #33b35a;
+    color: var(--blue);;
 }
 
 input.input-material.is-invalid ~ label {
@@ -911,7 +911,7 @@ input.form-control-custom {
 }
 
 input.form-control-custom:checked + label::before {
-    background: #33b35a !important;
+    background: var(--blue); !important;
 }
 
 input.form-control-custom:checked + label::after {
@@ -1153,7 +1153,7 @@ button {
 }
 
 .noUi-connect {
-    background: #33b35a;
+    background: var(--blue);;
 }
 
 /*
@@ -1177,8 +1177,8 @@ button {
 }
 
 .datepicker-dropdown.dropdown-menu td.active, .datepicker-dropdown.dropdown-menu td:active {
-    background-color: #33b35a !important;
-    border-color: #33b35a !important;
+    background-color: var(--blue); !important;
+    border-color: var(--blue); !important;
 }
 
 .datepicker-dropdown.dropdown-menu:before, .datepicker-dropdown.dropdown-menu:after {
@@ -1208,7 +1208,7 @@ button {
 
 .bootstrap-select .dropdown-menu li a:hover {
     background: #fff;
-    color: #33b35a;
+    color: var(--blue);;
 }
 
 .bootstrap-select .dropdown-toggle:focus {
@@ -1225,7 +1225,7 @@ button {
 * ==========================================================
 */
 .bootstrap-tagsinput .label-info {
-    background-color: #33b35a;
+    background-color: var(--blue);;
     display: inline-block;
     padding: 2px 10px;
     border-radius: 3px;
@@ -1310,7 +1310,7 @@ button {
 }
 
 .ms-container .ms-list.ms-focus {
-    border-color: #33b35a;
+    border-color: var(--blue);
 }
 
 .ms-container ul {
@@ -1342,7 +1342,7 @@ button {
     cursor: pointer;
     color: #fff;
     text-decoration: none;
-    background-color: #33b35a;
+    background-color: var(--blue);
 }
 
 .ms-container .ms-selectable li.disabled,
@@ -2126,7 +2126,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 }
 
 .map-custom-popup .leaflet-popup-content a {
-    color: #33b35a;
+    color: var(--blue);
 }
 
 .map-custom-popup .popup-venue {
@@ -2157,12 +2157,12 @@ div.dataTables_wrapper div.dataTables_paginate {
 
 .map-custom-tooltip.active {
     color: #fff;
-    border-color: #33b35a;
-    background-color: #33b35a;
+    border-color: var(--blue);
+    background-color: var(--blue);
 }
 
 .map-custom-tooltip.active:before {
-    border-top-color: #33b35a;
+    border-top-color: var(--blue);
 }
 
 /*
@@ -2627,10 +2627,10 @@ ul.messenger-theme-flat .messenger-spinner {
 
 .fc-event,
 .fc-event-dot {
-    background-color: #33b35a;
+    background-color: var(--blue);
     /* default BACKGROUND color */
     color: #fff !important;
-    border-color: #33b35a;
+    border-color: var(--blue);
 }
 
 .fc .alert-info {
@@ -2732,7 +2732,7 @@ ul.messenger-theme-flat .messenger-spinner {
 }
 
 .infobox h3 a:focus, .infobox h3 a:hover {
-    color: #33b35a;
+    color: var(--blue);
 }
 
 .infobox .image {
@@ -2765,7 +2765,7 @@ ul.messenger-theme-flat .messenger-spinner {
 .sk-rotating-plane {
     width: 40px;
     height: 40px;
-    background-color: #33b35a;
+    background-color: var(--blue);
     margin: 0;
     -webkit-animation: sk-rotatePlane 1.2s infinite ease-in-out;
     animation: sk-rotatePlane 1.2s infinite ease-in-out;
@@ -2821,7 +2821,7 @@ ul.messenger-theme-flat .messenger-spinner {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: #33b35a;
+    background-color: var(--blue);
     opacity: 0.6;
     position: absolute;
     top: 0;
@@ -2878,7 +2878,7 @@ ul.messenger-theme-flat .messenger-spinner {
 }
 
 .sk-wave .sk-rect {
-    background-color: #33b35a;
+    background-color: var(--blue);
     height: 100%;
     width: 6px;
     display: inline-block;
@@ -2950,7 +2950,7 @@ ul.messenger-theme-flat .messenger-spinner {
 }
 
 .sk-wandering-cubes .sk-cube {
-    background-color: #33b35a;
+    background-color: var(--blue);
     width: 10px;
     height: 10px;
     position: absolute;
@@ -3031,7 +3031,7 @@ ul.messenger-theme-flat .messenger-spinner {
     width: 40px;
     height: 40px;
     margin: 0;
-    background-color: #33b35a;
+    background-color: var(--blue);
     border-radius: 100%;
     -webkit-animation: sk-pulseScaleOut 1.0s infinite ease-in-out;
     animation: sk-pulseScaleOut 1.0s infinite ease-in-out;
@@ -3086,7 +3086,7 @@ ul.messenger-theme-flat .messenger-spinner {
     display: inline-block;
     position: absolute;
     top: 0;
-    background-color: #33b35a;
+    background-color: var(--blue);
     border-radius: 100%;
     -webkit-animation: sk-chasingDotsBounce 2s infinite ease-in-out;
     animation: sk-chasingDotsBounce 2s infinite ease-in-out;
@@ -3154,7 +3154,7 @@ ul.messenger-theme-flat .messenger-spinner {
 .sk-three-bounce .sk-child {
     width: 20px;
     height: 20px;
-    background-color: #33b35a;
+    background-color: var(--blue);
     border-radius: 100%;
     display: inline-block;
     -webkit-animation: sk-three-bounce 1.4s ease-in-out 0s infinite both;
@@ -3233,7 +3233,7 @@ ul.messenger-theme-flat .messenger-spinner {
     margin: 0 auto;
     width: 15%;
     height: 15%;
-    background-color: #33b35a;
+    background-color: var(--blue);
     border-radius: 100%;
     -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
     animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
@@ -3402,7 +3402,7 @@ ul.messenger-theme-flat .messenger-spinner {
 .sk-cube-grid .sk-cube {
     width: 33.33%;
     height: 33.33%;
-    background-color: #33b35a;
+    background-color: var(--blue);
     float: left;
     -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
     animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
@@ -3515,7 +3515,7 @@ ul.messenger-theme-flat .messenger-spinner {
     margin: 0 auto;
     width: 15%;
     height: 15%;
-    background-color: #33b35a;
+    background-color: var(--blue);
     border-radius: 100%;
     -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
     animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
@@ -3685,7 +3685,7 @@ ul.messenger-theme-flat .messenger-spinner {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #33b35a;
+    background-color: var(--blue);
     -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
     animation: sk-foldCubeAngle 2.4s infinite linear both;
     -webkit-transform-origin: 100% 100%;
@@ -4205,16 +4205,16 @@ STYLE SWITCHER FOR DEMO
 }
 
 .btn-outline-primary {
-    color: #33b35a;
+    color: var(--blue);
     background-color: transparent;
     background-image: none;
-    border-color: #33b35a;
+    border-color: var(--blue);
 }
 
 .btn-outline-primary:hover {
     color: #fff;
-    background-color: #33b35a;
-    border-color: #33b35a;
+    background-color: var(--blue);
+    border-color: var(--blue);
 }
 
 .btn-outline-primary:focus, .btn-outline-primary.focus {
@@ -4223,15 +4223,15 @@ STYLE SWITCHER FOR DEMO
 }
 
 .btn-outline-primary.disabled, .btn-outline-primary:disabled {
-    color: #33b35a;
+    color: var(--blue);
     background-color: transparent;
 }
 
 .btn-outline-primary:not([disabled]):not(.disabled):active, .btn-outline-primary:not([disabled]):not(.disabled).active,
 .show > .btn-outline-primary.dropdown-toggle {
     color: #fff;
-    background-color: #33b35a;
-    border-color: #33b35a;
+    background-color: var(--blue);
+    border-color: var(--blue);
     -webkit-box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
     box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
 }
@@ -4595,7 +4595,7 @@ mark,
     padding: 0.5rem 1rem;
     margin-bottom: 2rem;
     font-size: 1.25rem;
-    border-left: 5px solid #33b35a;
+    border-left: 5px solid var(--blue);
 }
 
 .blockquote-footer {
@@ -4692,7 +4692,7 @@ a.text-primary:focus, a.text-primary:hover {
 */
 .dropdown-menu {
     z-index: 1000;
-    min-width: 10rem;
+    min-width: 20rem;
     padding: 0.5rem 0;
     margin: 0.125rem 0 0;
     font-size: 1rem;
@@ -4795,7 +4795,7 @@ a.bg-dark:focus, a.bg-dark:hover {
 }
 
 .border-primary {
-    border-color: #33b35a !important;
+    border-color: var(--blue) !important;
 }
 
 .border-secondary {
@@ -4884,12 +4884,12 @@ a.text-dark:focus, a.text-dark:hover {
 }
 
 .badge-primary {
-    color: color-yiq(#33b35a);
-    background-color: #33b35a;
+    color: var(--blue);
+    background-color: var(--blue);
 }
 
 .badge-primary[href]:focus, .badge-primary[href]:hover {
-    color: color-yiq(#33b35a);
+    color: var(--blue);
     text-decoration: none;
     background-color: #288b46;
 }
@@ -5034,7 +5034,7 @@ a > code {
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     color: #fff;
-    background-color: #33b35a;
+    background-color: var(--blue);
 }
 
 /*
@@ -5143,5 +5143,329 @@ a > code {
     .card-deck .card {
         margin-right: 15px;
         margin-left: 15px;
+    }
+}
+
+/*
+* ==========================================================
+*      STATISTICS
+* ==========================================================
+*/
+.statistics {
+    /* User Activity ------------- */
+}
+
+.statistics div[class*='col-'] .card {
+    padding: 20px;
+    margin-bottom: 0;
+    height: 100%;
+}
+
+.statistics h2 {
+    margin-bottom: 20px;
+}
+
+.statistics p {
+    font-size: 0.8em;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.statistics .income .icon {
+    font-size: 3.5em;
+}
+
+.statistics .income .number {
+    font-size: 2.5em;
+    color: #555;
+}
+
+.statistics .income strong {
+    font-size: 1.5em;
+}
+
+.statistics .data-usage canvas {
+    width: 100%;
+    max-width: 200px;
+    border: none;
+}
+
+.statistics .data-usage strong {
+    font-size: 1.5em;
+    display: block;
+}
+
+.statistics .data-usage small {
+    font-size: 0.85em;
+    font-weight: 300;
+    color: #aaa;
+}
+
+.statistics .data-usage span {
+    font-size: 0.95em;
+    color: #aaa;
+    display: block;
+}
+
+.statistics .data-usage p {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.statistics .user-activity .number {
+    font-size: 2.5em;
+    font-weight: 300;
+    color: #555;
+}
+
+.statistics .user-activity .progress {
+    border-radius: 0;
+    background: #f5f5f5;
+}
+
+.statistics .user-activity .progress .progress-bar.bg-primary {
+    background: var(--blue) !important;
+}
+
+.statistics .user-activity .page-statistics {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.statistics .user-activity .page-statistics strong {
+    display: block;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-size: 2em;
+}
+
+/* STATISTICS  MEDIAQUERIES ------------------------- */
+@media (max-width: 991px) {
+    .statistics div[class*='col-'] .card {
+        height: auto;
+        margin-bottom: 30px;
+    }
+    .statistics div[class*='col-']:last-of-type .card {
+        margin-bottom: 0;
+    }
+    .statistics .data-usage {
+        text-align: center;
+    }
+    .statistics .data-usage div[class*='col-']:first-of-type {
+        padding-bottom: 20px;
+    }
+    .statistics .data-usage .gmpc {
+        padding-bottom: 20px !important;
+    }
+    p {
+        font-size: 0.75em;
+    }
+}
+
+@media (min-width: 768px) {
+    .statistics h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/*
+* ==========================================================
+*      UPDATES WIDGETS
+* ==========================================================
+*/
+.updates .left-col {
+    padding-right: 20px;
+}
+
+.updates .icon {
+    margin-right: 10px;
+}
+
+.updates li {
+    border-bottom: 1px solid #f3f3f3;
+    padding: .75rem 1.25rem;
+}
+
+.updates .update-date {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #bbb;
+    display: block;
+}
+
+.updates span {
+    font-size: 0.7em;
+    font-weight: 300;
+    color: #aaa;
+    line-height: 0.5em;
+    display: block;
+}
+
+.updates strong {
+    font-weight: 400;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.updates small {
+    font-size: 0.75em;
+}
+
+.updates a {
+    color: #555;
+}
+
+.updates a:hover, .updates a:focus {
+    color: #555;
+    text-decoration: none;
+}
+
+.updates h2 {
+    margin-bottom: 0;
+}
+
+.updates p {
+    font-size: 0.9em;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+/* UPDATES MEDIAQUERIES ------------------------- */
+@media (max-width: 991px) {
+    .updates h2 {
+        font-size: 1.05rem;
+    }
+    .updates strong {
+        font-size: 1em;
+        font-weight: 400;
+    }
+    .updates small {
+        font-size: 0.85em;
+    }
+    .updates .full-date {
+        font-size: 0.85em;
+    }
+}
+
+/*
+* ==========================================================
+*      DAILY FEEDS AND ACTIVITES WIDGETS
+* ==========================================================
+*/
+/*  Daily Feeds ------------------- */
+.daily-feeds a.feed-profile {
+    margin-right: 10px;
+    width: 45px;
+    height: 45px;
+}
+
+.daily-feeds a.feed-profile img {
+    width: 100%;
+    height: 100%;
+}
+
+.daily-feeds .badge {
+    margin-right: 10px;
+}
+
+.daily-feeds strong {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.daily-feeds small {
+    color: #999;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.daily-feeds .message-card {
+    padding: 10px;
+    background: #fafafa;
+    margin-left: 55px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.daily-feeds .full-date {
+    line-height: 0.7em;
+    margin-bottom: 10px;
+}
+
+.daily-feeds .CTAs a {
+    margin-right: 5px;
+}
+
+.daily-feeds .CTAs a i {
+    margin-right: 5px;
+}
+
+.daily-feeds .CTAs a:last-of-type {
+    margin-right: 0;
+}
+
+.daily-feeds a.btn {
+    color: #fff;
+}
+
+/* Activities  ------------------- */
+.activities{
+    height: 300px;
+    overflow: auto;
+}
+
+.activities li {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.activities .date-holder {
+    padding-right: 0;
+}
+
+.activities .date-holder .date {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.activities .date-holder .date span {
+    font-size: 0.8em;
+}
+
+.activities .date-holder .icon {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    background: #f5f5f5;
+    text-align: center;
+    margin: 0;
+    display: inline-block;
+}
+
+.activities .date-holder span {
+    display: block;
+    margin: 10px;
+}
+
+.activities .content {
+    border-left: 1px solid #eee;
+    border-bottom: 20px;
+    padding: 10px 20px;
+}
+
+.activities .content strong {
+    display: block;
+    margin-right: 5px;
+}
+
+/* UPDATES WIDGET MEDIAQUERIES ------------------------- */
+@media (min-width: 768px) {
+    .updates strong {
+        font-size: 1em;
+    }
+    .updates small {
+        font-size: 0.8em;
     }
 }

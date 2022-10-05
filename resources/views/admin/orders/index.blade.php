@@ -15,8 +15,8 @@
             <!-- Page Header-->
             <header>
                 <h1 class="h3 display">Bestellungen</h1>
-                <a href="{{route('orders.create')}}" class="btn btn-primary btn-success btn-sm">
-                    <span>Erstellen</span>
+                <a href="{{route('orders.create')}}" class="btn btn-primary btn-sm">
+                    <span>Erfassen</span>
                 </a>
                 {{-- <button data-remote='{{route('orders.createRoute')}}' id="createRoute" class="btn btn-info btn-sm">Route hinzufügen</button> --}}
                 <button id="chooseRoute" class="btn btn-info btn-sm">Route hinzufügen</button>
@@ -54,20 +54,20 @@
             <br>
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-striped table-bordered" id="datatable">
+                    <table class="table table-striped table-bordered table responsive" width="100%" id="datatable">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Vorname</th>
                                 <th scope="col">Strasse</th>
-                                <th scope="col" style="width: 10px">PLZ</th>
+                                <th scope="col">PLZ</th>
                                 <th scope="col">Ort</th>
-                                <th scope="col" style="width: 10px">Anzahl</th>
+                                <th scope="col">Anzahl</th>
                                 <th scope="col">Route</th>
                                 <th scope="col">Abholung</th>
                                 <th scope="col">Bemerkung</th>
                                 <th scope="col">Status</th>
-                                <th scope="col" style="width: 10px">Auswahl</th>
+                                <th scope="col">Auswahl</th>
                                 <th scope="col">Aktionen</th>
                             </tr>
                         </thead>
@@ -147,18 +147,18 @@
                 }
               },
             columns: [
-                   { data: 'name', name: 'name' },
-                   { data: 'firstname', name: 'firstname' },
-                   { data: 'street', name: 'street' },
-                   { data: 'plz', name: 'plz' },
-                   { data: 'city', name: 'city' },
-                   { data: 'quantity', name: 'quantity' },
-                   { data: 'route', name: 'route' },
-                   { data: 'pick_up', name: 'pick_up' },
-                   { data: 'comments', name: 'comments' },
-                   { data: 'status', name: 'status' },
-                   { data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
-                   { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
+                   { data: 'name', name: 'name', "width": "10%" },
+                   { data: 'firstname', name: 'firstname', "width": "7%" },
+                   { data: 'street', name: 'street', "width": "8%" },
+                   { data: 'plz', name: 'plz', "width": "2%" },
+                   { data: 'city', name: 'city', "width": "8%" },
+                   { data: 'quantity', name: 'quantity' , "width": "3%"},
+                   { data: 'route', name: 'route' , "width": "5%"},
+                   { data: 'pick_up', name: 'pick_up' , "width": "4%"},
+                   { data: 'comments', name: 'comments' , "width": "10%"},
+                   { data: 'status', name: 'status', "width": "5%" },
+                   { data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center', "width": "5%"},
+                   { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center', "width": "15%"},
 
                 ]
        });

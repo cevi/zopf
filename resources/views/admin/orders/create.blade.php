@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Adresse Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Adresse Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                 {!! Form::close()!!}
             </div>

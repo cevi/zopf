@@ -12,11 +12,11 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Aktionen</h1>
             </header>
             <div class="row">
-    
+
                 <div class="col-sm-6">
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminActionsController@store']) !!}
                     <div class="form-group">
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="form-row">
-                            <div class="form-group col-md-3">  
+                            <div class="form-group col-md-3">
                             {!! Form::label('plz', 'PLZ:') !!}
                             {!! Form::text('plz', null, ['class' => 'form-control']) !!}
                         </div>
@@ -61,7 +61,7 @@
                     @endif
 
                     <div class="form-group">
-                        {!! Form::submit('Aktion Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Aktion Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 

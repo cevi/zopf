@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\Route;
-use App\Action;
-use DataTables;
-use App\Address;
 use App\Helper\Helper;
-use App\Logbook;
-use App\OrderStatus;
-use Illuminate\Http\Request;
 use App\Imports\OrdersImport;
+use App\Models\Address;
+use App\Models\Order;
+use App\Models\OrderStatus;
+use App\Models\Route;
+use DataTables;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Null_;
 use Spatie\Geocoder\Facades\Geocoder;
-use Illuminate\Support\Facades\Storage;
 
 class AdminOrdersController extends Controller
 {
@@ -28,7 +24,7 @@ class AdminOrdersController extends Controller
     {
         //
         $title = 'Bestellungen';
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $order_statuses = OrderStatus::pluck('name');
         if($action){
             $routes = Route::where('action_id', $action['id'])->where('route_status_id',config('status.route_geplant'))->get();
@@ -45,7 +41,7 @@ class AdminOrdersController extends Controller
         $order_status = OrderStatus::where('name','=',$input['status'])->first();
         $pickup = $input['pickup'] <> "Alle" ? true : Null;
         if(!Auth::user()->isAdmin()){
-            $action = Auth::user()->getAction();
+            $action = Auth::user()->action;
             if($action){
                 $orders = Order::where('action_id', $action['id'])
                     ->when($order_status, function($query, $order_status){
@@ -88,13 +84,12 @@ class AdminOrdersController extends Controller
                 ->addColumn('pick_up', function ($orders) {
                     return $orders['pick_up'] ? 'Ja' : 'Nein';})
                 ->addColumn('Actions', function($orders) {
-                    $buttons = '<a href='.\URL::route('orders.edit', $orders->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
-                <button data-remote='.\URL::route('orders.destroy', $orders->id).' class="btn btn-danger btn-sm">Löschen</button>';
+                    $buttons = '<form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">' . csrf_field() .
+                        '<a href='.\URL::route('orders.edit', $orders->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
                     if($orders['pick_up'] && ($orders['order_status_id']==config('status.order_offen'))){
-                        $buttons = $buttons .'
-                    <form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">' . csrf_field() . ' <button type="submit" class="btn btn-info btn-sm">Abgeholt</button></form>';
+                        $buttons .= ' <button type="submit" class="btn btn-info btn-sm">Abgeholt</button>';
                     };
-
+                    $buttons .= ' <button data-remote='.\URL::route('orders.destroy', $orders->id).' class="btn btn-danger btn-sm">Löschen</button></form>';
                     return $buttons;
                 })
                 ->addColumn('checkbox', function ($orders) {
@@ -112,7 +107,7 @@ class AdminOrdersController extends Controller
 
     public function createRoute(Request $request)
     {
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         if($request->name==''){
             $route = Route::FindOrFail($request->route_id);
         }
@@ -143,7 +138,7 @@ class AdminOrdersController extends Controller
         //
         $order = Order::findorFail($id);
         $order->update(['order_status_id' => config('status.order_abgeholt')]);
-        $action= Auth::user()->getaction();
+        $action= Auth::user()->action;
         if($order['quantity']===1){
             $text = 'Ein Zopf wurde';
         }
@@ -164,25 +159,27 @@ class AdminOrdersController extends Controller
         //
         $routes = Route::where('route_status_id', config('status.route_geplant'))->get();
         $routes = $routes->pluck('name','id')->all();
-        return view('admin.orders.create', compact('routes'));
+        $title = 'Bestellung Erfassen';
+        return view('admin.orders.create', compact('routes', 'title'));
     }
 
     public function map()
     {
-        $action= Auth::user()->getaction();
+        $action= Auth::user()->action;
         $orders = Order::where('action_id', $action['id']);
         $orders = $orders->with('address')->get();
         $cities = $action->addresses->unique('city')->pluck('city');
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
         $key = $action['APIKey'];
+        $title = 'Bestellungskarte';
 
-        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center', 'key'));
+        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center', 'key', 'title'));
     }
 
     public function mapfilter(Request $request)
     {
-        $action = Auth::user()->getaction();
+        $action = Auth::user()->action;
         $addresses = $action->addresses;
         $city = $request->city;
         $status = $request->status;
@@ -211,10 +208,10 @@ class AdminOrdersController extends Controller
 
             // Insert to MySQL database
             $user = Auth::user();
-            $action = $user->getAction();
+            $action = $user->action;
             $center = $action->center;
             $user = Auth::user();
-            $action = $user->getAction();
+            $action = $user->action;
             GeoCoder::setApiKey($action['APIKey']);
             GeoCoder::setCountry('CH');
             foreach($importData_arr as $importData){
@@ -256,7 +253,7 @@ class AdminOrdersController extends Controller
                     if($importData['route']){
                         $insertRoute = array(
                             "name"=> $importData['route'],
-                            "action_id" => $user->getAction,
+                            "action_id" => $user->action,
                             "route_status_id" => config('status.route_geplant'));
 
                         $route = Route::firstOrCreate(['name' => $importData['route'],], $insertRoute);
@@ -313,7 +310,7 @@ class AdminOrdersController extends Controller
     {
         //
         $user = Auth::user();
-        $action = $user->getAction();
+        $action = $user->action;
         $address=Address::Where('id',$request->address_id)->first();
         if(!$address){
             $input = $request->all();
@@ -382,7 +379,7 @@ class AdminOrdersController extends Controller
     {
         //
         $title = "Bestellung Bearbeiten";
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $routes = Route::where('action_id', $action['id'])->where('route_status_id', '<', config('status.route_unterwegs'))->get();
         $routes = $routes->pluck('name','id')->all();
         $order = Order::findOrFail($id);
@@ -404,7 +401,7 @@ class AdminOrdersController extends Controller
         $order = Order::findOrFail($id);
         $address=$order->address;
         $user = Auth::user();
-        $action = $user->getAction();
+        $action = $user->action;
         GeoCoder::setApiKey($action['APIKey']);
         GeoCoder::setCountry('CH');
         if($address){

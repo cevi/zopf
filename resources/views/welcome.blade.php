@@ -82,6 +82,28 @@
             </div>
         </div>
     </section>
+    <!-- SHOWCASE SECTION-->
+    <section class="py-5 bg-pentagon">
+        <div class="container py-4">
+            <!-- Counters-->
+            <div class="row gy-4 text-center" id="counterUp">
+                <div class="col-lg-6 col-sm-6">
+                    <div class="text-center text-gray-700">
+                        <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i class="fa-solid fa-truck"></i></div>
+                        <h1 class="counter mb-3" data-counter="{{$action_counter}}">0</h1>
+                        <h2 class="text-uppercase fw-bold mb-0">Zopf-Aktionen</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-6">
+                    <div class="text-center text-gray-700">
+                        <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i class="fa-solid fa-bread-slice"></i></div>
+                        <h1 class="counter mb-3" data-counter="{{$total_amount}}">0</h1>
+                        <h2 class="text-uppercase fw-bold mb-0">Anzahl Zöpfe</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 	  <!-- BLOCK SECTION-->
       <section class="py-5 bg-gray-200">
         <div class="container">

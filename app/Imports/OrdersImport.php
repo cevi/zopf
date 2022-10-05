@@ -2,11 +2,11 @@
 
 namespace App\Imports;
 
-use App\Order;
-use Maatwebsite\Excel\Concerns\ToModel;
+use App\Models\Order;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class OrdersImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 {

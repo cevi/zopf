@@ -17,7 +17,7 @@ class Groupleader
     public function handle($request, Closure $next)
     {
         if(Auth::check()){
-            if(Auth::user()->isGroupleader()){
+            if(Auth::user()->isActionleader()){
                 return $next($request);
 
             }

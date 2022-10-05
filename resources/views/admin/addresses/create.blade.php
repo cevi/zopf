@@ -13,11 +13,11 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Adressen erfassen</h1>
             </header>
             <div class="row">
-    
+
                 <div class="col-sm-6">
                     @include('includes.form_error')
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminAddressesController@store']) !!}
@@ -25,7 +25,7 @@
                             <div class="form-group col-md-6">
                                 {!! Form::label('firstname', 'Vorname:') !!}
                                 {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
-                            </div>    
+                            </div>
                             <div class="form-group col-md-6">
                                 {!! Form::label('name', 'Name:') !!}
                                 {!! Form::text('name', null, ['class' => 'form-control']) !!}
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="form-row">
-                             <div class="form-group col-md-3">  
+                             <div class="form-group col-md-3">
                                 {!! Form::label('city_plz', 'PLZ:') !!}
                                 {!! Form::text('city_plz', null, ['class' => 'form-control autocomplete_txt']) !!}
                             </div>
@@ -57,7 +57,7 @@
                     @endif
 
                     <div class="form-group">
-                        {!! Form::submit('Adresse Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Adresse Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
                 </div>
@@ -74,9 +74,9 @@
         $(document).on('focus','.autocomplete_txt',function(){
         type = $(this).attr('name');
 
-        if(type =='city_name')autoType='name'; 
-        if(type =='city_plz')autoType='plz'; 
-        if(type =='city_id')autoType='id'; 
+        if(type =='city_name')autoType='name';
+        if(type =='city_plz')autoType='plz';
+        if(type =='city_id')autoType='id';
 
         $(this).autocomplete({
             minLength: 2,
@@ -102,14 +102,14 @@
                     });
             },
             select: function( event, ui ) {
-                var data = ui.item.data;         
+                var data = ui.item.data;
                 $("[name='city_name']").val(data.name);
                 $("[name='city_plz']").val(data.plz);
                 $("[name='city_id']").val(data.id);
             }
         });
-        
-        
+
+
         });
-        </script>    
+        </script>
     @endsection

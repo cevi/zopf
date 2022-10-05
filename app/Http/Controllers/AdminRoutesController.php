@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use PDF;
-use App\User;
-use App\Order;
-use App\Route;
-use DataTables;
-use App\Address;
-use App\RouteType;
-use App\OrderStatus;
-use App\RouteStatus;
 use App\Helper\Helper;
+use App\Models\Address;
+use App\Models\Order;
+use App\Models\OrderStatus;
+use App\Models\Route;
+use App\Models\RouteStatus;
+use App\Models\RouteType;
+use App\Models\User;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class AdminRoutesController extends Controller
 {
@@ -26,13 +26,14 @@ class AdminRoutesController extends Controller
     public function index()
     {
         //
-        return view('admin.routes.index');
+        $title = 'Routen';
+        return view('admin.routes.index', compact('title'));
     }
 
     public function createDataTables()
     {
         if(!Auth::user()->isAdmin()){
-            $action = Auth::user()->getAction();
+            $action = Auth::user()->action;
             if($action){
                 $routes = Route::where('action_id', $action['id'])->get();
             }
@@ -64,7 +65,7 @@ class AdminRoutesController extends Controller
                 ->addColumn('Actions', function($routes) {
                     $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">' . csrf_field();
                     if($routes->route_status['id']<10){
-                        $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>';
+                        $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
                     };
                     $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
                     if(($routes->route_status['id']==config('status.route_geplant'))){
@@ -88,7 +89,7 @@ class AdminRoutesController extends Controller
 
     public function createModalDataTables()
     {
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $orders = Order::where([
             ['action_id', $action['id']],
             ['order_status_id', config('status.order_offen')],
@@ -123,18 +124,19 @@ class AdminRoutesController extends Controller
     public function overview($id)
     {
         //
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $route = Route::findOrFail($id);
         $center = $action->center;
         $orders = $route->orders;
         $routetype = $route->route_type;
         $key = $action['APIKey'];
-        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key'));
+        $title = 'Route Übersicht';
+        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key', 'title'));
     }
 
     public function downloadPDF($id) {
         $group = Auth::user()->group;
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $route = Route::findOrFail($id);
         $center = $action->center;
         $orders = $route->orders;
@@ -178,20 +180,21 @@ class AdminRoutesController extends Controller
 
     public function map()
     {
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $orders = Order::where('action_id', $action['id'])->with('address')->get();
         $routes = Route::where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name')->all();
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
         $key = $action['APIKey'];
+        $title = 'Routenkarte';
 
-        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key'));
+        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key', 'title'));
     }
 
     public function mapfilter(Request $request)
     {
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $route = $request->route;
         $status = $request->status;
         $orders = Order::where('action_id', $action['id']);
@@ -222,11 +225,12 @@ class AdminRoutesController extends Controller
     public function create()
     {
         //
+        $title = 'Route erfassen';
         $group = Auth::user()->group;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username','id')->all();
         $route_types = RouteType::pluck('name','id')->all();
-        return view('admin.routes.create', compact('users','route_types'));
+        return view('admin.routes.create', compact('users','route_types', 'title'));
     }
 
     /**
@@ -238,7 +242,7 @@ class AdminRoutesController extends Controller
     public function store(Request $request)
     {
         //
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $input['name'] = $request->name;
         $input['action_id'] =  $action['id'];
         $input['route_status_id'] = config('status.route_geplant');
@@ -281,12 +285,13 @@ class AdminRoutesController extends Controller
         //
         $route = Route::findOrFail($id);
         $group = Auth::user()->group;
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username','id')->all();
         $route_statuses = RouteStatus::pluck('name','id')->all();
         $route_types = RouteType::pluck('name','id')->all();
         $orders = $route->orders;
+        $title = 'Route Bearbeiten';
 
         $open_orders = Order::where([
             ['action_id', $action['id']],
@@ -301,7 +306,7 @@ class AdminRoutesController extends Controller
         $center = $action->center;
         $key = $action['APIKey'];
 
-        return view('admin.routes.edit', compact('route', 'users','route_statuses','route_types', 'orders', 'open_orders', 'center', 'key'));
+        return view('admin.routes.edit', compact('route', 'users','route_statuses','route_types', 'orders', 'open_orders', 'center', 'key', 'title'));
     }
 
     /**
@@ -345,7 +350,7 @@ class AdminRoutesController extends Controller
             $route->update(['route_status_id' =>   config('status.route_vorbereitet')]);
         }
         else{
-            $action = Auth::user()->getAction();
+            $action = Auth::user()->action;
             $text = 'Route '.$route['name'].' wurde gestartet.';
             Helper::CreateRouteSequence($route);
             Helper::CreateLogEntry($route->user['id'], $action['id'], $text, now());

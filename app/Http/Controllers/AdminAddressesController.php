@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\City;
-use App\Group;
-use App\Address;
+use App\Models\Address;
+use App\Models\City;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Geocoder\Facades\Geocoder;
-use Illuminate\Support\Facades\Config;
 
 class AdminAddressesController extends Controller
 {
@@ -48,7 +47,7 @@ class AdminAddressesController extends Controller
         // $cities=\DB::table('cities');
         $query = $request->get('term','');
         // $cities->where('plz','LIKE','%'.$query.'%')->orWhere('name','LIKE','%'.$query.'%');
-        //    $cities=$cities->get();        
+        //    $cities=$cities->get();
         // $data=array();
         $cities = City::search($request->get('term'))->get();
         foreach ($cities as $city) {
@@ -70,14 +69,14 @@ class AdminAddressesController extends Controller
     {
         //
         $user = Auth::user();
-        $action = $user->getAction();
+        $action = $user->action;
         $city=City::Where('id',$request->city_id)->first();
         if(!$city){
             return back()->withInput()->withErrors(['errors' => ['Ortschaft nicht gefunden.']]);
         }
         else{
             $input = $request->all();
-            $input['city_id'] = $city->id; 
+            $input['city_id'] = $city->id;
         }
         if(!Auth::user()->isAdmin()){
             $group = Auth::user()->group;
@@ -143,17 +142,17 @@ class AdminAddressesController extends Controller
         }
         else{
             $input = $request->all();
-            $input['city_id'] = $city->id; 
+            $input['city_id'] = $city->id;
         }
         $user = Auth::user();
-        $action = $user->getAction();
+        $action = $user->action;
         GeoCoder::setApiKey($action['APIKey']);
         GeoCoder::setCountry('CH');
 
         $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
         $input['lat'] = $geocode['lat'];
         $input['lng'] = $geocode['lng'];
-        
+
         $address->update($input);
         return redirect('admin/addresses');
     }

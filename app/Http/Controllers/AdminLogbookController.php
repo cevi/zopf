@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Logbook;
-use App\User;
+use App\Models\Logbook;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 

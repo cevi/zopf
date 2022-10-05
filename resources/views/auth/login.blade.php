@@ -5,15 +5,14 @@
     <div class="row" style="min-height: 85vh !important;">
       <div class="col-md-5 col-lg-6 col-xl-4 px-lg-5 d-flex align-items-center">
         <div class="w-100 py-5">
-          <div class="text-center"><img src="img/logo.png" alt="..." style="max-width: 6rem;" class="img-fluid mb-4">
-            <h1 class="display-4 mb-3">{{ __('Login') }}</h1>
+          <div class="text-center"><img src="/img/logo.svg" alt="..."  class="img-fluid mb-4">
           </div>
           <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="form-group">
-              <label for="username">{{ __('Benutzer') }}</label>
-              <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" placeholder = "name@abt" value="{{ old('username') }}" required autocomplete="email" autofocus>
-              @error('username')
+              <label for="email">{{ __('E-Mail') }}</label>
+              <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="user@domain" value="{{ old('email') }}" required autocomplete="email" autofocus>
+              @error('email')
                   <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                   </span>
@@ -31,7 +30,7 @@
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
-                @enderror 
+                @enderror
             </div>
             <div class="form-group row">
               <div class="col-md-6">

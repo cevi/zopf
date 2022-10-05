@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Role;
-use App\User;
-use App\Group;
+use App\Events\UserCreated;
+use App\Models\ActionUser;
+use App\Models\Group;
+use App\Models\GroupUser;
+use App\Models\Role;
+use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +22,14 @@ class AdminUsersController extends Controller
     public function index()
     {
         //
-        return view('admin.users.index');
+        if(!Auth::user()->isAdmin()){
+            $roles = Role::where('id','>',config('status.role_administrator'))->pluck('name','id')->all();
+        } else {
+            $roles = Role::pluck('name','id')->all();
+
+        }
+        $title = 'Leiter';
+        return view('admin.users.index', compact('roles', 'title'));
         // return view('admin.users.index', compact('users'));
     }
 
@@ -28,7 +38,7 @@ class AdminUsersController extends Controller
         //
         if(!Auth::user()->isAdmin()){
             $group = Auth::user()->group;
-            $users = User::where('group_id', $group['id'])->get();
+            $users = $group->allUsers;
         }
         else{
             $users = User::all();
@@ -36,19 +46,42 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('group', function (User $user) {
-                return $user->group ?$user->group['name'] : '';})
-            ->addColumn('role', function (User $user) {
-                return $user->role ? $user->role['name'] : '';})
-            ->addColumn('active', function (User $user) {
-                if($user->is_active){
-                    return 'Aktiv';
+                if(Auth::user()->isAdmin()) {
+                    $group_name = $user->group ? $user->group['name'] : '';
                 }
                 else{
-                    return 'Inaktiv';
-                }})
+                    $group_name = Auth::user()->group['name'];
+                }
+                return $group_name;
+                })
+            ->addColumn('role', function (User $user) {
+                $role_name = '';
+                if(Auth::user()->isAdmin()) {
+                    $role_name = $user->role ? $user->role['name'] : '';
+                }
+                else{
+                    $action = Auth::user()->action;
+                    if($action){
+                        $action_user = ActionUser::where('action_id','=',$action['id'])->where('user_id','=',$user['id'])->first();
+                        if($action_user){
+                            $role_name = $action_user->role['name'];
+                        }
+                    }
+                    else{
+                        $group = Auth::user()->group;
+                        if($group){
+                            $group_user = GroupUser::where('group_id','=',$group['id'])->where('user_id','=',$user['id'])->first();
+                            if($group_user){
+                                $role_name = $group_user->role['name'];
+                            }
+                        }
+                    }
+                }
+                return $role_name;
+            })
             ->addIndexColumn()
             ->addColumn('Actions', function($users) {
-                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
                 <button data-remote='.\URL::route('users.destroy', $users->id).' class="btn btn-danger btn-sm">Löschen</button>';
             })
             // ->addColumn('checkbox', function ($users) {
@@ -66,15 +99,6 @@ class AdminUsersController extends Controller
     public function create()
     {
         //
-        if(!Auth::user()->isAdmin()){
-            $roles = Role::where('is_admin', false)->pluck('name','id')->all();
-        } else {
-            $roles = Role::pluck('name','id')->all();
-
-        }
-        $groups = Group::pluck('name','id')->all();
-        return view('admin.users.create', compact('roles','groups'));
-    
     }
 
     /**
@@ -99,7 +123,8 @@ class AdminUsersController extends Controller
             $input['group_id'] = $group['id'];
         }
 
-        User::create($input);
+        $user = User::create($input);
+        UserCreated::dispatch($user);
 
         return redirect('/admin/users');
     }
@@ -115,6 +140,36 @@ class AdminUsersController extends Controller
         //
     }
 
+    public function searchResponseUser(Request $request)
+    {
+        $group = Auth::user()->group;
+        $allusers = $group->users;
+        $users = User::where('role_id','<>',config('status.role_administrator'))->search($request->get('term'))->get();
+        return $users->diff($allusers);
+    }
+
+    public function add(Request $request)
+    {
+        $input = $request->all();
+        if($input['user_id']){
+            $aktUser = Auth::user();
+            $group = $aktUser->group;
+            $user = User::findOrFail($input['user_id']);
+            GroupUser::create([
+                    'user_id' => $user->id,
+                    'group_id' => $group->id,
+                    'role_id' => $input['role_id_add']]
+            );
+            $action = $aktUser->action;
+            ActionUser::create([
+                    'user_id' => $user->id,
+                    'action_id' => $action->id,
+                    'role_id' => $input['role_id_add']]
+            );
+        }
+        return redirect('/admin/users');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -124,11 +179,12 @@ class AdminUsersController extends Controller
     public function edit($id)
     {
         //
+        $title = 'Leiter Bearbeiten';
         $user = User::findOrFail($id);
         $groups = Group::pluck('name','id')->all();
         $roles = Role::pluck('name','id')->all();
 
-        return view('admin.users.edit', compact('user', 'roles','groups'));
+        return view('admin.users.edit', compact('user', 'roles','groups', 'title'));
     }
 
     /**

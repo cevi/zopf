@@ -20,11 +20,16 @@ class CreateAddressesTable extends Migration
             $table->string('street');
             $table->bigInteger('city_id')->index()->unsigned()->nullable();
             $table->bigInteger('group_id')->index()->unsigned()->nullable();
+            $table->float('lat', 8, 6);
+            $table->float('lng', 8, 6);
+            $table->string('city');
+            $table->integer('plz');
+            $table->boolean('center')->default(false);
             $table->timestamps();
         });
-        
+
         Schema::table('addresses', function (Blueprint $table) {
-        
+
             $table->foreign('city_id')->references('id')->on('cities');
             $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
         });

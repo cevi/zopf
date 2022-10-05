@@ -19,13 +19,7 @@ class CreateRouteTypesTable extends Migration
             $table->string('name');
             $table->string('travelmode');
         });
-        DB::table('route_types')->insert( 
-            array(
-                ['id' => config('status.route_type_walking'), 'name' => 'Zu Fuss', 'travelmode' => 'WALKING'],
-                ['id' => config('status.route_type_cycling'), 'name' => 'Fahrrad', 'travelmode' => 'BICYCLING'],
-                ['id' => config('status.route_type_driving'), 'name' => 'Auto', 'travelmode' => 'DRIVING'],
-            )
-        );
+
     }
 
     /**

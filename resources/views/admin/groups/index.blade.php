@@ -12,7 +12,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Gruppen</h1>
             </header>
             <div class="row">
@@ -24,13 +24,13 @@
                         </div>
                         <div class="form-group">
                             {!! Form::label('user_id', 'Gruppenleiter:') !!}
-                            {!! Form::select('user_id', [''=>'Bitte wählen'] + $users, null, ['class' => 'form-control']) !!}
+                            {!! Form::select('user_id',[''=>'Bitte wählen'] +  $users, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::submit('Gruppe erstellen', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::submit('Gruppe Erfassen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                </div>    
+                </div>
                 <div class="col-sm-9">
                     <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                         <thead>
@@ -67,7 +67,7 @@
                 ]
        });
     });
-    $('#datatable').on('click', '.btn-danger[data-remote]', function (e) { 
+    $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
         e.preventDefault();
         $.ajaxSetup({
             headers: {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Group;
-use App\User;
-use Illuminate\Http\Request;
+use App\Models\Group;
+use App\Models\User;
 use DataTables;
+use Illuminate\Http\Request;
 
 class AdminGroupsController extends Controller
 {
@@ -30,7 +30,7 @@ class AdminGroupsController extends Controller
             ->addColumn('groupleader', function ($groups) {
                 return $groups->user['username'];})
             ->addColumn('Actions', function($groups) {
-                return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
                 <button data-remote='.\URL::route('groups.destroy', $groups->id).' class="btn btn-danger btn-sm">Löschen</button>';
             })
             // ->addColumn('checkbox', function ($users) {

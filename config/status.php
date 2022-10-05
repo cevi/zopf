@@ -5,14 +5,14 @@ return [
     'action_aktiv' => 10,
     'action_abgeschlossen' => 20,
 
-    
+
     'order_offen' => 5,
     'order_unterwegs' => 15,
     'order_ausgeliefert' => 20,
     'order_hinterlegt' => 25,
     'order_abgeholt' => 30,
 
-    
+
     'route_geplant' => 5,
     'route_vorbereitet' => 10,
     'route_unterwegs' => 15,
@@ -21,6 +21,13 @@ return [
     'route_type_walking' => 5,
     'route_type_cycling' => 10,
     'route_type_driving' => 15,
+
+    'role_administrator' => 1,
+    'role_groupleader' => 5,
+    'role_actionleader' => 10,
+    'role_leader' => 20,
+
+    'Administrator' => 1
 
 ]
 ?>

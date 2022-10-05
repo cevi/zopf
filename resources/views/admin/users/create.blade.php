@@ -12,7 +12,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Leiter</h1>
             </header>
             <div class="row">
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('User Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('User Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 

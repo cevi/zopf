@@ -12,12 +12,12 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Aktionen</h1>
-                <a href="{{route('actions.create')}}" type="button" class="btn btn-success btn-sm ">Erstellen</a>
+                <a href="{{route('actions.create')}}" type="button" class="btn btn-primary btn-sm ">Erfassen</a>
             </header>
             <div class="row">
-    
+
                 <div class="col-sm-9">
                     <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                         <thead>
@@ -56,7 +56,7 @@
                 ]
        });
     });
-    $('#datatable').on('click', '.btn-danger[data-remote]', function (e) { 
+    $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
         e.preventDefault();
         $.ajaxSetup({
             headers: {
@@ -75,5 +75,5 @@
         });
     });
     </script>
-    
+
 @endsection

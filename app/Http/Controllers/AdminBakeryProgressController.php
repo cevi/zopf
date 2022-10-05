@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\BakeryProgress;
-use App\User;
+use App\Models\BakeryProgress;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,20 +19,29 @@ class AdminBakeryProgressController extends Controller
         //
         $title = "Backstuben Verlauf";
         $group = Auth::user()->group;
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username','id')->all();
         $progress = BakeryProgress::where('action_id','=',$action['id'])->orderby('when')->get();
 
-        foreach($progress  as $act_progress){
-            $graphs[0]['time'][] = date('H:i:s', strtotime($act_progress['when']));
-            $graphs[1]['data'][] = $act_progress['raw_material'];
-            $graphs[2]['data'][] = $act_progress['dough'];
-            $graphs[3]['data'][] = $act_progress['braided'];
-            $graphs[4]['data'][] = $act_progress['baked'];
-            $graphs[5]['data'][] = $act_progress['delivered'];
+        if($progress->count()>0) {
+            foreach ($progress as $act_progress) {
+                $graphs[0]['time'][] = date('H:i:s', strtotime($act_progress['when']));
+                $graphs[1]['data'][] = $act_progress['raw_material'];
+                $graphs[2]['data'][] = $act_progress['dough'];
+                $graphs[3]['data'][] = $act_progress['braided'];
+                $graphs[4]['data'][] = $act_progress['baked'];
+                $graphs[5]['data'][] = $act_progress['delivered'];
+            }
         }
-
+        else{
+            $graphs[0]['time'][] = now()->format('H:i:s');
+            $graphs[1]['data'][] = 0;
+            $graphs[2]['data'][] = 0;
+            $graphs[3]['data'][] = 0;
+            $graphs[4]['data'][] = 0;
+            $graphs[5]['data'][] = 0;
+        }
         $graphs[1]['label'] = 'Roh-Materialien';
         $graphs[1]['color'] = '#B47EB3';
 
@@ -71,11 +80,12 @@ class AdminBakeryProgressController extends Controller
     {
         //
 
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $input = $request->all();
         $input['user_id'] = Auth::user()->id;
         $input['action_id'] =  $action['id'];
         $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
+        $input = array_filter($input);
         BakeryProgress::create($input);
 
         return redirect('/admin/progress');
@@ -84,7 +94,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\BakeryProgress  $bakeryProgress
+     * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
     public function show(BakeryProgress $bakeryProgress)
@@ -95,7 +105,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BakeryProgress  $bakeryProgress
+     * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
     public function edit(BakeryProgress $progress)
@@ -104,7 +114,7 @@ class AdminBakeryProgressController extends Controller
 
         $title = "Backstuben Verlauf Bearbeiten";
         $group = Auth::user()->group;
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username','id')->all();
 
@@ -115,7 +125,7 @@ class AdminBakeryProgressController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BakeryProgress  $bakeryProgress
+     * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, BakeryProgress $progress)
@@ -132,7 +142,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BakeryProgress  $bakeryProgress
+     * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
     public function destroy(BakeryProgress $progress)

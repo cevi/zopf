@@ -12,7 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $actions = \App\Models\Action::where('action_status_id','=',config('status.action_abgeschlossen'))->where('total_amount','>',0);
+    $action_counter = $actions->get()->count();
+    $total_amount = $actions->sum('total_amount');
+    return view('welcome', compact('action_counter','total_amount'));
 });
 
 
@@ -33,6 +36,12 @@ Route::group(['middleware' => 'verified'], function(){
 
     Route::get('/home', 'HomeController@index')->name('home');
 
+
+    Route::resource('/groups', 'GroupsController', [ 'as' => 'home'])->only(['create', 'store', 'update', 'edit']);
+    Route::put('groups/updateGroup/{group}',['as'=>'home.groups.updateGroup','uses'=>'GroupsController@updateGroup']);
+    Route::get('orders/createDataTables', ['as'=>'orders.CreateDataTables','uses'=>'AdminOrdersController@createDataTables']);
+    Route::put('actions/updateAction/{action}',['as'=>'admin.actions.updateAction','uses'=>'AdminActionsController@updateAction']);
+
     Route::get('routes/createDataTables', ['as'=>'routes.CreateDataTables','uses'=>'AdminRoutesController@createDataTables']);
     Route::get('routes/createModalDataTables', ['as'=>'routes.CreateModalDataTables','uses'=>'AdminRoutesController@CreateModalDataTables']);
     Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);
@@ -47,6 +56,11 @@ Route::group(['middleware' => 'verified'], function(){
 
 
     Route::get('/user/{user}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
+    Route::patch('/user/{user}', ['as'=>'home.update', 'uses'=>'UsersController@update']);
+
+    Route::resource('admin/actions', 'AdminActionsController');
+
+    Route::get('admin/users/searchajaxuser', ['as'=>'searchajaxuser','uses'=>'AdminUsersController@searchResponseUser']);
 
     Route::group(['middleware' => 'groupleader'], function(){
 
@@ -54,8 +68,8 @@ Route::group(['middleware' => 'verified'], function(){
         Route::post('admin/log/create', ['as'=>'admin.logcreate','uses'=>'AdminController@logcreate']);
 
         Route::resource('admin/users', 'AdminUsersController');
+        Route::post('admin/users/add',  ['as'=>'users.add', 'uses'=>'AdminUsersController@add']);
 
-        Route::resource('admin/actions', 'AdminActionsController');
         Route::get('admin/actions/complete/{id}', ['as'=>'actions.complete','uses'=>'AdminActionsController@complete']);
 
 

@@ -2,8 +2,13 @@
 
 namespace App\Helper;
 
-use App\Address;
-use App\Logbook;
+use App\Models\Action;
+use App\Models\ActionUser;
+use App\Models\Address;
+use App\Models\Group;
+use App\Models\GroupUser;
+use App\Models\Logbook;
+use App\Models\User;
 
 class Helper
 {
@@ -38,5 +43,26 @@ class Helper
             $route->update(['sequenceDone' => true]);
         }
         return $response;
+    }
+
+    static function updateGroup(User $user, Group $group)
+    {
+        $group_user = GroupUser::firstOrCreate(['group_id' => $group->id, 'user_id' =>$user->id]);
+        $user->update([
+            'group_id' => $group->id,
+            'role_id' => $group_user->role->id]);
+        if($user->action){
+            if($user->action->group['id']<> $group->id){
+                $user->update(['action_id' => null]);
+            }
+        }
+    }
+
+    static function updateAction(User $user, Action $action)
+    {
+        $action_user = ActionUser::firstOrCreate(['action_id' => $action->id, 'user_id' =>$user->id]);
+        $user->update([
+            'action_id' => $action->id,
+            'role_id' => $action_user->role->id]);
     }
 }

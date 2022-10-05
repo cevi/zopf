@@ -25,7 +25,7 @@
     <!-- Styles -->
 
     <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/libs.css') }}" rel="stylesheet">
 
     <!-- Smartsupp Live Chat script -->
     <script type="text/javascript">
@@ -68,7 +68,7 @@
     </footer>
 </div>
     <!-- jQuery -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/libs.js') }}"></script>
     @yield('scripts')
 </body>
 </html>

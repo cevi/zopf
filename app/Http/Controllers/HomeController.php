@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\Route;
-use App\Action;
-use App\Logbook;
 use App\Helper\Helper;
-use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Route;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -31,22 +28,23 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
-        $action = Auth::user()->getAction();  
+        $group = Auth::user()->group;
+        $action = Auth::user()->action;
         if($action){
             $smartsupp_token = $action['SmartsuppToken'];
         }
         else{
             $smartsupp_token = null;
         }
-        return view('home', compact('user','routes', 'action', 'smartsupp_token'));
+        return view('home', compact('user','group','routes', 'action', 'smartsupp_token'));
     }
 
     public function routes($id)
     {
         $user = Auth::user();
-        $action = Auth::user()->getAction();  
-        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get(); 
-        $route = Route::FindOrFail($id); 
+        $action = Auth::user()->action;
+        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
+        $route = Route::FindOrFail($id);
         $orders = $route->orders;
         $smartsupp_token = $action['SmartsuppToken'];
 
@@ -54,11 +52,11 @@ class HomeController extends Controller
     }
 
     public function maps($id)
-    {        
+    {
         $user = Auth::user();
-        $action = Auth::user()->getAction();  
-        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();  
-        $route = Route::FindOrFail($id); 
+        $action = Auth::user()->action;
+        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
+        $route = Route::FindOrFail($id);
         $orders = Order::where('route_id',$route['id']);
         $orders = $orders->with('address')->get();
         $center = $action->center;
@@ -68,20 +66,20 @@ class HomeController extends Controller
     }
 
     public function delivered($id)
-    { 
+    {
         return $this->check_route($id, config('status.order_ausgeliefert'));
     }
 
     public function deposited($id)
-    { 
-        return $this->check_route($id, config('status.order_hinterlegt')); 
+    {
+        return $this->check_route($id, config('status.order_hinterlegt'));
     }
 
     public function check_route($id, $new_status)
-    {    
+    {
         $order = Order::findOrFail($id);
-        $action = Auth::user()->getAction();  
-        $route_id = $order['route_id']; 
+        $action = Auth::user()->action;
+        $route_id = $order['route_id'];
         if($order['quantity']===1){
             $text = 'Ein Zopf wurde';
         }

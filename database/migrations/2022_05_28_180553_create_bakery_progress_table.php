@@ -16,8 +16,10 @@ class CreateBakeryProgressTable extends Migration
         Schema::create('bakery_progress', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->bigInteger('action_id')->index()->unsigned();
-            $table->bigInteger('user_id')->index()->unsigned();
+            $table->bigInteger('action_id')->index()->unsigned()->nullable();
+            $table->foreign('action_id')->references('id')->on('actions')->onDelete('cascade');
+            $table->bigInteger('user_id')->index()->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set Null');
             $table->Time('when');
             $table->integer('raw_material')->default(0);
             $table->integer('dough')->default(0);

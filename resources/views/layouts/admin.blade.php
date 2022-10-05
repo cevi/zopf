@@ -12,31 +12,31 @@
 
       <!-- Bootstrap Core CSS -->
 
-      <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
       <link href="{{asset('css/libs.css')}}" rel="stylesheet">
+      <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
       @yield('styles')
   </head>
 
   <body>
-      @include('includes/admin_sidenav')
+      <div class="page">
+          @include('includes/admin_sidenav')
 
-      @include('includes/admin_topnav')
+          @include('includes/admin_topnav')
 
-      @yield('content')
-      <footer class="main-footer">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-6">
-                <p>Amigo &copy; 2022</p>
+          @yield('content')
+          <footer class="main-footer">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p>Amigo &copy; 2022</p>
+                  </div>
+                  <div class="col-sm-6 text-right">
+                    <p>Version {{config('app.version')}}</p>
+                  </div>
+                </div>
               </div>
-              <div class="col-sm-6 text-right">
-                <p>Version {{config('app.version')}}</p>
-              </div>
-            </div>
-          </div>
-      </footer>
-  </div>
-
+          </footer>
+      </div>
 
         <!-- jQuery -->
         <script src="{{asset('js/libs.js')}}"></script>

@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-group col-xl-1 col-2">
                         <br>
-                        {!! Form::submit('Eintrag erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Eintrag Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                 </div>
             {!! Form::close()!!}
@@ -71,7 +71,7 @@
                             <td>{{$act_progress['delivered']}}</td>
                             <td>{{$act_progress['total']}}</td>
                             <td>
-                                <a href="{{route('progress.edit', $act_progress)}}" type="button" class="btn btn-success btn-sm">Bearbeiten</a>
+                                <a href="{{route('progress.edit', $act_progress)}}" type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
                             </td>
                         </tr>
                     @endforeach
@@ -92,24 +92,23 @@
     <script>
         $(document).ready(function () {
             'use strict';
-
             var brandPrimary = '#74C5AD';
 
-            var AREACHART   = $('#areaChart');
+            var AREACHART = $('#areaChart');
 
             var AreaChart = new Chart(AREACHART, {
                 type: 'line',
                 data: {
                     labels: @json($graphs[0]['time']),
                     datasets: [
-                        @for($i=1; $i<=5; $i++)
-                            {
-                                label: @json($graphs[$i]['label']),
-                                data: @json($graphs[$i]['data']),
-                                borderColor: @json($graphs[$i]['color']),
-                                backgroundColor: @json($graphs[$i]['color']),
-                                fill: true
-                            },
+                            @for($i=1; $i<=5; $i++)
+                        {
+                            label: @json($graphs[$i]['label']),
+                            data: @json($graphs[$i]['data']),
+                            borderColor: @json($graphs[$i]['color']),
+                            backgroundColor: @json($graphs[$i]['color']),
+                            fill: true
+                        },
                         @endfor
                     ]
                 },

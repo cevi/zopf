@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Order;
-use App\Route;
-use App\Action;
-use App\Logbook;
 use App\Helper\Helper;
+use App\Models\Logbook;
+use App\Models\Route;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     //
     public function index(){
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         $title = 'Dashboard';
         if($action){
             $orders_count = count($action->orders);
@@ -128,7 +125,7 @@ class AdminController extends Controller
     }
 
     public function logcreate(Request $request){
-        $action = Auth::user()->getAction();
+        $action = Auth::user()->action;
         if($action){
             $input = $request->all();
             if(!$input['user_id']){

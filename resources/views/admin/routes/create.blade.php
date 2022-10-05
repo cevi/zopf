@@ -13,7 +13,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Route erfassen</h1>
             </header>
             <div class="row">
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Route Erstellen', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Route Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
                 </div>

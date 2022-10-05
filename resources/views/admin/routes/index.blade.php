@@ -15,22 +15,22 @@
             <!-- Page Header-->
             <header>
                 <h1 class="h3 display">Routen</h1>
-                <a href="{{route('routes.create')}}" class="btn btn-primary btn-success btn-sm">
-                    <span>Erstellen</span>
+                <a href="{{route('routes.create')}}" class="btn btn-primary btn-sm">
+                    <span>Erfassen</span>
                 </a>
             </header>
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-striped table-bordered" id="datatable">
+                    <table class="table table-striped table-bordered table responsive" width="100%"  id="datatable">
                         <thead>
                             <tr>
-                                <th scope="col" width="20%">Name</th>
-                                <th scope="col" width="15%">Verantwortlich</th>
-                                <th scope="col" width="10%">Routen Art</th>
-                                <th scope="col" width="10%">Anz. Zöpfe</th>
-                                <th scope="col" width="10%">Anz. Bestellungen</th>
-                                <th scope="col" width="10%">Status</th>
-                                <th scope="col" width="20%">Aktionen</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Verantwortlich</th>
+                                <th scope="col">Routen Art</th>
+                                <th scope="col">Anz. Zöpfe</th>
+                                <th scope="col">Anz. Bestellungen</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Aktionen</th>
                             </tr>
                         </thead>
                     </table>
@@ -54,13 +54,13 @@
             ajax: "{!! route('routes.CreateDataTables') !!}",
             order: [[5, "asc" ],[0, "asc" ]],
             columns: [
-                { data: 'name', name: 'name' },
-                { data: 'user', name: 'user' },
-                { data: 'routetype', name: 'routetype' },
-                { data: 'zopf_count', name: 'zopf_count' },
-                { data: 'order_count', name: 'order_count' },
-                { data: 'status', name: 'status'},
-                { data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
+                { data: 'name', name: 'name', "width": "10%" },
+                { data: 'user', name: 'user', "width": "10%"  },
+                { data: 'routetype', name: 'routetype', "width": "5%"  },
+                { data: 'zopf_count', name: 'zopf_count', "width": "5%"  },
+                { data: 'order_count', name: 'order_count' , "width": "5%" },
+                { data: 'status', name: 'status', "width": "5%" },
+                { data: 'Actions', name: 'Actions', orderable:false, serachable:false, sClass:'text-center', "width": "20%" },
 
             ]
        });
