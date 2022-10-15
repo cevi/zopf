@@ -12,33 +12,35 @@
             <a class="dropdown-item" href="{{ route('actions.create') }}">
                 Aktion erfassen
             </a>
-            <hr>
         @endif
-        @foreach (Auth::user()->group->actions as $action)
-            @if(!$action['global'])
-                <div class="row" >
+        @if(count(Auth::user()->group->actions) > 1)
+            <hr>
+            @foreach (Auth::user()->group->actions as $action)
+                @if(!$action['global'])
+                    <div class="row" >
 
-                    <div class="col-sm-9">
-                        <a class="dropdown-item" href="{{route('admin.actions.updateAction',$action['id'])  }}"
-                           onclick="event.preventDefault();
-                                           document.getElementById('actions-update-form-{{$action['id']}}').submit();">
-                            {{$action['name']}}
-                        </a>
-                    </div>
-                    <div class="col-sm-3">
-                        @if($action->user && $action->user['id']===Auth::user()->id)
-                            <a class="dropdown-item" href="{{route('actions.edit',$action)  }}">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="col-sm-9">
+                            <a class="dropdown-item" href="{{route('admin.actions.updateAction',$action['id'])  }}"
+                               onclick="event.preventDefault();
+                                               document.getElementById('actions-update-form-{{$action['id']}}').submit();">
+                                {{$action['name']}}
                             </a>
-                        @endif
+                        </div>
+                        <div class="col-sm-3">
+                            @if($action->user && $action->user['id']===Auth::user()->id)
+                                <a class="dropdown-item" href="{{route('actions.edit',$action)  }}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            @endif
+                        </div>
                     </div>
-                </div>
 
-                <form id="actions-update-form-{{$action['id']}}" action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST" style="display: none;">
-                    {{ method_field('PUT') }}
-                    @csrf
-                </form>
-            @endif
-        @endforeach
+                    <form id="actions-update-form-{{$action['id']}}" action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST" style="display: none;">
+                        {{ method_field('PUT') }}
+                        @csrf
+                    </form>
+                @endif
+            @endforeach
+        @endif
     </div>
 </li>

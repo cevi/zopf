@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\ProgressChart;
+use App\Charts\TimeChart;
+use App\Helper\Helper;
 use App\Models\BakeryProgress;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -57,7 +60,16 @@ class AdminBakeryProgressController extends Controller
         $graphs[5]['label'] = 'Ausgeliefert';
         $graphs[5]['color'] = '#8BB8A8';
 
-        return view('admin.progress.index', compact('users', 'progress', 'title', 'graphs'));
+        $progressChart = new ProgressChart();
+        $progressChart->minimalist(true);
+        $progressChart->labels($graphs[0]['time']);
+        for ($i=1;$i<6;$i++){
+            $progressChart->dataset($graphs[$i]['label'],'line',$graphs[$i]['data'])
+                ->color($graphs[$i]['color'])
+                ->backgroundColor($graphs[$i]['color']);
+        }
+
+        return view('admin.progress.index', compact('users', 'progress', 'title', 'progressChart'));
     }
 
     /**

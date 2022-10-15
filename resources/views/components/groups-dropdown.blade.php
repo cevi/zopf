@@ -12,33 +12,35 @@
             <a class="dropdown-item" href="{{ route('home.groups.create') }}">
                 Gruppe erfassen
             </a>
-            <hr>
         @endif
-        @foreach (Auth::user()->groups as $group)
-            @if(!$group['global'])
-                <div class="row" >
+        @if(count(Auth::user()->groups) >1 )
+            <hr>
+            @foreach (Auth::user()->groups as $group)
+                @if(!$group['global'])
+                    <div class="row" >
 
-                    <div class="col-sm-9">
-                        <a class="dropdown-item" href="{{route('home.groups.updateGroup',$group['id'])  }}"
-                           onclick="event.preventDefault();
-                                                   document.getElementById('groups-update-form-{{$group['id']}}').submit();">
-                            {{$group['name']}}
-                        </a>
-                    </div>
-                    <div class="col-sm-3">
-                        @if($group->user && $group->user['id']===Auth::user()->id)
-                            <a class="dropdown-item" href="{{route('home.groups.edit',$group)  }}">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                        <div class="col-sm-9">
+                            <a class="dropdown-item" href="{{route('home.groups.updateGroup',$group['id'])  }}"
+                               onclick="event.preventDefault();
+                                                       document.getElementById('groups-update-form-{{$group['id']}}').submit();">
+                                {{$group['name']}}
                             </a>
-                        @endif
+                        </div>
+                        <div class="col-sm-3">
+                            @if($group->user && $group->user['id']===Auth::user()->id)
+                                <a class="dropdown-item" href="{{route('home.groups.edit',$group)  }}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            @endif
+                        </div>
                     </div>
-                </div>
 
-                <form id="groups-update-form-{{$group['id']}}" action="{{route('home.groups.updateGroup',$group['id'])  }}" method="POST" style="display: none;">
-                    {{ method_field('PUT') }}
-                    @csrf
-                </form>
-            @endif
-        @endforeach
+                    <form id="groups-update-form-{{$group['id']}}" action="{{route('home.groups.updateGroup',$group['id'])  }}" method="POST" style="display: none;">
+                        {{ method_field('PUT') }}
+                        @csrf
+                    </form>
+                @endif
+            @endforeach
+        @endif
     </div>
 </li>

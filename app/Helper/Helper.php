@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\Logbook;
 use App\Models\User;
+use Spatie\Geocoder\Geocoder;
 
 class Helper
 {
@@ -64,5 +65,38 @@ class Helper
         $user->update([
             'action_id' => $action->id,
             'role_id' => $action_user->role->id]);
+    }
+
+    static function getGeocoder(string $key): Geocoder
+    {
+        $client = new \GuzzleHttp\Client();
+        $geocoder = new Geocoder($client);
+        $geocoder->setApiKey($key);
+        $geocoder->setCountry('CH');
+        return $geocoder;
+    }
+
+    static function GetTimeChartOptions(): array
+    {
+        return [
+            'fill'=> true,
+            'lineTension'=> 0.3,
+            'backgroundColor'=> '#a8d0f0',
+            'borderColor'=> '#4f92c7',
+            'borderCapStyle'=> 'butt',
+            'borderDash'=> [],
+            'borderDashOffset'=> 0.0,
+            'borderJoinStyle'=> 'miter',
+            'borderWidth'=> 1,
+            'pointBorderColor'=> '#4f92c7',
+            'pointBackgroundColor'=> "#fff",
+            'pointBorderWidth'=> 1,
+            'pointHoverRadius'=> 5,
+            'pointHoverBorderColor'=> "rgba(220,220,220,1)",
+            'pointHoverBorderWidth'=> 2,
+            'pointRadius'=> 1,
+            'pointHitRadius'=> 10,
+            'spanGaps'=> false,
+        ];
     }
 }

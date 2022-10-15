@@ -82,7 +82,7 @@ class AdminAddressesController extends Controller
             $group = Auth::user()->group;
             $input['group_id'] = $group['id'];
         }
-        GeoCoder::setApiKey($action['APIKey']);
+        GeoCoder::setApiKey($input['APIKey']);
         GeoCoder::setCountry('CH');
         $geocode =  GeoCoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' '.$city->name);
         $input['lat'] = $geocode['lat'];

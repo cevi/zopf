@@ -212,8 +212,7 @@ class AdminOrdersController extends Controller
             $center = $action->center;
             $user = Auth::user();
             $action = $user->action;
-            GeoCoder::setApiKey($action['APIKey']);
-            GeoCoder::setCountry('CH');
+            $geocoder = Helper::getGeocoder($action['APIKey']);
             foreach($importData_arr as $importData){
                 // return $importData;
                 $importData['abholung'] = $importData['abholung'] === "x" ? 1 : 0;
@@ -243,7 +242,7 @@ class AdminOrdersController extends Controller
 
                 if($address){
                     if(!$importData['abholung']){
-                        $geocode = Geocoder::getCoordinatesForAddress($address['street'] . ', ' .$address['plz'] . ' '.$address['city']);
+                        $geocode = $geocoder->getCoordinatesForAddress($address['street'] . ', ' .$address['plz'] . ' '.$address['city']);
                         $lat = $geocode['lat'];
                         $lng = $geocode['lng'];
 
@@ -331,10 +330,8 @@ class AdminOrdersController extends Controller
                 $input['pick_up'] = true;
             }
             else{
-
-                GeoCoder::setApiKey($action['APIKey']);
-                GeoCoder::setCountry('CH');
-                $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+                $geocoder = Helper::getGeocoder($action['APIKey']);
+                $geocode = $geocoder->getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
                 $input['lat'] = $geocode['lat'];
                 $input['lng'] = $geocode['lng'];
 

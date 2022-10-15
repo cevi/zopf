@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\TimeChart;
+use App\Charts\ZopfChart;
 use App\Helper\Helper;
 use App\Models\Logbook;
 use App\Models\Route;
@@ -120,8 +122,21 @@ class AdminController extends Controller
             ],
         ]);
 
-        return view('admin/index', compact('icon_array', 'orders_open', 'orders_delivery', 'orders_open_pickup',
-            'orders_finished', 'cut', 'logbooks', 'open_routes', 'users', 'graphs_time', 'graphs_sum', 'title'));
+        $zopfChart = new ZopfChart;
+        $zopfChart->minimalist(true);
+        $zopfChart->labels(["Offen", "Unterwegs", "Abholen", "Aufgeschnitten", "Abgeschlossen"]);
+        $zopfChart->dataset('Zöpfe','doughnut', [$orders_open, $orders_delivery, $orders_open_pickup, $cut, $orders_finished])
+            ->color([ '#4f92c7',"#21d19f","#522a27","#c73e1d","#c59849"])
+            ->backgroundColor([ '#4f92c7',"#21d19f","#522a27","#c73e1d","#c59849"]);
+
+        $timeChart = new TimeChart();
+        $timeChart->minimalist(true);
+        $timeChart->labels($graphs_time);
+        $timeChart->dataset('Anzahl Zöpfe','line',$graphs_sum)
+            ->color([ '#4f92c7'])
+            ->backgroundColor(['#a8d0f0']);
+
+        return view('admin/index', compact('icon_array','logbooks', 'open_routes', 'users', 'title','timeChart', 'zopfChart'));
     }
 
     public function logcreate(Request $request){

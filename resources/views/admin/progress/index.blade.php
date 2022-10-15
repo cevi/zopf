@@ -81,7 +81,7 @@
             @if(count($progress)>1)
                 <h4>Zeitlicher Verlauf</h4>
                 <div class="area-chart">
-                    <canvas id="areaChart"></canvas>
+                    {!! $progressChart->container() !!}
                 </div>
             @endif
         </div>
@@ -89,59 +89,60 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function () {
-            'use strict';
-            var brandPrimary = '#74C5AD';
+    {{isset($progressChart) ? $progressChart->script() : ''}}
+{{--    <script>--}}
+        {{--$(document).ready(function () {--}}
+        {{--    'use strict';--}}
+        {{--    var brandPrimary = '#74C5AD';--}}
 
-            var AREACHART = $('#areaChart');
+        {{--    var AREACHART = $('#areaChart');--}}
 
-            var AreaChart = new Chart(AREACHART, {
-                type: 'line',
-                data: {
-                    labels: @json($graphs[0]['time']),
-                    datasets: [
-                            @for($i=1; $i<=5; $i++)
-                        {
-                            label: @json($graphs[$i]['label']),
-                            data: @json($graphs[$i]['data']),
-                            borderColor: @json($graphs[$i]['color']),
-                            backgroundColor: @json($graphs[$i]['color']),
-                            fill: true
-                        },
-                        @endfor
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            mode: 'index'
-                        },
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Uhrzeit'
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            title: {
-                                display: true,
-                                text: 'Anzahl Zöpfe'
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+        {{--    var AreaChart = new Chart(AREACHART, {--}}
+        {{--        type: 'line',--}}
+        {{--        data: {--}}
+        {{--            labels: @json($graphs[0]['time']),--}}
+        {{--            datasets: [--}}
+        {{--                    @for($i=1; $i<=5; $i++)--}}
+        {{--                {--}}
+        {{--                    label: @json($graphs[$i]['label']),--}}
+        {{--                    data: @json($graphs[$i]['data']),--}}
+        {{--                    borderColor: @json($graphs[$i]['color']),--}}
+        {{--                    backgroundColor: @json($graphs[$i]['color']),--}}
+        {{--                    fill: true--}}
+        {{--                },--}}
+        {{--                @endfor--}}
+        {{--            ]--}}
+        {{--        },--}}
+        {{--        options: {--}}
+        {{--            responsive: true,--}}
+        {{--            plugins: {--}}
+        {{--                tooltip: {--}}
+        {{--                    mode: 'index'--}}
+        {{--                },--}}
+        {{--            },--}}
+        {{--            interaction: {--}}
+        {{--                mode: 'nearest',--}}
+        {{--                axis: 'x',--}}
+        {{--                intersect: false--}}
+        {{--            },--}}
+        {{--            scales: {--}}
+        {{--                x: {--}}
+        {{--                    title: {--}}
+        {{--                        display: true,--}}
+        {{--                        text: 'Uhrzeit'--}}
+        {{--                    }--}}
+        {{--                },--}}
+        {{--                y: {--}}
+        {{--                    stacked: true,--}}
+        {{--                    title: {--}}
+        {{--                        display: true,--}}
+        {{--                        text: 'Anzahl Zöpfe'--}}
+        {{--                    }--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--});--}}
+{{--    </script>--}}
 
 @endsection

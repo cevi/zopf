@@ -35,7 +35,8 @@ class GroupsController extends Controller
         }
 
         $input = $request->all();
-        $input['user_id'] = Auth::user()->id;
+        $user = Auth::user();
+        $input['user_id'] = $user->id;
         $input['global'] = false;
         $group = Group::create($input);
         $user->update(['group_id' => $group->id, 'role_id' => config('status.role_groupleader')]);

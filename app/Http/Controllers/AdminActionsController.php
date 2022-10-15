@@ -13,7 +13,7 @@ use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Geocoder\Facades\Geocoder;
+use Spatie\Geocoder\Geocoder;
 
 class AdminActionsController extends Controller
 {
@@ -89,9 +89,8 @@ class AdminActionsController extends Controller
                 $input['group_id'] = $group['id'];
             }
             $user = Auth::user();
-            GeoCoder::setApiKey($request['APIKey']);
-            GeoCoder::setCountry('CH');
-            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
+            $geocoder = Helper::getGeocoder($input['APIKey']);
+            $geocode = $geocoder->getCoordinatesForAddress($input['street'] . ', ' .$input['plz'] . ' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
             $input['center'] = true;

@@ -28,7 +28,9 @@
             <div class="col-lg-6 col-md-12">
               <div class="card project-progress">
                 <h2 class="display h4">Übersicht</h2>
-                <div id="chart" style="height: 400px;"></div>
+                <div style="height: 400px;">
+                    {!! $zopfChart->container() !!}
+                </div>
               </div>
             </div>
             <!-- Line Chart -->
@@ -36,7 +38,8 @@
               <div class="card sales-report">
                 <h2 class="display h4">Zeitlicher Verlauf</h2>
                 <div class="line-chart">
-                  <canvas id="lineChart"></canvas>
+{{--                  <canvas id="lineChart"></canvas>--}}
+                    {!! $timeChart->container() !!}
                 </div>
               </div>
             </div>
@@ -149,72 +152,11 @@
 @endsection
 
 @section('scripts')
+    {{isset($timeChart) ? $timeChart->script() : ''}}
+    {{isset($zopfChart) ? $zopfChart->script() : ''}}
 <script>
-    var brandPrimary = '#4f92c7';
-  const chart = new Chartisan({
-    el: '#chart',
-    url: "@chart('zopf_chart')",
-    hooks: new ChartisanHooks()
-        .colors([brandPrimary,"#21d19f","#522a27","#c73e1d","#c59849"])
-      .datasets([
-        { type: 'pie', radius: ['40%', '80%'] },
-      ])
-
-      .axis(false)
-      .legend({ bottom: 0 })
-      .tooltip()
-      // .custom(() => ({
-    // }))
-  });
 $(document).ready(function () {
-
-'use strict';
-
-setInterval(function() {window.location.reload(); }, 60000);
-
-
-var LINECHART   = $('#lineChart');
-
-var lineChart = new Chart(LINECHART, {
-        type: 'line',
-        data: {
-            labels: @json($graphs_time),
-            datasets: [
-                {
-                    label: "Anzahl Zöpfe",
-                    fill: true,
-                    lineTension: 0.3,
-                    backgroundColor:  '#a8d0f0',
-                    borderColor: brandPrimary,
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    borderWidth: 1,
-                    pointBorderColor: brandPrimary,
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: brandPrimary,
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: @json($graphs_sum),
-                    spanGaps: false
-                }
-            ]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+    setInterval(function() {window.location.reload(); }, 60000);
   });
 </script>
 
