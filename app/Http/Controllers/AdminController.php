@@ -55,8 +55,8 @@ class AdminController extends Controller
                 }
             }
             else{
-                $graphs_time = 0;
-                $graphs_sum = 0;
+                $graphs_time[] = 0;
+                $graphs_sum[] = 0;
             }
             $total = $action->orders->sum('quantity') + $cut;
 
@@ -132,8 +132,8 @@ class AdminController extends Controller
         $timeChart = new TimeChart();
         $timeChart->minimalist(true);
         $timeChart->labels($graphs_time);
-        $timeChart->dataset('Anzahl Zöpfe','line',$graphs_sum)
-            ->color([ '#4f92c7'])
+        $timeChart->dataset('Anzahl Zöpfe', 'line', $graphs_sum)
+            ->color(['#4f92c7'])
             ->backgroundColor(['#a8d0f0']);
 
         return view('admin/index', compact('icon_array','logbooks', 'open_routes', 'users', 'title','timeChart', 'zopfChart'));

@@ -111,4 +111,14 @@ Route::get('admin/run-migrations', function () {
     return Artisan::call('migrate', ["--force" => true ]);
 });
 
+Route::get('admin/run-migrations-seed', function () {
+    return Artisan::call('migrate', ["--force" => true, "--seed" => true ]);
+});
 
+Route::get('admin/run-deployment', function () {
+    echo 'config:cache <br>';
+    Artisan::call('config:cache');
+    echo 'view:cache <br>';
+    Artisan::call('view:cache');
+    return true;
+});

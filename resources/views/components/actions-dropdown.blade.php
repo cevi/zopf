@@ -1,7 +1,7 @@
 <li class="nav-item dropdown">
     <a id="navbarActionDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         @if(Auth::user()->action && !Auth::user()->action['global'] )
-            {{Auth::user()->action['name']}}
+            {{Auth::user()->action['name']}} {{Auth::user()->action['year']}}
         @else
             Meine Aktionen
         @endif <span class="caret"></span>
@@ -13,7 +13,7 @@
                 Aktion erfassen
             </a>
         @endif
-        @if(count(Auth::user()->group->actions) > 1)
+        @if(count(Auth::user()->group->actions) > 0)
             <hr>
             @foreach (Auth::user()->group->actions as $action)
                 @if(!$action['global'])
@@ -23,7 +23,7 @@
                             <a class="dropdown-item" href="{{route('admin.actions.updateAction',$action['id'])  }}"
                                onclick="event.preventDefault();
                                                document.getElementById('actions-update-form-{{$action['id']}}').submit();">
-                                {{$action['name']}}
+                                {{$action['name']}} {{$action['year']}}
                             </a>
                         </div>
                         <div class="col-sm-3">
