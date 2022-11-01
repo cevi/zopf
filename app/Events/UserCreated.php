@@ -18,7 +18,7 @@ class UserCreated
     /**
      * The user instance.
      *
-     * @var \App\Models\Users
+     * @var \App\Models\User
      */
     public $user;
     /**
