@@ -17,33 +17,37 @@ class Group extends Model
             GroupUser::create([
                 'user_id' => config('status.Administrator'),
                 'role_id' => config('status.role_administrator'),
-                'group_id' => $group['id']
+                'group_id' => $group['id'],
             ]);
         });
     }
 
     protected $fillable = [
-        'name', 'user_id', 'global', 'demo'
+        'name', 'user_id', 'global', 'demo',
     ];
 
     protected $casts = [
         'global' => 'boolean',
-        'demo' => 'boolean'
+        'demo' => 'boolean',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->hasMany('App\Models\User');
     }
 
-    public function allUsers(){
+    public function allUsers()
+    {
         return $this->belongsToMany('App\Models\User', 'group_users')->where('group_users.role_id', '<>', config('status.role_administrator'));
     }
 
-    public function actions(){
+    public function actions()
+    {
         return $this->hasMany('App\Models\Action');
     }
 }

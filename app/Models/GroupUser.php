@@ -10,18 +10,21 @@ class GroupUser extends Model
     use HasFactory;
 
     protected $fillable = [
-        'group_id', 'user_id', 'role_id'
+        'group_id', 'user_id', 'role_id',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function group(){
+    public function group()
+    {
         return $this->belongsTo('App\Models\Group');
     }
 
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo('App\Models\Role');
     }
 }

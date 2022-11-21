@@ -12,27 +12,24 @@ class UsersController extends Controller
     public function index(User $user)
     {
         $aktUser = Auth::user();
-        if(!$aktUser){
+        if (! $aktUser) {
             return redirect('/home');
         }
-        if($aktUser->id == $user ->id)
-        {
+        if ($aktUser->id == $user->id) {
             $title = 'Eigenes Profil';
+
             return view('home.user', compact('aktUser', 'title'));
-        }
-        else
-        {
+        } else {
             return redirect()->back();
         }
     }
 
     public function update(Request $request, User $user)
     {
-        if(trim($request->password) == ''){
+        if (trim($request->password) == '') {
             $input = $request->except('password');
             $user->update($input);
-        }
-        else{
+        } else {
             $request->validate([
                 'password' => ['required', 'confirmed'],
             ]);
@@ -42,6 +39,7 @@ class UsersController extends Controller
             $user->update($input);
             Session::flash('message', 'Passwort erfolgreich verändert!');
         }
+
         return redirect('/home');
     }
 }

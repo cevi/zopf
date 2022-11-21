@@ -7,6 +7,24 @@
                 <li><a href="/home"> <i class="fas fa-home"></i> Home</a></li>
                 @if(Auth::user()->isActionleader() && Auth::user()->action)
                     <li><a href="/admin"> <i class="icon-home"></i>Dashboard</a></li>
+                    <li>
+                        <a href="{{route('progress.index')}}"><i class="fa-solid fa-chart-area"></i> Backstuben Verlauf</a>
+                    </li>
+                    <li><a href="#OrdersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-padnote"></i>Bestellungen</a>
+                        <ul id="OrdersDropdown" class="collapse list-unstyled ">
+                            <li>
+                                <a href="{{route('orders.index')}}">Alle Bestellungen</a>
+                            </li>
+
+                            <li>
+                                <a href="{{route('orders.create')}}">Bestellung erfassen</a>
+                            </li>
+                            <li>
+                                <a href="{{route('orders.map')}}">Karte ansehen</a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
                     <li><a href="#RoutesDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-paper-airplane"></i>Routen</a>
                         <ul id="RoutesDropdown" class="collapse list-unstyled ">
                             <li>
@@ -21,24 +39,6 @@
                             </li>
                         </ul>
                             <!-- /.nav-second-level -->
-                    </li>
-                    <li><a href="#OrdersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-padnote"></i>Bestellungen</a>
-                        <ul id="OrdersDropdown" class="collapse list-unstyled ">
-                            <li>
-                                <a href="{{route('orders.index')}}">Alle Bestellungen</a>
-                            </li>
-
-                            <li>
-                            <a href="{{route('orders.create')}}">Bestellung erfassen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('orders.map')}}">Karte ansehen</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                    <li>
-                        <a href="{{route('progress.index')}}"><i class="fa-solid fa-chart-area"></i> Backstuben Verlauf</a>
                     </li>
                 @endif
 

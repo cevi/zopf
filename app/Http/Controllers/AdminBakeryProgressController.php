@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Charts\ProgressChart;
-use App\Charts\TimeChart;
-use App\Helper\Helper;
 use App\Models\BakeryProgress;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,14 +18,14 @@ class AdminBakeryProgressController extends Controller
     public function index()
     {
         //
-        $title = "Backstuben Verlauf";
+        $title = 'Backstuben Verlauf';
         $group = Auth::user()->group;
         $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username','id')->all();
-        $progress = BakeryProgress::where('action_id','=',$action['id'])->orderby('when')->get();
+        $users = $users->pluck('username', 'id')->all();
+        $progress = BakeryProgress::where('action_id', '=', $action['id'])->orderby('when')->get();
 
-        if($progress->count()>0) {
+        if ($progress->count() > 0) {
             foreach ($progress as $act_progress) {
                 $graphs[0]['time'][] = date('H:i:s', strtotime($act_progress['when']));
                 $graphs[1]['data'][] = $act_progress['raw_material'];
@@ -36,8 +34,7 @@ class AdminBakeryProgressController extends Controller
                 $graphs[4]['data'][] = $act_progress['baked'];
                 $graphs[5]['data'][] = $act_progress['delivered'];
             }
-        }
-        else{
+        } else {
             $graphs[0]['time'][] = now()->format('H:i:s');
             $graphs[1]['data'][] = 0;
             $graphs[2]['data'][] = 0;
@@ -63,8 +60,8 @@ class AdminBakeryProgressController extends Controller
         $progressChart = new ProgressChart();
         $progressChart->minimalist(true);
         $progressChart->labels($graphs[0]['time']);
-        for ($i=1;$i<6;$i++){
-            $progressChart->dataset($graphs[$i]['label'],'line',$graphs[$i]['data'])
+        for ($i = 1; $i < 6; $i++) {
+            $progressChart->dataset($graphs[$i]['label'], 'line', $graphs[$i]['data'])
                 ->color($graphs[$i]['color'])
                 ->backgroundColor($graphs[$i]['color']);
         }
@@ -95,7 +92,7 @@ class AdminBakeryProgressController extends Controller
         $action = Auth::user()->action;
         $input = $request->all();
         $input['user_id'] = Auth::user()->id;
-        $input['action_id'] =  $action['id'];
+        $input['action_id'] = $action['id'];
         $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
         $input = array_filter($input);
         BakeryProgress::create($input);
@@ -124,11 +121,11 @@ class AdminBakeryProgressController extends Controller
     {
         //
 
-        $title = "Backstuben Verlauf Bearbeiten";
+        $title = 'Backstuben Verlauf Bearbeiten';
         $group = Auth::user()->group;
         $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username','id')->all();
+        $users = $users->pluck('username', 'id')->all();
 
         return view('admin.progress.edit', compact('users', 'progress', 'title'));
     }
@@ -161,6 +158,7 @@ class AdminBakeryProgressController extends Controller
     {
         //
         $progress->delete();
+
         return redirect('/admin/progress');
     }
 }

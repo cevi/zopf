@@ -62,7 +62,8 @@ class AdminLogbookController extends Controller
         //
         $group = Auth::user()->group;
         $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username','id')->all();
+        $users = $users->pluck('username', 'id')->all();
+
         return view('admin.logbooks.edit', compact('logbook', 'users'));
     }
 
@@ -77,6 +78,7 @@ class AdminLogbookController extends Controller
     {
         //
         $logbook->update($request->all());
+
         return redirect('/admin');
     }
 
@@ -90,6 +92,7 @@ class AdminLogbookController extends Controller
     {
         //
         $logbook->delete();
+
         return redirect('/admin');
     }
 }

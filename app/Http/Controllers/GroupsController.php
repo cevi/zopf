@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Models\Group;
 use App\Models\GroupUser;
-use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -17,7 +16,8 @@ class GroupsController extends Controller
     {
         //
         $title = 'Gruppe Erfassen';
-        $users = Auth::user()->pluck('username','id');
+        $users = Auth::user()->pluck('username', 'id');
+
         return view('home.groups.create', compact('users', 'title'));
     }
 
@@ -43,7 +43,7 @@ class GroupsController extends Controller
         GroupUser::create([
             'user_id' => $user->id,
             'group_id' => $group->id,
-            'role_id' => config('status.role_groupleader')]);
+            'role_id' => config('status.role_groupleader'), ]);
 
         return redirect('home');
     }
@@ -58,7 +58,8 @@ class GroupsController extends Controller
     {
         //
         $title = 'Gruppe Bearbeiten';
-        return view('home.groups.edit', compact('group','title'));
+
+        return view('home.groups.edit', compact('group', 'title'));
     }
 
     public function update(Request $request, Group $group)
@@ -75,6 +76,7 @@ class GroupsController extends Controller
 
         $input = $request->all();
         $group->update($input);
+
         return redirect('home');
     }
 
@@ -82,6 +84,7 @@ class GroupsController extends Controller
     {
         //
         Helper::updateGroup(Auth::user(), $group);
+
         return redirect('/home');
     }
 }

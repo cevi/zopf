@@ -234,7 +234,6 @@ return [
         'GoogleMaps' => GoogleMaps\Facade\GoogleMapsFacade::class,
         'Helper' => App\Helper\Helper::class,
 
-
     ],
 
 ];

@@ -138,6 +138,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/fruitcake/php-cors" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/consoletvs/charts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/balping/json-raw-encoder" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/pint" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

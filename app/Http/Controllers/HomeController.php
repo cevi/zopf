@@ -30,13 +30,13 @@ class HomeController extends Controller
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $group = Auth::user()->group;
         $action = Auth::user()->action;
-        if($action){
+        if ($action) {
             $smartsupp_token = $action['SmartsuppToken'];
-        }
-        else{
+        } else {
             $smartsupp_token = null;
         }
-        return view('home', compact('user','group','routes', 'action', 'smartsupp_token'));
+
+        return view('home', compact('user', 'group', 'routes', 'action', 'smartsupp_token'));
     }
 
     public function routes($id)
@@ -57,12 +57,13 @@ class HomeController extends Controller
         $action = Auth::user()->action;
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
-        $orders = Order::where('route_id',$route['id']);
+        $orders = Order::where('route_id', $route['id']);
         $orders = $orders->with('address')->get();
         $center = $action->center;
         $key = $action['APIKey'];
         $smartsupp_token = $action['SmartsuppToken'];
-        return view('home.map', compact('orders', 'route','routes','center', 'key', 'smartsupp_token'));
+
+        return view('home.map', compact('orders', 'route', 'routes', 'center', 'key', 'smartsupp_token'));
     }
 
     public function delivered($id)
@@ -80,30 +81,28 @@ class HomeController extends Controller
         $order = Order::findOrFail($id);
         $action = Auth::user()->action;
         $route_id = $order['route_id'];
-        if($order['quantity']===1){
+        if ($order['quantity'] === 1) {
             $text = 'Ein Zopf wurde';
-        }
-        else
-        {
+        } else {
             $text = $order['quantity'].' Zöpfe wurden';
         }
         $text = $text.' an '.$order->address['firstname'].' '.$order->address['name'];
-        if($new_status===config('status.order_hinterlegt')){
+        if ($new_status === config('status.order_hinterlegt')) {
             $text = $text.' hinterlegt.';
-        }
-        else
-        {
+        } else {
             $text = $text.' übergeben.';
         }
-        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(),  $order['quantity']);
+        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(), $order['quantity']);
         $order->update(['order_status_id' => $new_status]);
-        $orders = Order::where('route_id',$route_id);
-        if($orders->min('order_status_id') > config('status.order_unterwegs')){
+        $orders = Order::where('route_id', $route_id);
+        if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
             $route = Route::FindOrFail($route_id);
             Helper::CreateLogEntry(Auth::user()->id, $action['id'], 'Route '.$route['name'].' wurde abgeschlossen', now());
             $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
+
             return redirect('/');
         }
+
         return back();
     }
 }
