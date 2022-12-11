@@ -25,6 +25,13 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
+  'genealabs/laravel-caffeine' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'GeneaLabs\\LaravelCaffeine\\Providers\\Service',
+    ),
+  ),
   'laravel/sail' => 
   array (
     'providers' => 

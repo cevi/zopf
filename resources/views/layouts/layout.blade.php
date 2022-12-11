@@ -10,6 +10,6 @@
                 </button>
             </div>
         @endif
-        @yield('survey_content')   
+        @yield('content')
     </div>
 @endsection

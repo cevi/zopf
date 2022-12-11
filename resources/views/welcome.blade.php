@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('survey_content')
+@section('content')
 <div class="wide" id="all">
         <!-- HERO SLIDER SECTION-->
       <section class="text-white bg-cover bg-center primary-overlay overlay-dense" style="background: url('img/photogrid.jpg') repeat">

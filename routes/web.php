@@ -92,11 +92,15 @@ Route::group(['middleware' => 'verified'], function () {
         // Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
 
         // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
+
+        Route::get('/admin/changes', 'AdminController@changes');
+        Route::post('users/feedback/send', 'FeedbackController@send');
     });
 });
 
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('admin/groups', 'AdminGroupsController');
+    Route::resource('/admin/feedback', 'FeedbackController');
 });
 
 Route::get('admin/run-migrations', function () {

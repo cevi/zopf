@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('survey_content')
+@section('content')
     <h1>Hallo {{$aktUser->username}}</h1>
     {!! Form::model($aktUser, ['method' => 'PATCH', 'class' => 'card', 'action'=>['UsersController@update', $aktUser->id]]) !!}
 

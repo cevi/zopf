@@ -160,4 +160,12 @@ class AdminController extends Controller
 
         return redirect('admin/');
     }
+
+    public function changes()
+    {
+        $user = Auth::user();
+        $title = 'Rückmeldungen / Änderungen';
+
+        return view('admin/changes', compact('user', 'title'));
+    }
 }

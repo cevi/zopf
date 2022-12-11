@@ -4,41 +4,80 @@
         <div class="main-menu">
             <h5 class="sidenav-heading">Zopfaktion</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">
-                <li><a href="/home"> <i class="fas fa-home"></i> Home</a></li>
+                <li>
+                    <a href="/home"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-home"></i>
+                        <span class="ml-3">Home</span>
+                    </a>
                 @if(Auth::user()->isActionleader() && Auth::user()->action)
-                    <li><a href="/admin"> <i class="icon-home"></i>Dashboard</a></li>
                     <li>
-                        <a href="{{route('progress.index')}}"><i class="fa-solid fa-chart-area"></i> Backstuben Verlauf</a>
+                        <a href="/admin"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-home"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
                     </li>
-                    <li><a href="#OrdersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-padnote"></i>Bestellungen</a>
-                        <ul id="OrdersDropdown" class="collapse list-unstyled ">
+                    <li>
+                        <a href="{{route('progress.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fa-solid fa-chart-area"></i>
+                            <span class="ml-3">Backstuben Verlauf</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-controls="dropdown-orders" data-collapse-toggle="dropdown-orders">
+                            <i class="icon-padnote"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                                  sidebar-toggle-item>Bestellungen</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul id="dropdown-orders" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="{{route('orders.index')}}">Alle Bestellungen</a>
+                                <a href="{{route('orders.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
+                                    Bestellungen</a>
                             </li>
-
                             <li>
-                                <a href="{{route('orders.create')}}">Bestellung erfassen</a>
+                                <a href="{{route('orders.create')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Bestellung
+                                    erfassen</a>
                             </li>
                             <li>
-                                <a href="{{route('orders.map')}}">Karte ansehen</a>
+                                <a href="{{route('orders.map')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Karte
+                                    ansehen</a>
                             </li>
                         </ul>
-                        <!-- /.nav-second-level -->
                     </li>
-                    <li><a href="#RoutesDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-paper-airplane"></i>Routen</a>
-                        <ul id="RoutesDropdown" class="collapse list-unstyled ">
+                    <li>
+                        <button type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-controls="dropdown-routes" data-collapse-toggle="dropdown-routes">
+                            <i class="icon-paper-airplane"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                                  sidebar-toggle-item>Routen</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul id="dropdown-routes" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="{{route('routes.index')}}">Alle Routen</a>
+                                <a href="{{route('routes.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
+                                    Routen</a>
                             </li>
-
                             <li>
-                            <a href="{{route('routes.create')}}">Route erfassen</a>
+                                <a href="{{route('routes.create')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Route
+                                    erfassen</a>
                             </li>
                             <li>
-                                <a href="{{route('routes.map')}}">Karte ansehen</a>
+                                <a href="{{route('routes.map')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Karte
+                                    ansehen</a>
                             </li>
                         </ul>
-                            <!-- /.nav-second-level -->
                     </li>
                 @endif
 
@@ -60,30 +99,49 @@
             <h5 class="sidenav-heading">Administration</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">
                 @if (Auth::user()->isAdmin())
-                    <li><a href="#GroupDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-list"></i>Gruppen</a>
-                        <ul id="GroupDropdown" class="collapse list-unstyled ">
-                            <li><a href="{{route('groups.index')}}">Alle Gruppen</a></li>
-                        </ul>
+                    <li>
+                        <a href="{{route('groups.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="icon-list"></i>
+                            <span class="ml-3">Gruppen</span>
+                        </a>
                     </li>
                 @endif
-                <li><a href="#UserDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-user"></i>Leiter</a>
-                    <ul id="UserDropdown" class="collapse list-unstyled ">
-                        <li>
-                            <a href="{{route('users.index')}}">Alle Leiter</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
+                <li>
+                    <a href="{{route('users.index')}}"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="icon-user"></i>
+                        <span class="ml-3">Leiter</span>
+                    </a>
                 </li>
-                <li><a href="#ActionDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-form"></i> Aktionen</a>
-                    <ul id="ActionDropdown" class="collapse list-unstyled ">
+                <li>
+                    <button type="button"
+                            class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                            aria-controls="dropdown-actions" data-collapse-toggle="dropdown-actions">
+                        <i class="icon-form"></i>
+                        <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                              sidebar-toggle-item>Aktionen</span>
+                        <i class="fa-solid fa-angle-down"></i>
+                    </button>
+                    <ul id="dropdown-actions" class="hidden py-2 space-y-2">
                         <li>
-                            <a href="{{route('actions.index')}}">Alle Aktionen</a>
+                            <a href="{{route('actions.index')}}"
+                               class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
+                                Aktionen</a>
                         </li>
                         <li>
-                        <a href="{{route('actions.create')}}">Aktion erfassen</a>
+                            <a href="{{route('actions.create')}}"
+                               class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Aktion
+                                erfassen</a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="/admin/changes"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span class="ml-3">Rückmeldungen / Änderungen</span>
+                    </a>
                 </li>
             </ul>
         </div>
