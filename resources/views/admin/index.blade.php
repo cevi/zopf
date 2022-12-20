@@ -101,8 +101,8 @@
                             <div class="activities">
                                 <ol class="relative border-l border-gray-200 dark:border-gray-700">
                                     <!-- Item-->
-                                    @if($logbooks)
-                                        @foreach ($logbooks as $logbook)
+                                    @if($notifications)
+                                        @foreach ($notifications as $notification)
                                             <li class="mb-10 ml-6">
                                             <span
                                                 class="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
@@ -120,14 +120,14 @@
                                                 <div
                                                     class="justify-between items-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
                                                     <time
-                                                        class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{$logbook->wann}}</time>
+                                                        class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{$notification->when}}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <strong>
-                                                            <a href="{{route('logbooks.edit', $logbook)}}">
-                                                                {{$logbook->user['username']}}:
+                                                            <a href="{{route('logbooks.edit', $notification)}}">
+                                                                {{$notification->user}}:
                                                             </a>
                                                         </strong>
-                                                        {{$logbook->comments}}
+                                                        {{$notification->data}}
                                                     </div>
                                                 </div>
                                             </li>
@@ -183,13 +183,5 @@
 @section('scripts')
     {{isset($timeChart) ? $timeChart->script() : ''}}
     {{isset($zopfChart) ? $zopfChart->script() : ''}}
-    <script>
-        $(document).ready(function () {
-            setInterval(function () {
-                // window.location.reload();
-            }, 60000);
-        });
-    </script>
-
 @endsection
 

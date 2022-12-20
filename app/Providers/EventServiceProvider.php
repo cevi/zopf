@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\NotificationCreate;
 use App\Events\UserCreated;
 use App\Listeners\CreateActionUser;
 use App\Listeners\CreateGroupUser;
 use App\Listeners\MakeUserSlug;
+use App\Listeners\NotificationCreateListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -26,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
             MakeUserSlug::class,
             CreateGroupUser::class,
             CreateActionUser::class,
+        ],
+        NotificationCreate::class => [
+            NotificationCreateListener::class,
         ],
     ];
 

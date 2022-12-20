@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale()}}">
 @include('includes/header')
 <body>
-<div id="app" class="page mainpage">
+<div id="app" class="page mainpage text-dark__black">
     @include('includes/topnav')
 
 
@@ -11,10 +11,10 @@
     </main>
     <x-footer/>
 </div>
-    <!-- jQuery -->
-    <script src="{{ asset('js/libs.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
-    <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
-    @yield('scripts')
+<!-- jQuery -->
+<script src="{{ asset('js/libs.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
+<script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
+@yield('scripts')
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Order;
 use App\Models\Route;
@@ -88,16 +89,20 @@ class HomeController extends Controller
         }
         $text = $text.' an '.$order->address['firstname'].' '.$order->address['name'];
         if ($new_status === config('status.order_hinterlegt')) {
-            $text = $text.' hinterlegt.';
+            $log['text'] = $text.' hinterlegt.';
         } else {
-            $text = $text.' übergeben.';
+            $log['text'] = $text.' übergeben.';
         }
-        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(), $order['quantity']);
+        $log['user'] = Auth::user()->username;
+        $log['quantity'] = $order['quantity'];
+        NotificationCreate::dispatch($action, $log);
         $order->update(['order_status_id' => $new_status]);
         $orders = Order::where('route_id', $route_id);
         if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
             $route = Route::FindOrFail($route_id);
-            Helper::CreateLogEntry(Auth::user()->id, $action['id'], 'Route '.$route['name'].' wurde abgeschlossen', now());
+            $log['user'] = Auth::user()->username;
+            $log['text'] = 'Route '.$route['name'].' wurde abgeschlossen';
+            NotificationCreate::dispatch($action, $log);
             $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
 
             return redirect('/');

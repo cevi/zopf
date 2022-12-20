@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Address;
 use App\Models\Order;
@@ -347,9 +348,10 @@ class AdminRoutesController extends Controller
             $route->update(['route_status_id' => config('status.route_vorbereitet')]);
         } else {
             $action = Auth::user()->action;
-            $text = 'Route '.$route['name'].' wurde gestartet.';
+            $log['text']  = 'Route '.$route['name'].' wurde gestartet.';
+            $log['user'] = $route->user->username;
             Helper::CreateRouteSequence($route);
-            Helper::CreateLogEntry($route->user['id'], $action['id'], $text, now());
+            NotificationCreate::dispatch($action, $log);
             $orders = $route->orders();
             $orders->update(['order_status_id' => config('status.order_unterwegs')]);
             $route->update(['route_status_id' => config('status.route_unterwegs')]);

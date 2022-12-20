@@ -180,3 +180,13 @@ ile_user {
     border-color: var(--color-accent-fg);
     outline: none;
 }
+
+.notification_dropdown {
+    max-height: 75vh;
+    width: 25vw;
+    overflow: auto;
+}
+
+.mobile-accordion {
+    margin-bottom: 0;
+}

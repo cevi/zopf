@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Action;
 use App\Models\ActionStatus;
@@ -12,7 +13,7 @@ use App\Models\Logbook;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Geocoder\Geocoder;
+use Spatie\Geocoder\Facades\Geocoder;
 
 class AdminActionsController extends Controller
 {
@@ -156,41 +157,32 @@ class AdminActionsController extends Controller
         //
         $action = Action::findOrFail($id);
         $address = $action->center;
+        $input = $request->all();
+        GeoCoder::setApiKey($input['APIKey']);
+        GeoCoder::setCountry('CH');
+        $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
+        $input['lat'] = $geocode['lat'];
+        $input['lng'] = $geocode['lng'];
+        $input['center'] = true;
         if ($address) {
-            $input = $request->all();
-            GeoCoder::setApiKey($request['APIKey']);
-            GeoCoder::setCountry('CH');
-            $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
-            $input['lat'] = $geocode['lat'];
-            $input['lng'] = $geocode['lng'];
-            $input['center'] = true;
-
             $address->update($input);
         } else {
-            $input = $request->all();
             if (! Auth::user()->isAdmin()) {
                 $group = Auth::user()->group;
                 $input['group_id'] = $group['id'];
             }
-            $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
-            $input['lat'] = $geocode['lat'];
-            $input['lng'] = $geocode['lng'];
-            $input['center'] = true;
-
-            // return $input;
-
             $address = Address::create($input);
             $input['address_id'] = $address['id'];
         }
         $status_id = (int) $input['action_status_id'];
         if ($status_id != $action['action_status_id']) {
             if ($status_id === config('status.action_aktiv')) {
-                $comment = 'Aktion '.$action['name'].' wurde gestartet.';
-                Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
+                $input['text'] = 'Aktion '.$action['name'].' wurde gestartet.';
+                NotificationCreate::dispatch($action, $input);
             }
             if ($status_id === config('status.action_abgeschlossen')) {
-                $comment = 'Aktion '.$action['name'].' wurde abgeschlossen.';
-                Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
+                $input['text'] = 'Aktion '.$action['name'].' wurde abgeschlossen.';
+                NotificationCreate::dispatch($action, $input);
             }
         }
         $action->update($input);
@@ -211,15 +203,16 @@ class AdminActionsController extends Controller
         $input = $request->all();
         if ($action->action_status_id === config('status.action_geplant')) {
             $action->action_status_id = config('status.action_aktiv');
-            $comment = 'Aktion '.$action['name'].' wurde gestartet.';
+            $log['text'] = 'Aktion '.$action['name'].' wurde gestartet.';
         } else {
             $action->action_status_id = config('status.action_abgeschlossen');
 
             $cut = Logbook::where('action_id', $action['id'])->where('cut', true)->sum('quantity');
             $input['total_amount'] = $action->orders->sum('quantity') + $cut;
-            $comment = 'Aktion '.$action['name'].' wurde abgeschlossen.';
+            $log['text'] = 'Aktion '.$action['name'].' wurde abgeschlossen.';
         }
-        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $comment, now());
+        $log['user'] = Auth::user()->username;
+        NotificationCreate::dispatch($action, $log);
         $action->update($input);
 
         return redirect('/admin/actions');

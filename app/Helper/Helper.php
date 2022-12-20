@@ -13,10 +13,6 @@ use Spatie\Geocoder\Geocoder;
 
 class Helper
 {
-    public static function CreateLogEntry($user_id, $action_id, $comments, $wann, $quantity = 0, $cut = false)
-    {
-        Logbook::create(['user_id' => $user_id, 'action_id' => $action_id, 'comments' => $comments, 'wann' => $wann, 'quantity' => $quantity,  'cut' => $cut]);
-    }
 
     public static function CreateRouteSequence($route)
     {
@@ -37,7 +33,7 @@ class Helper
         $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
         $request = $client->get($url.'&key='.$key);
         $response = json_decode($request->getBody(), true);
-        if (! $route['sequenceDone']) {
+        if (!$route['sequenceDone'] && ($response['status']==='OK')) {
             foreach ($response['routes'][0]['waypoint_order'] as $key => $waypoint) {
                 $orders[$waypoint]->update(['sequence' => $key]);
             }

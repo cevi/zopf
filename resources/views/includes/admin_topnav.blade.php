@@ -13,6 +13,7 @@
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
+                <x-notification-bell/>
                 <x-groups-dropdown/>
                 <x-actions-dropdown/>
                 <x-users-dropdown/>

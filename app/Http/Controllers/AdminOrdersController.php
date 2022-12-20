@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Imports\OrdersImport;
 use App\Models\Address;
@@ -147,8 +148,11 @@ class AdminOrdersController extends Controller
         $name = $order->address['firstname'];
         $name .= strlen($name) > 0 ? ' ' : '';
         $name .= $order->address['name'];
-        $text = $text.' von '.trim($name).' abgeholt.';
-        Helper::CreateLogEntry(Auth::user()->id, $action['id'], $text, now(), $order['quantity']);
+        $input['text'] = $text.' von '.trim($name).' abgeholt.';
+        $input['quantity'] =  $order['quantity'];
+
+        NotificationCreate::dispatch($action, $input);
+//        Helper::CreateLogEntry(Auth::user()->id, $text, now(), $order['quantity']);
 
         return redirect('/admin/orders');
     }
