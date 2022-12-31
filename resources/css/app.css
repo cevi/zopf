@@ -1,6 +1,17 @@
+@import './libs/welcome.css';
+@import './libs/bootstrap.css';
+@import './libs/sb-admin-2.css';
+@import './libs/datatables.css';
+@import './libs/jquery-ui.css';
+@import './libs/style.default.premium.css';
+@import './libs/dropify.min.css';
+@import './libs/custom.css';
+@import './libs/welcome.css';
+
 /*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
     --color-bg-primary: #F4F7FA;

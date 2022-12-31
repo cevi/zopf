@@ -847,142 +847,6 @@ select.form-control option {
     border-radius: 0;
 }
 
-.form-group-material {
-    position: relative;
-    margin-bottom: 30px;
-}
-
-input.input-material {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-    color: #868e96;
-    font-weight: 300;
-}
-
-input.input-material.is-valid {
-    border-color: #28a745 !important;
-}
-
-input.input-material.is-invalid {
-    border-color: #dc3545 !important;
-}
-
-input.input-material:focus {
-    border-color: var(--blue);
-    outline: none;
-}
-
-input.input-material ~ label {
-    color: #aaa;
-    position: absolute;
-    top: 14px;
-    left: 0;
-    cursor: text;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
-    font-weight: 300;
-}
-
-input.input-material ~ label.active {
-    font-size: 0.8rem;
-    top: -10px;
-    color: var(--blue);;
-}
-
-input.input-material.is-invalid ~ label {
-    color: #dc3545;
-}
-
-input.form-control-custom {
-    visibility: hidden;
-    width: 1px;
-}
-
-input.form-control-custom:checked + label::before {
-    background: var(--blue);
-!important;
-}
-
-input.form-control-custom:checked + label::after {
-    opacity: 1 !important;
-}
-
-input.form-control-custom.radio-custom + label::before {
-    border-radius: 50%;
-}
-
-input.form-control-custom.radio-custom + label::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    line-height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    top: 7px;
-    left: 5px;
-}
-
-input.form-control-custom[disabled] + label {
-    cursor: not-allowed;
-}
-
-input.form-control-custom[disabled] + label::before, input.form-control-custom[disabled] + label::after {
-    border: 2px solid #aaa;
-    cursor: not-allowed;
-}
-
-input.form-control-custom[checked] + label::before, input.form-control-custom[checked] + label::after {
-    border: none;
-}
-
-input.form-control-custom + label {
-    font-size: 0.85rem;
-    margin-bottom: 0;
-    margin-left: 0;
-    color: #999;
-    padding-left: 25px;
-    padding-top: 2px;
-    position: relative;
-}
-
-input.form-control-custom + label span {
-    margin-left: 20px;
-}
-
-input.form-control-custom + label::before {
-    content: '';
-    display: block;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    background: #ddd;
-    color: #fff;
-    text-align: center;
-    position: absolute;
-    top: 2px;
-    left: 0;
-    -webkit-transition: all 0.1s;
-    transition: all 0.1s;
-    cursor: pointer;
-}
-
-input.form-control-custom + label::after {
-    content: '\f00c';
-    display: block;
-    font-family: 'FontAwesome';
-    font-size: 8px;
-    color: #fff;
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    -webkit-transition: all 0.1s;
-    transition: all 0.1s;
-    opacity: 0;
-    cursor: pointer;
-}
-
 button {
     cursor: pointer;
 }
@@ -1173,10 +1037,8 @@ button {
 }
 
 .datepicker-dropdown.dropdown-menu td.active, .datepicker-dropdown.dropdown-menu td:active {
-    background-color: var(--blue);
-!important;
-    border-color: var(--blue);
-!important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
 }
 
 .datepicker-dropdown.dropdown-menu:before, .datepicker-dropdown.dropdown-menu:after {

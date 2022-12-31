@@ -100,6 +100,30 @@ Route::group(['middleware' => 'verified'], function () {
     });
 });
 
+Route::get('/broadcasting/auth', function(Request $request) {
+    $channelName = $request->channel_name;
+    $socketId = $request->socket_id;
+
+    // Verify that the user is authenticated and has permission to access the private channel
+    if (auth()->check()) {
+        // Create a new Pusher channel token with the user's ID as the user context
+        $pusher = new \Pusher\Pusher(
+            config('broadcasting.connections.pusher.key'),
+            config('broadcasting.connections.pusher.secret'),
+            config('broadcasting.connections.pusher.app_id'),
+            config('broadcasting.connections.pusher.options')
+        );
+        $presenceData = ['id' => auth()->id()];
+        $channelToken = $pusher->presence_auth($channelName, $socketId, auth()->id(), $presenceData);
+
+        // Return the channel token as a JSON response
+        return response()->json(['auth' => $channelToken]);
+    } else {
+        // Return an error response if the user is not authenticated or does not have permission
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+});
+
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('admin/groups', 'AdminGroupsController');
     Route::resource('/admin/feedback', 'FeedbackController');

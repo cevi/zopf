@@ -95,6 +95,7 @@ class HomeController extends Controller
         }
         $log['user'] = Auth::user()->username;
         $log['quantity'] = $order['quantity'];
+        $log['route_id'] = $route_id;
         NotificationCreate::dispatch($action, $log);
         $order->update(['order_status_id' => $new_status]);
         $orders = Order::where('route_id', $route_id);

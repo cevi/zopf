@@ -102,7 +102,7 @@
             </div>
         </section>
         <!-- SHOWCASE SECTION-->
-        <section class="py-5 bg-pentagon">
+        <section class="py-5 bg-pentagon" style="background: url(img/texture-bw.png)">
             <div class="container py-4">
                 <!-- Counters-->
                 <div class="row gy-4 text-center" id="counterUp">

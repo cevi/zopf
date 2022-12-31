@@ -11,6 +11,13 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+//Broadcast::channel('App.User.{id}', function ($user, $id) {
+//    return (int) $user->id === (int) $id;
+//});
+
+use App\Models\Action;
+
+Broadcast::channel('notification-create.{actionId}', function ($user, $actionId) {
+    return true;
+//    return $user->action['id'] === $action->id;
 });

@@ -4,7 +4,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap';
+import './libs/datatables.js';
+import './libs/map-icons.js';
+import './libs/markerCluster.js';
+import './libs/googlemaps.js';
+import './libs/swiper-bundle.min.js';
+import './libs/jquery.waypoints.min.js';
+import './libs/custom.js';
 
 // window.Vue = require('vue');
 

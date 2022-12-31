@@ -27,6 +27,7 @@ class CreateLogEntry extends Notification
         $this->user = $input['user'] ?? Auth::user()->username;
         $this->when = $input['wann'] ?? now();
         $this->text = $input['text'] ?? '';
+        $this->route_id = $input['route_id'] ?? NULL;
     }
 
     /**
@@ -64,6 +65,9 @@ class CreateLogEntry extends Notification
             'quantity' => $this->quantity,
             'user' => $this->user,
             'when' => $this->when,
+            'route_id' => $this->route_id,
+            'route_orders' => $this->route_id,
+            'route_amount' => $this->route_id,
         ];
     }
 }

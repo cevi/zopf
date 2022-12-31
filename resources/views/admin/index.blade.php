@@ -55,37 +55,42 @@
             <div class="container-fluid">
                 <div class="row d-flex">
                     <div class="col-lg-6 col-md-12">
-                        <div href="#"
+                        <div id="open_routes" href="#"
                              class=" open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Routen</h5>
                             @if($open_routes)
                                 @foreach ($open_routes as $key => $route)
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td style="width:5%"><h3 class="h4 display">{{$key + 1 }}</h3></td>
-                                            <td style="width:25%"><a
-                                                    href="{{route('routes.overview', $route->id)}}"><h3
-                                                        class="h4 display">{{$route->name}}</h3></a></td>
-                                            <td style="width:25%"><h3
-                                                    class="h4 display">{{$route->user['username']}}</h3></td>
-                                            <td style="width:20%"><h3
-                                                    class="h4 display">{{$route->route_type['name']}}</h3></td>
-                                            <td style="width:25%"><h3
-                                                    class="h4 display">{{$route->route_status['name']}}</h3></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="progress">
-                                        <div role="progressbar" style="width:  {{$route->route_done_percent()}}%"
-                                             aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0"
-                                             aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
-                                    </div>
-                                    <div class="page-statistics d-flex justify-content-between">
-                                        <div class="page-statistics-left">
-                                            <span>Zöpfe Total</span><strong>{{$route->zopf_count()}}</strong></div>
-                                        <div class="page-statistics-right">
-                                            <span>Noch Offen</span><strong>{{$route->zopf_open_count()}}</strong>
+                                    <div id="route-{{$route['id']}}"
+                                         data-count-open="{{$route->zopf_open_count()}}"
+                                         data-count-all="{{$route->zopf_count()}}">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr>
+                                                <td style="width:5%"><h3 class="h4 display">{{$key + 1 }}</h3></td>
+                                                <td style="width:25%"><a
+                                                        href="{{route('routes.overview', $route->id)}}"><h3
+                                                            class="h4 display">{{$route->name}}</h3></a></td>
+                                                <td style="width:25%"><h3
+                                                        class="h4 display">{{$route->user['username']}}</h3></td>
+                                                <td style="width:20%"><h3
+                                                        class="h4 display">{{$route->route_type['name']}}</h3></td>
+                                                <td style="width:25%"><h3
+                                                        class="h4 display">{{$route->route_status['name']}}</h3></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="progress">
+                                            <div id="route-progessbar-{{$route['id']}}" role="progressbar"
+                                                 style="width:  {{$route->route_done_percent()}}%"
+                                                 aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0"
+                                                 aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
+                                        </div>
+                                        <div class="page-statistics d-flex justify-content-between">
+                                            <div class="page-statistics-left">
+                                                <span>Zöpfe Total</span><strong>{{$route->zopf_count()}}</strong></div>
+                                            <div id="route-open-{{$route['id']}}" class="page-statistics-right">
+                                                <span>Noch Offen</span><strong>{{$route->zopf_open_count()}}</strong>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -127,7 +132,7 @@
                                                                 {{$notification->user}}:
                                                             </a>
                                                         </strong>
-                                                        {{$notification->data}}
+                                                        {{$notification->content}}
                                                     </div>
                                                 </div>
                                             </li>
@@ -181,7 +186,22 @@
 @endsection
 
 @section('scripts')
-    {{isset($timeChart) ? $timeChart->script() : ''}}
     {{isset($zopfChart) ? $zopfChart->script() : ''}}
+    {{isset($timeChart) ? $timeChart->script() : ''}}
+
+    <script>
+
+        {{--console.log({{ $timeChart->id }}_api_url);--}}
+        {{--{{ $timeChart->id }}_refresh({{ $timeChart->id }}_api_url);--}}
+        var notificationsWrapper = $('#dropdownNotifications');
+        var notificationsList = notificationsWrapper.find('#notificationList');
+        var notificationsCount = {{count(Auth::user()->action->unreadNotifications)}};
+
+        var notificationSymbol = $('#notificationSymbol');
+
+        // UpdateNotifications(null);
+
+        
+    </script>
 @endsection
 

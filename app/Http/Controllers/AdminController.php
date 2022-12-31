@@ -6,6 +6,7 @@ use App\Charts\TimeChart;
 use App\Charts\ZopfChart;
 use App\Events\NotificationCreate;
 use App\Helper\Helper;
+use App\Models\Action;
 use App\Models\Logbook;
 use App\Models\Route;
 use App\Models\User;
@@ -22,118 +23,29 @@ class AdminController extends Controller
         $action = Auth::user()->action;
         $title = 'Dashboard';
         if ($action) {
-            $orders_count = count($action->orders);
-            $orders_delivery = $action->orders->where('order_status_id', config('status.order_unterwegs'))->where('pick_up', false)->sum('quantity');
-            $orders_open = $action->orders->where('order_status_id', config('status.order_offen'))->where('pick_up', false)->sum('quantity');
-            $orders_open_pickup = $action->orders->where('order_status_id', '<', config('status.order_ausgeliefert'))->where('pick_up', true)->sum('quantity');
-            $orders_finished = $action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert'))->sum('quantity');
-            $orders_count_finished = count($action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert')));
-
             $notifications = $action->notifications->sortByDesc('when');
-            $cut = clone $notifications;
-            $graphs = clone $notifications;
-            $cut = $cut->where('cut', true)->sum('quantity');
-
-            $graphs = $graphs->sortBy('when');
-            if (count($graphs) > 0) {
-                $graphs_time_min = $graphs->first()->when;
-                $graphs_time_max = $graphs->last()->when;
-                $graphs_time_max = date('H:i:s', (ceil(strtotime($graphs_time_max) / 1800) * 1800));
-                $diff = ceil((strtotime($graphs_time_max) - strtotime($graphs_time_min)) / 1800);
-
-                $graphs_time = [];
-                $graphs_sum = [];
-
-                array_push($graphs_time, date('H:i:s', (floor(strtotime($graphs_time_min) / 1800) * 1800)));
-
-                for ($i = 0; $i <= $diff; $i++) {
-                    if ($i > 0) {
-                        array_push($graphs_time, date('H:i:s', strtotime($graphs_time[$i - 1]) + 1800));
-                    }
-                    $graph_sum = $action->notifications->where('when', '>', date('H:i:s', strtotime($graphs_time[$i]) - 900))
-                        ->where('when', '<', date('H:i:s', strtotime($graphs_time[$i]) + 900));
-                    array_push($graphs_sum, $graph_sum->sum('quantity'));
-                }
-            } else {
-                $graphs_time[] = 0;
-                $graphs_sum[] = 0;
-            }
-
-            $total = $action->orders->sum('quantity') + $cut;
-
-            $routes = Route::where('action_id', $action['id'])->get();
-            $routes_count = count($routes);
 
             $open_routes = Route::where('action_id', $action['id'])->where('route_status_id', '<=', config('status.route_unterwegs'))->get()->sortByDesc('route_status_id');
-
-            $routes_finished_count = count(Route::where('action_id', $action['id'])->where('route_status_id', '=', config('status.route_abgeschlossen'))->get());
 
             $group = Auth::user()->group;
             $users = User::where('group_id', $group['id'])->get();
             $users = $users->pluck('username', 'id')->all();
         } else {
-            $total = 0;
-            $orders_count = 0;
-            $routes_count = 0;
-            $orders_open = 0;
-            $orders_delivery = 0;
-            $orders_open_pickup = 0;
-            $orders_finished = 0;
-            $cut = 0;
             $open_routes = [];
-            $users = 0;
-            $graphs_time = 0;
-            $graphs_sum = 0;
-            $routes_finished_count = 0;
             $notifications = [];
+            $users = 0;
         }
 
-        $icon_array = collect([
-            (object) [
-                'icon' => 'icon-padnote',
-                'name' => 'Zöpfe',
-                'number' => $orders_finished + $cut.' / '.$total,
-            ],
-            (object) [
-                'icon' => 'icon-website',
-                'name' => 'Bestellungen',
-                'number' => $orders_count_finished.' / '.$orders_count,
-            ],
-            (object) [
-                'icon' => 'icon-line-chart',
-                'name' => 'Routen',
-                'number' => $routes_finished_count.' / '.$routes_count,
-            ],
-            (object) [
-                'icon' => 'icon-home',
-                'name' => 'Offen',
-                'number' => $orders_open,
-            ],
-            (object) [
-                'icon' => 'icon-paper-airplane',
-                'name' => 'Unterwegs',
-                'number' => $orders_delivery,
-            ],
-            (object) [
-                'icon' => 'icon-user',
-                'name' => 'Abholen',
-                'number' => $orders_open_pickup,
-            ],
-        ]);
+        $data = Helper::GetZopfChartData($action);
+        $icon_array = Helper::GetIconArray($data);
 
         $zopfChart = new ZopfChart;
-        $zopfChart->minimalist(true);
-        $zopfChart->labels(['Offen', 'Unterwegs', 'Abholen', 'Aufgeschnitten', 'Abgeschlossen']);
-        $zopfChart->dataset('Zöpfe', 'doughnut', [$orders_open, $orders_delivery, $orders_open_pickup, $cut, $orders_finished])
-            ->color(['#4f92c7', '#21d19f', '#522a27', '#c73e1d', '#c59849'])
-            ->backgroundColor(['#4f92c7', '#21d19f', '#522a27', '#c73e1d', '#c59849']);
+        $zopfChart_api = url('api/action/'.$action['id'].'/zopfChart');
+        $zopfChart->labels(['Offen', 'Unterwegs', 'Abholen', 'Aufgeschnitten', 'Abgeschlossen'])->load($zopfChart_api);
 
-        $timeChart = new TimeChart();
-        $timeChart->minimalist(true);
-        $timeChart->labels($graphs_time);
-        $timeChart->dataset('Anzahl Zöpfe', 'line', $graphs_sum)
-            ->color(['#4f92c7'])
-            ->backgroundColor(['#a8d0f0']);
+        $timeChart = new TimeChart;
+        $timeChart_api = url('api/action/'.$action['id'].'/timeChart');
+        $timeChart->labels(Helper::GetTimeChartData($action,true))->load($timeChart_api);
 
         return view('admin/index', compact('icon_array', 'open_routes', 'users', 'title', 'timeChart', 'zopfChart', 'notifications'));
     }
@@ -177,5 +89,32 @@ class AdminController extends Controller
     {
         Auth::user()->action->unreadNotifications->markAsRead();
         return redirect()->back();
+    }
+
+    public function timeChart(Action $action)
+    {
+        $timeChart = new TimeChart;
+
+        $timeChart->minimalist(true);
+        $timeChart->labels(Helper::GetTimeChartData($action,true));
+        $timeChart->dataset('Anzahl Zöpfe', 'line', Helper::GetTimeChartData($action))
+            ->color(['#4f92c7'])
+            ->backgroundColor(['#a8d0f0']);
+
+        return $timeChart->api();
+    }
+
+    public function zopfChart(Action $action)
+    {
+        $data = Helper::GetZopfChartData($action);
+
+        $zopfChart = new ZopfChart;
+
+        $zopfChart->minimalist(true);
+        $zopfChart->dataset('Zöpfe', 'doughnut', [$data['orders_open'], $data['orders_delivery'], $data['orders_open_pickup'], $data['cut'], $data['orders_finished']])
+            ->color(['#4f92c7', '#21d19f', '#522a27', '#c73e1d', '#c59849'])
+            ->backgroundColor(['#4f92c7', '#21d19f', '#522a27', '#c73e1d', '#c59849']);
+
+        return $zopfChart->api();
     }
 }
