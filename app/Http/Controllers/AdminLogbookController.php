@@ -6,6 +6,7 @@ use App\Models\Logbook;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class AdminLogbookController extends Controller
 {
@@ -17,6 +18,9 @@ class AdminLogbookController extends Controller
     public function index()
     {
         //
+        $action = Auth::user()->action;
+        $notifications = $action->Notifications()->orderBy('when','DESC')->get(['id', 'user', 'when', 'content'])->toArray();
+        return $notifications;
     }
 
     /**
@@ -57,27 +61,26 @@ class AdminLogbookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Logbook $logbook)
+    public function edit($id)
     {
         //
-        $group = Auth::user()->group;
-        $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username', 'id')->all();
+        $title = 'Logbuch-Eintrag bearbeiten';
+        $action = Auth::user()->action;
+        $notification = $action->notifications->where('id', $id)->first();
 
-        return view('admin.logbooks.edit', compact('logbook', 'users'));
+        return view('admin.logbooks.edit', compact('notification', 'title'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Logbook $logbook)
+    public function update(Request $request, $id)
     {
         //
-        $logbook->update($request->all());
+        $action = Auth::user()->action;
+        $notification = $action->notifications->where('id', $id)->first();
+        $notification->update($request->all());
 
         return redirect('/admin');
     }
@@ -88,10 +91,12 @@ class AdminLogbookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Logbook $logbook)
+    public function destroy($id)
     {
         //
-        $logbook->delete();
+        $action = Auth::user()->action;
+        $notification = $action->notifications->where('id', $id)->first();
+        $notification->delete();
 
         return redirect('/admin');
     }

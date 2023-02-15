@@ -102,7 +102,7 @@ class Helper
 
     public static function GetTimeChartData(Action $action, $graph_time = false): array
     {
-        $graphs = $action->notifications->sortBy('when');
+        $graphs = $action->notifications()->get(['when', 'quantity'])->sortBy('when');
         if (count($graphs) > 0) {
             $graphs_time_min = $graphs->first()->when;
             $graphs_time_max = $graphs->last()->when;
@@ -144,7 +144,7 @@ class Helper
 
         if($action) {
 
-            $notifications = $action->notifications->sortByDesc('when');
+            $notifications = $action->notifications()->get(['when', 'quantity', 'cut'])->sortByDesc('when');
             $cut = $notifications->where('cut', true)->sum('quantity');
 
             $data['orders_count'] = count($action->orders);
@@ -165,32 +165,38 @@ class Helper
     {
         return collect([
             (object) [
-                'icon' => 'icon-padnote',
+                'id' => 'overview-breads',
+                'icon' => 'fa-bread-slice',
                 'name' => 'Zöpfe',
                 'number' => $data['orders_finished'] + $data['cut'].' / '.$data['total'],
             ],
             (object) [
-                'icon' => 'icon-website',
+                'id' => 'overview-orders',
+                'icon' => 'fa-newspaper',
                 'name' => 'Bestellungen',
                 'number' => $data['orders_count_finished'].' / '.$data['orders_count'],
             ],
             (object) [
-                'icon' => 'icon-line-chart',
+                'id' => 'overview-routes',
+                'icon' => 'fa-route',
                 'name' => 'Routen',
                 'number' => $data['routes_finished_count'].' / '.$data['routes_count'],
             ],
             (object) [
-                'icon' => 'icon-home',
+                'id' => 'overview-open',
+                'icon' => 'fa-house-chimney',
                 'name' => 'Offen',
                 'number' => $data['orders_open'],
             ],
             (object) [
-                'icon' => 'icon-paper-airplane',
+                'id' => 'overview-delivery',
+                'icon' => 'fa-paper-plane',
                 'name' => 'Unterwegs',
                 'number' => $data['orders_delivery'],
             ],
             (object) [
-                'icon' => 'icon-user',
+                'id' => 'overview-pickup',
+                'icon' => 'fa-people-carry-box',
                 'name' => 'Abholen',
                 'number' => $data['orders_open_pickup'],
             ],

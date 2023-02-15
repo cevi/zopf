@@ -8,6 +8,10 @@
                 d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
         </svg>
         <div id="notificationSymbol" class="flex relative">
+            @if(count(Auth::user()->action->unreadNotifications)> 0)
+                <div
+                    class="inline-flex relative -top-2 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+            @endif
         </div>
     </button>
     <!-- Dropdown menu -->
@@ -20,18 +24,8 @@
         </div>
         <div id="notificationList" class="divide-y divide-gray-100 dark:divide-gray-700">
             @foreach(Auth::user()->action->unreadNotifications->sortByDesc('when') as $notification)
-                <div
-                    class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <div class="pl-3 w-full">
-                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span
-                                class="font-semibold text-gray-900 dark:text-white">{{$notification['user']}}</span>:
-                            {{$notification['content']}}
-                        </div>
-                        <div class="text-xs text-blue-600 dark:text-blue-500">
-                            {{\Carbon\Carbon::createFromTimeStamp(strtotime($notification['when']))->diffForHumans()}}
-                        </div>
-                    </div>
-                </div>
+                <x-notification-item :user="$notification['user']" :content="$notification['content']"
+                                     :time="$notification['when']"/>
             @endforeach
         </div>
         <a href="{{route('notifications.read')}}"

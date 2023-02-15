@@ -62,4 +62,9 @@ class Action extends Model
     {
         return $this->belongsTo('App\Models\Address', 'address_id');
     }
+
+    public function notifications()
+    {
+        return $this->morphMany(\Illuminate\Notifications\DatabaseNotification::class, 'notifiable');
+    }
 }

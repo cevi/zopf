@@ -97,6 +97,8 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('users/feedback/send', 'FeedbackController@send');
 
         Route::get('admin/notifications/read', ['as' => 'notifications.read', 'uses' => 'AdminController@notifications_read']);
+
+        Route::get('admin/icon_array', ['as' => 'icon_array.get', 'uses' => 'AdminController@GetIconArray']);
     });
 });
 

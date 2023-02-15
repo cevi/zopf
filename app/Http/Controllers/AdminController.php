@@ -23,7 +23,7 @@ class AdminController extends Controller
         $action = Auth::user()->action;
         $title = 'Dashboard';
         if ($action) {
-            $notifications = $action->notifications->sortByDesc('when');
+            $notifications = $action->notifications()->get(['id', 'user', 'when', 'content'])->sortByDesc('when')->toArray();
 
             $open_routes = Route::where('action_id', $action['id'])->where('route_status_id', '<=', config('status.route_unterwegs'))->get()->sortByDesc('route_status_id');
 
@@ -117,4 +117,17 @@ class AdminController extends Controller
 
         return $zopfChart->api();
     }
+
+    public function GetIconArray(Request $request)
+    {
+        $input = $request->all();
+        $action = Action::findOrFail($input['action']['id']);
+
+        $data = Helper::GetZopfChartData($action);
+        $icon_array = Helper::GetIconArray($data);
+        return $icon_array;
+
+    }
+
+
 }

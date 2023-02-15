@@ -68,54 +68,63 @@ function vanillaCounterUp(counterTarget, counterSpeed) {
 //     encrypted: true,
 // });
 
-var notificationsWrapper = $('.dropdownNotification');
-var notificationsToggle = notificationsWrapper.find('a[data-toggle]');
-var notificationsCountElem = notificationsToggle.find('i[data-count]');
-var notificationsCount = parseInt(notificationsCountElem.data('count'));
-var notifications = notificationsWrapper.find('ul.dropdown-menu');
-
-function UpdateNotifications($input) {
+function UpdateNotifications(data) {
     UpdateNotificationsSymbol();
-    UpdateNotification();
-    UpdateRoute($input);
-}
-
-function UpdateNotificationsSymbol() {
-    if (notificationsCount > 0) {
-        var NotificationSymbolRed = '<div class ="inline-flex relative -top-2 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-900">';
-        notificationSymbol.html(NotificationSymbolRed);
+    UpdateNotification(data['input']);
+    UpdateRoute(data['input']);
+    if (typeof UpdateIconArray === "function") {
+        UpdateIconArray(data['action']);
+    }
+    if (typeof UpdateGraph === "function") {
+        UpdateGraph();
+    }
+    if (typeof UpdateList === "function") {
+        UpdateList(data['input']);
     }
 }
 
-function UpdateNotification() {
+function UpdateNotificationsSymbol() {
+    $('#notificationSymbol').html('<div class ="inline-flex relative -top-2 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-900">');
+}
+
+function UpdateNotification(input) {
+    var notificationsWrapper = $('#dropdownNotifications');
+    var notificationsList = notificationsWrapper.find('#notificationList');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var Notification = '' +
         '<div class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-700" >' +
         '<div class="pl-3 w-full" >' +
         '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">' +
-        '<span class="font-semibold text-gray-900 dark:text-white" > ' + 'Benutzer' + '</span>:' +
-        'Text' +
+        '<span class="font-semibold text-gray-900 dark:text-white" > ' + input['user'] + '</span>: ' +
+        input['text'] +
         '</div>' +
         '<div class="text-xs text-blue-600 dark:text-blue-500">' +
-        '{{\Carbon\Carbon::now()->diffForHumans()}}' +
+        time +
         '</div>' +
         '</div>' +
         '</div>';
+    notificationsList.html(Notification + notificationsList.html());
 }
 
 function UpdateRoute($input) {
-    var routeId = $input['route_id'];
-    var quantity = $input['quantity'];
-    var route = $('#route-' + routeId)[0];
-    var routeProgress = $('#route-progessbar-' + routeId)[0];
-    var routeOpen = $('#route-open-' + routeId);
-    route.dataset.countOpen = parseInt(route.dataset.countOpen) - quantity;
-    var routePercent = route.dataset.countAll > 0 ? (route.dataset.countAll - route.dataset.countOpen) / route.dataset.countAll * 100 : 0;
-    routeProgress.ariaValueNow = routePercent;
-    routeProgress.style.width = routePercent + "%";
-    routeOpen.html('<span>Noch Offen</span><strong>' + route.dataset.countOpen + '</strong>');
+    if ($input['route_id'] !== undefined) {
+        var routeId = $input['route_id'];
+        var quantity = $input['quantity'];
+        var route = $('#route-' + routeId)[0];
+        if (route !== undefined) {
+            var routeProgress = $('#route-progessbar-' + routeId)[0];
+            var routeOpen = $('#route-open-' + routeId);
+            route.dataset.countOpen = parseInt(route.dataset.countOpen) - quantity;
+            var routePercent = route.dataset.countAll > 0 ? (route.dataset.countAll - route.dataset.countOpen) / route.dataset.countAll * 100 : 0;
+            routeProgress.ariaValueNow = routePercent;
+            routeProgress.style.width = routePercent + "%";
+            routeOpen.html('<span>Noch Offen</span><strong>' + route.dataset.countOpen + '</strong>');
+        }
+    }
 }
 
 window.Echo.private(`notification-create.${window.actionID}`)
     .listen('NotificationCreate', (e) => {
-        UpdateNotifications(e.input);
+        UpdateNotifications(e);
     });

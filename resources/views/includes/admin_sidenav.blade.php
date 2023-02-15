@@ -7,14 +7,14 @@
                 <li>
                     <a href="/home"
                        class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="fas fa-home"></i>
+                        <i class="fa-solid fa-house-chimney"></i>
                         <span class="ml-3">Home</span>
                     </a>
                 @if(Auth::user()->isActionleader() && Auth::user()->action)
                     <li>
                         <a href="/admin"
                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-home"></i>
+                            <i class="fa-solid fa-house-user"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
@@ -29,7 +29,7 @@
                         <button type="button"
                                 class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
                                 aria-controls="dropdown-orders" data-collapse-toggle="dropdown-orders">
-                            <i class="icon-padnote"></i>
+                            <i class="fa-solid fa-newspaper"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap"
                                   sidebar-toggle-item>Bestellungen</span>
                             <i class="fa-solid fa-angle-down"></i>
@@ -56,7 +56,7 @@
                         <button type="button"
                                 class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
                                 aria-controls="dropdown-routes" data-collapse-toggle="dropdown-routes">
-                            <i class="icon-paper-airplane"></i>
+                            <i class="fa-solid fa-route"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap"
                                   sidebar-toggle-item>Routen</span>
                             <i class="fa-solid fa-angle-down"></i>
@@ -102,7 +102,7 @@
                     <li>
                         <a href="{{route('groups.index')}}"
                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="icon-list"></i>
+                            <i class="fa-solid fa-people-group"></i>
                             <span class="ml-3">Gruppen</span>
                         </a>
                     </li>
@@ -110,7 +110,7 @@
                 <li>
                     <a href="{{route('users.index')}}"
                        class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="icon-user"></i>
+                        <i class="fa-regular fa-user"></i>
                         <span class="ml-3">Leiter</span>
                     </a>
                 </li>
@@ -118,7 +118,7 @@
                     <button type="button"
                             class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
                             aria-controls="dropdown-actions" data-collapse-toggle="dropdown-actions">
-                        <i class="icon-form"></i>
+                        <i class="fa-regular fa-folder-open"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap"
                               sidebar-toggle-item>Aktionen</span>
                         <i class="fa-solid fa-angle-down"></i>
