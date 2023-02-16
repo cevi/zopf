@@ -1,4 +1,3 @@
-
 /* =============================================
        TRIGGER COUNTER UP FUNCTION USING WAYPOINTS
    ================================================ */
@@ -34,6 +33,98 @@ function vanillaCounterUp(counterTarget, counterSpeed) {
                 counter.innerText = Math.trunc(target);
             }
         }
+
         updateCount();
     });
 }
+
+// Enable pusher logging - don't include this in production
+// Pusher.logToConsole = true;
+
+// Initiate the Pusher JS library
+// const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
+//     encrypted: true,
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER
+// });
+//
+// // Subscribe to the channel we specified in our Laravel Event
+// var channel = pusher.subscribe('notification-create');
+//
+// // Bind a function to a Event (the full Laravel class)
+// channel.bind('notification-create', function (data) {
+//     console.log(data);
+//     alert(JSON.stringify(data));
+//     // this is called when the event notification is received...
+// });
+
+// import Echo from 'laravel-echo';
+//
+// window.Pusher = require('pusher-js');
+//
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: process.env.MIX_PUSHER_APP_KEY,
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+//     encrypted: true,
+// });
+
+function UpdateNotifications(data) {
+    UpdateNotificationsSymbol();
+    UpdateNotification(data['input']);
+    UpdateRoute(data['input']);
+    if (typeof UpdateIconArray === "function") {
+        UpdateIconArray(data['action']);
+    }
+    if (typeof UpdateGraph === "function") {
+        UpdateGraph();
+    }
+    if (typeof UpdateList === "function") {
+        UpdateList(data['input']);
+    }
+}
+
+function UpdateNotificationsSymbol() {
+    $('#notificationSymbol').html('<div class ="inline-flex relative -top-2 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-900">');
+}
+
+function UpdateNotification(input) {
+    var notificationsWrapper = $('#dropdownNotifications');
+    var notificationsList = notificationsWrapper.find('#notificationList');
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var Notification = '' +
+        '<div class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-700" >' +
+        '<div class="pl-3 w-full" >' +
+        '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">' +
+        '<span class="font-semibold text-gray-900 dark:text-white" > ' + input['user'] + '</span>: ' +
+        input['text'] +
+        '</div>' +
+        '<div class="text-xs text-blue-600 dark:text-blue-500">' +
+        time +
+        '</div>' +
+        '</div>' +
+        '</div>';
+    notificationsList.html(Notification + notificationsList.html());
+}
+
+function UpdateRoute($input) {
+    if ($input['route_id'] !== undefined) {
+        var routeId = $input['route_id'];
+        var quantity = $input['quantity'];
+        var route = $('#route-' + routeId)[0];
+        if (route !== undefined) {
+            var routeProgress = $('#route-progessbar-' + routeId)[0];
+            var routeOpen = $('#route-open-' + routeId);
+            route.dataset.countOpen = parseInt(route.dataset.countOpen) - quantity;
+            var routePercent = route.dataset.countAll > 0 ? (route.dataset.countAll - route.dataset.countOpen) / route.dataset.countAll * 100 : 0;
+            routeProgress.ariaValueNow = routePercent;
+            routeProgress.style.width = routePercent + "%";
+            routeOpen.html('<span>Noch Offen</span><strong>' + route.dataset.countOpen + '</strong>');
+        }
+    }
+}
+
+window.Echo.private(`notification-create.${window.actionID}`)
+    .listen('NotificationCreate', (e) => {
+        UpdateNotifications(e);
+    });

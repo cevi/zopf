@@ -19,7 +19,6 @@ class CreateRouteTypesTable extends Migration
             $table->string('name');
             $table->string('travelmode');
         });
-
     }
 
     /**

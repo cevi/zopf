@@ -29,7 +29,6 @@ class CreateAddressesTable extends Migration
         });
 
         Schema::table('addresses', function (Blueprint $table) {
-
             $table->foreign('city_id')->references('id')->on('cities');
             $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
         });

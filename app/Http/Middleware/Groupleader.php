@@ -16,12 +16,12 @@ class Groupleader
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()){
-            if(Auth::user()->isActionleader()){
+        if (Auth::check()) {
+            if (Auth::user()->isActionleader()) {
                 return $next($request);
-
             }
         }
+
         return redirect(404);
     }
 }

@@ -11,17 +11,17 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class OrdersImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 {
     use Importable;
+
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param  array  $row
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         return new Order([
             //
-           'quantity' => $row[5],
-           'comments' => $row[8],
+            'quantity' => $row[5],
+            'comments' => $row[8],
         ]);
     }
 }

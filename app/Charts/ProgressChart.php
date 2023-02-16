@@ -15,15 +15,14 @@ class ProgressChart extends Chart
     {
         parent::__construct();
 
-
         return $this->options([
             'maintainAspectRatio' => false,
-            'fill'=> true,
-            'responsive'=> true,
+            'fill' => true,
+            'responsive' => true,
             'interaction' => [
                 'mode' => 'nearest',
                 'axis' => 'x',
-                'intersect' => false
+                'intersect' => false,
             ],
             'scales' => [
                 'x' => [

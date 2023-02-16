@@ -52,7 +52,7 @@ class BasisdatenSeeder extends Seeder
         Role::create(['id' => config('status.role_actionleader'), 'name' => 'Aktions Chef']);
         Role::create(['id' => config('status.role_leader'), 'name' => 'Leiter']);
 
-        $user = User::create( [
+        $user = User::create([
             'id' => config('status.Administrator'),
             'username' => 'Administrator',
             'email' => 'Administrator',
@@ -64,17 +64,17 @@ class BasisdatenSeeder extends Seeder
 
         $group = Group::create([
             'name' => 'Global-Gruppe',
-            'global' => true]);
+            'global' => true, ]);
 
         $action = Action::create([
             'name' => 'Global-Aktion',
             'group_id' => $group['id'],
             'year' => '2022',
             'APIKey' => '',
-            'global' => true]);
+            'global' => true, ]);
 
         $user->update([
             'group_id' => $group['id'],
-            'action_id' => $action['id']]);
+            'action_id' => $action['id'], ]);
     }
 }

@@ -17,7 +17,8 @@ class AdminGroupsController extends Controller
     public function index()
     {
         //
-        $users = User::pluck('username','id')->all();
+        $users = User::pluck('username', 'id')->all();
+
         return view('admin.groups.index', compact('users'));
     }
 
@@ -28,8 +29,9 @@ class AdminGroupsController extends Controller
 
         return DataTables::of($groups)
             ->addColumn('groupleader', function ($groups) {
-                return $groups->user['username'];})
-            ->addColumn('Actions', function($groups) {
+                return $groups->user['username'];
+            })
+            ->addColumn('Actions', function ($groups) {
                 return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
                 <button data-remote='.\URL::route('groups.destroy', $groups->id).' class="btn btn-danger btn-sm">Löschen</button>';
             })
@@ -85,7 +87,7 @@ class AdminGroupsController extends Controller
     {
         //
         $group = Group::findOrFail($id);
-        $users = User::pluck('username','id')->all();
+        $users = User::pluck('username', 'id')->all();
 
         return view('admin.groups.edit', compact('group', 'users'));
     }
@@ -100,7 +102,8 @@ class AdminGroupsController extends Controller
     public function update(Request $request, $id)
     {
         //
-        Group::findOrFail($id)->update( $request->all());
+        Group::findOrFail($id)->update($request->all());
+
         return redirect('admin/groups');
     }
 
@@ -114,6 +117,7 @@ class AdminGroupsController extends Controller
     {
         //
         Group::findOrFail($id)->delete();
+
         return redirect('admin/groups');
     }
 }

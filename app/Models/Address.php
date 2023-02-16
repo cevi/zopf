@@ -11,9 +11,8 @@ class Address extends Model
     use SearchableTrait;
 
     protected $fillable = [
-    'name', 'firstname', 'street', 'city_id', 'group_id', 'lat', 'lng', 'plz', 'city', 'center'
+        'name', 'firstname', 'street', 'city_id', 'group_id', 'lat', 'lng', 'plz', 'city', 'center',
     ];
-
 
     protected $searchable = [
         'columns' => [
@@ -28,15 +27,18 @@ class Address extends Model
         ],
     ];
 
-    public function city(){
+    public function city()
+    {
         return $this->belongsTo('App\Models\City');
     }
 
-    public function group(){
+    public function group()
+    {
         return $this->belongsTo('App\Models\Group');
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany('App\Models\Order');
     }
 }

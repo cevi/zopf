@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('survey_content')
+@section('content')
     <section>
         <div class="container-fluid">
             <!-- Page Header-->

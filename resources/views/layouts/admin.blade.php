@@ -1,46 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-  <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="description" content="Zopfaktion">
-      <meta name="author" content="Jérôme Sigg">
-      <meta name="robots" content="all,follow">
+@include('includes/header')
+<body>
+<div class="page">
+    @include('includes/admin_topnav')
+    @include('includes/admin_sidenav')
 
-      <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
+    @yield('content')
+    <x-footer/>
+</div>
 
-      <!-- Bootstrap Core CSS -->
-
-      <link href="{{asset('css/libs.css')}}" rel="stylesheet">
-      <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-      @yield('styles')
-  </head>
-
-  <body>
-      <div class="page">
-          @include('includes/admin_sidenav')
-
-          @include('includes/admin_topnav')
-
-          @yield('content')
-          <footer class="main-footer">
-              <div class="container-fluid">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <p>Amigo &copy; 2022</p>
-                  </div>
-                  <div class="col-sm-6 text-right">
-                    <p>Version {{config('app.version')}}</p>
-                  </div>
-                </div>
-              </div>
-          </footer>
-      </div>
-
-        <!-- jQuery -->
-        <script src="{{asset('js/libs.js')}}"></script>
-        @yield('scripts')
-    </body>
+<!-- jQuery -->
+{{--<script src="//js.pusher.com/3.1/pusher.min.js"></script>--}}
+{{--<script src="{{asset('js/libs.js')}}"></script>--}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
+@yield('scripts')
+</body>
 
 </html>

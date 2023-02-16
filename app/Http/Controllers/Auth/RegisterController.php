@@ -59,7 +59,7 @@ class RegisterController extends Controller
                     ->letters()
                     ->mixedCase()
                     ->numbers(),
-                'confirmed'],
+                'confirmed', ],
         ]);
     }
 

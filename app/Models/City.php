@@ -11,18 +11,18 @@ class City extends Model
     use SearchableTrait;
 
     protected $fillable = [
-    'name', 'plz'
+        'name', 'plz',
     ];
 
-    public function addresses(){
+    public function addresses()
+    {
         return $this->hasMany('App\Models\Address');
     }
-
 
     protected $searchable = [
         'columns' => [
             'name' => 1,
             'plz' => 1,
-        ]
+        ],
     ];
 }
