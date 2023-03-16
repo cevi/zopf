@@ -136,7 +136,7 @@
                             status: status_btn.textContent
                         },
                         success: function (response) {
-                            setMapsArguments(response, @json($key))
+                            setMapsArguments(response, @json($key));
                             initialize();
                         }
                     });

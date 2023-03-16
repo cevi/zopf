@@ -35,7 +35,6 @@ mix.scripts([
     'resources/js/libs/dropify.min.js',
     'resources/js/libs/bootstrap.js',
     'resources/js/libs/map-icons.js',
-    'resources/js/libs/markerCluster.js',
     'resources/js/libs/googlemaps.js',
     'resources/js/libs/swiper-bundle.min.js',
     'resources/js/libs/custom.js',

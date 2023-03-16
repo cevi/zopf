@@ -1,4 +1,5 @@
 @include('includes/map-icons')
+<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 <script>
     var center, orders, latitude, longitude, bounds;
     var clicked_markers = new Array;
@@ -44,11 +45,11 @@
 
 
     function initialize() {
+        var markers = [];
         var directionsService = new google.maps.DirectionsService;
         var directionsRenderer = new google.maps.DirectionsRenderer(
             {
                 suppressMarkers: true
-
             }
         );
 
@@ -115,7 +116,7 @@
         var infoWindowClosed = true;
 
         function bindInfoWindow(marker, map, html) {
-            google.maps.event.addListener(marker, 'click', function () {
+            marker.addListener('click', () => {
                 if (markerAdd) {
                     MarkerClick(marker);
                 } else {
@@ -180,10 +181,11 @@
 
         if (cluster == true) {
             var markerClusteres = null;
-            markerClusteres = new MarkerClusterer(map, markers, {
-                imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
-            });
-            google.maps.event.addListener(markerClusteres, 'clusterclick', function (cluster) {
+            markerClusteres = new markerClusterer.MarkerClusterer({map, markers});
+            // , {
+            //     imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
+            // });
+            markerClusteres.addListener('clusterclick', function (cluster) {
                 var content = '';
                 var info = new google.maps.MVCObject;
                 info.set('position', cluster.center_);
