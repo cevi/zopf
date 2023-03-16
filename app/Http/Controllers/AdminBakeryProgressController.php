@@ -90,12 +90,15 @@ class AdminBakeryProgressController extends Controller
         //
 
         $action = Auth::user()->action;
-        $input = $request->all();
-        $input['user_id'] = Auth::user()->id;
-        $input['action_id'] = $action['id'];
-        $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
-        $input = array_filter($input);
-        BakeryProgress::create($input);
+
+        if ($action && !Auth::user()->demo) {
+            $input = $request->all();
+            $input['user_id'] = Auth::user()->id;
+            $input['action_id'] = $action['id'];
+            $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
+            $input = array_filter($input);
+            BakeryProgress::create($input);
+        }
 
         return redirect('/admin/progress');
     }
@@ -142,8 +145,11 @@ class AdminBakeryProgressController extends Controller
         //
 
         $input = $request->all();
-        $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
-        $progress->update($input);
+
+        if (!Auth::user()->demo) {
+            $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
+            $progress->update($input);
+        }
 
         return redirect('/admin/progress');
     }
@@ -157,7 +163,10 @@ class AdminBakeryProgressController extends Controller
     public function destroy(BakeryProgress $progress)
     {
         //
-        $progress->delete();
+        $user = Auth::user();
+        if(!$user->demo) {
+            $progress->delete();
+        }
 
         return redirect('/admin/progress');
     }

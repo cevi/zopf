@@ -1,5 +1,7 @@
 <?php
 
+use Database\Seeders\BasisdatenSeeder;
+use Database\Seeders\DemoActionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,7 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         $this->call([
-            \Database\Seeders\BasisdatenSeeder::class,
+            BasisdatenSeeder::class,
+            DemoActionSeeder::class,
         ]);
     }
 }

@@ -4,8 +4,8 @@
     <div class="breadcrumb-holder">
         <div class="container-fluid">
             <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item active">Leiter</li>
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item active">Leiter</li>
             </ul>
         </div>
     </div>
@@ -24,13 +24,13 @@
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
                     <div class="form-group">
                         {!! Form::label('email_add', 'E-Mail:') !!}
-                        {!! Form::email('email_add', null, ['class' => 'form-control autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
+                        {!! Form::email('email_add', null, ['class' => 'form-control typeahead autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::label('role_id_add', 'Rolle:') !!}
                         {!! Form::select('role_id_add', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
                     </div>
-                    {!! Form::hidden('user_id', null, ['class' => 'form-control autocomplete_txt']) !!}
+                    {!! Form::hidden('user_id', null, ['class' => 'form-control typeahead autocomplete_txt']) !!}
                     <div class="form-group">
                         {!! Form::submit('Leiter Hinzufügen', ['class' => 'btn btn-primary'])!!}
                     </div>
@@ -68,15 +68,15 @@
                 <div class="col-md-6">
                     <table class="table table-striped table-responsive" id="datatable">
                         <thead>
-                            <tr>
-                                {{-- <th></th> --}}
-                                <th>Name</th>
-                                <th>Gruppe</th>
-                                <th>Rolle</th>
-                                <th>Aktionen</th>
-                            </tr>
+                        <tr>
+                            {{-- <th></th> --}}
+                            <th>Name</th>
+                            <th>Gruppe</th>
+                            <th>Rolle</th>
+                            <th>Aktionen</th>
+                        </tr>
                         </thead>
-                     </table>
+                    </table>
                 </div>
             </div>
         </div>
@@ -85,9 +85,11 @@
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+    {{--    <script--}}
+    {{--        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>--}}
     <script>
-        $(document).ready(function(){
-              $('#datatable').DataTable({
+        $(document).ready(function () {
+            $('#datatable').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -97,13 +99,13 @@
                 ajax: "{!! route('users.CreateDataTables') !!}",
                 columns: [
                     //    {data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
-                       { data: 'username', name: 'username' },
-                       { data: 'group', name: 'group' },
-                       { data: 'role', name: 'role' },
-                       {data: 'Actions', name: 'Actions', orderable:false,serachable:false,sClass:'text-center'},
+                    {data: 'username', name: 'username'},
+                    {data: 'group', name: 'group'},
+                    {data: 'role', name: 'role'},
+                    {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
 
-                    ]
-           });
+                ]
+            });
         });
         $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
             e.preventDefault();
@@ -124,32 +126,34 @@
             });
         });
         //autocomplete script
-        $(document).on('focus','.autocomplete_txt',function(){
+        $(document).on('focus', '.autocomplete_txt', function () {
             $(this).autocomplete({
                 minLength: 3,
                 highlight: true,
-                source: function( request, response ) {
+                source: function (request, response) {
                     $.ajax({
                         url: "{{ route('searchajaxuser') }}",
                         dataType: "json",
                         data: {
-                            term : request.term,
+                            term: request.term,
                         },
-                        success: function(data) {
-                            console.log(data);
+                        success: function (data) {
                             var array = $.map(data, function (item) {
                                 return {
                                     label: item['email'],
-                                    data : item
+                                    value: item['email'],
+                                    data: item
                                 }
                             });
                             response(array)
                         }
                     });
                 },
-                select: function( event, ui ) {
+                select: function (event, ui) {
+                    console.log(ui);
+                    console.log(event);
                     var data = ui.item.data;
-                    $("[name='email_add']").val(data.email);
+                    $("[name='email_add']").val(data.value);
                     $("[name='user_id']").val(data.id);
                 }
             });

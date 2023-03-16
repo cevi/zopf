@@ -32,6 +32,17 @@
       0 => 'GeneaLabs\\LaravelCaffeine\\Providers\\Service',
     ),
   ),
+  'intervention/image' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Intervention\\Image\\ImageServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Image' => 'Intervention\\Image\\Facades\\Image',
+    ),
+  ),
   'laravel/sail' => 
   array (
     'providers' => 
@@ -95,6 +106,13 @@
     'providers' => 
     array (
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
+  'revolution/sail-db-backup' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Revolution\\Sail\\Backup\\SailBackupServiceProvider',
     ),
   ),
   'spatie/geocoder' => 

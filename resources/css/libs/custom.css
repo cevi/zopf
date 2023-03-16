@@ -76,16 +76,6 @@
     margin-top: 10px;
 }
 
-#login_page {
-    color: #fff;
-    font: 87.5%/1.5em 'Open Sans', sans-serif;
-    background: url(images/DSC_0301.JPG) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-
 .open-routes {
     height: 500px;
     overflow: auto;

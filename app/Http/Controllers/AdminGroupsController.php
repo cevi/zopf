@@ -61,7 +61,11 @@ class AdminGroupsController extends Controller
     public function store(Request $request)
     {
         //
-        Group::create($request->all());
+
+        $user = Auth::user();
+        if(!$user->demo) {
+            Group::create($request->all());
+        }
 
         return redirect('admin/groups');
     }
@@ -102,7 +106,11 @@ class AdminGroupsController extends Controller
     public function update(Request $request, $id)
     {
         //
-        Group::findOrFail($id)->update($request->all());
+
+        $user = Auth::user();
+        if(!$user->demo) {
+            Group::findOrFail($id)->update($request->all());
+        }
 
         return redirect('admin/groups');
     }
@@ -116,7 +124,11 @@ class AdminGroupsController extends Controller
     public function destroy($id)
     {
         //
-        Group::findOrFail($id)->delete();
+
+        $user = Auth::user();
+        if(!$user->demo) {
+            Group::findOrFail($id)->delete();
+        }
 
         return redirect('admin/groups');
     }

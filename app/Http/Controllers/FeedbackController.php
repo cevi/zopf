@@ -108,7 +108,11 @@ class FeedbackController extends Controller
     public function update(Request $request, Feedback $feedback)
     {
         //
-        $feedback->update($request->all());
+
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $feedback->update($request->all());
+        }
 
         return redirect('/admin/feedback');
     }
@@ -122,7 +126,11 @@ class FeedbackController extends Controller
     public function destroy(Feedback $feedback)
     {
         //
-        $feedback->delete();
+
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $feedback->delete();
+        }
 
         return redirect('/admin/feedback');
     }

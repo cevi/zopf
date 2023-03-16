@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Notifications\CreateLogEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Notification;
 
 class AdminController extends Controller
@@ -47,13 +48,14 @@ class AdminController extends Controller
         $timeChart_api = url('api/action/'.$action['id'].'/timeChart');
         $timeChart->labels(Helper::GetTimeChartData($action,true))->load($timeChart_api);
 
+
         return view('admin/index', compact('icon_array', 'open_routes', 'users', 'title', 'timeChart', 'zopfChart', 'notifications'));
     }
 
     public function logcreate(Request $request)
     {
         $action = Auth::user()->action;
-        if ($action) {
+        if ($action && !Auth::user()->demo) {
             $input = $request->all();
             if (! $input['user_id']) {
                 $input['user_id'] = Auth::user()->id;

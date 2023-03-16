@@ -10,7 +10,7 @@
                         <i class="fa-solid fa-house-chimney"></i>
                         <span class="ml-3">Home</span>
                     </a>
-                @if(Auth::user()->isActionleader() && Auth::user()->action)
+                @if(Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global)
                     <li>
                         <a href="/admin"
                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">

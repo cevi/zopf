@@ -29,7 +29,7 @@ class AddUserToAction extends Migration
     {
         Schema::table('actions', function (Blueprint $table) {
             //
-            $table->dropForeign('groups_user_id_foreign');
+            $table->dropForeign('actions_user_id_foreign');
             $table->dropColumn('user_id');
         });
     }

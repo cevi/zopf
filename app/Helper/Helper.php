@@ -10,6 +10,7 @@ use App\Models\GroupUser;
 use App\Models\Logbook;
 use App\Models\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Bool_;
 use Spatie\Geocoder\Geocoder;
 
@@ -61,9 +62,10 @@ class Helper
     public static function updateAction(User $user, Action $action)
     {
         $action_user = ActionUser::firstOrCreate(['action_id' => $action->id, 'user_id' => $user->id]);
+        $role_id = $action_user->role ? $action_user->role->id : config('status.role_leader');
         $user->update([
             'action_id' => $action->id,
-            'role_id' => $action_user->role->id, ]);
+            'role_id' => $role_id, ]);
     }
 
     public static function getGeocoder(string $key): Geocoder
@@ -100,32 +102,43 @@ class Helper
         ];
     }
 
-    public static function GetTimeChartData(Action $action, $graph_time = false): array
+    public static function GetTimeChartData(Action $action, $graph_time = false)
     {
-        $graphs = $action->notifications()->get(['when', 'quantity'])->sortBy('when');
+
+        $graphs = $action->notifications()->select(
+            DB::raw('sum(quantity) as total'),
+            DB::raw("CASE
+                    WHEN MOD(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30, 1) >= 0.5
+                        THEN date_format(DATE_ADD('2020-01-01 00:00:00', Interval CEILING(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
+                    ELSE date_format(DATE_ADD('2020-01-01 00:00:00', Interval FLOOR(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
+                    END AS time_frame"),
+        )
+            ->groupBy('time_frame')
+            ->orderBy('time_frame', 'ASC')->get();
+
         if (count($graphs) > 0) {
-            $graphs_time_min = $graphs->first()->when;
-            $graphs_time_max = $graphs->last()->when;
-            $graphs_time_max = date('H:i:s', (ceil(strtotime($graphs_time_max) / 1800) * 1800));
-            $diff = ceil((strtotime($graphs_time_max) - strtotime($graphs_time_min)) / 1800);
+            $graphs_time_min = strtotime($graphs->first()->time_frame);
+            $graphs_time_max = strtotime($graphs->last()->time_frame);
+            $diff = ($graphs_time_max - $graphs_time_min) / 1800;
 
-            $graphs_time = [];
-            $graphs_sum = [];
+            $graphs_sum[] = $graphs->first()->total;
+            $graphs_time[] = $graphs->first()->time_frame;
+            $index = 1;
 
-            array_push($graphs_time, date('H:i:s', (floor(strtotime($graphs_time_min) / 1800) * 1800)));
-
-            for ($i = 0; $i <= $diff; $i++) {
-                if ($i > 0) {
-                    array_push($graphs_time, date('H:i:s', strtotime($graphs_time[$i - 1]) + 1800));
-                }
-                $graph_sum = $action->notifications->where('when', '>', date('H:i:s', strtotime($graphs_time[$i]) - 900))
-                    ->where('when', '<', date('H:i:s', strtotime($graphs_time[$i]) + 900));
-                array_push($graphs_sum, $graph_sum->sum('quantity'));
+            for ($i = 1; $i <= $diff; $i++) {
+                $graphs_time[] = date('H:i', (strtotime($graphs_time[$i - 1]) + 1800));
+                $total = 0;
+               if(strtotime($graphs[$index]->time_frame) === strtotime($graphs_time[$i])){
+                   $total = $graphs[$index]->total;
+                   $index++;
+               }
+                $graphs_sum[] = $total;
             }
         } else {
             $graphs_time[] = 0;
             $graphs_sum[] = 0;
         }
+
         return $graph_time ? $graphs_time : $graphs_sum;
     }
 
@@ -140,12 +153,11 @@ class Helper
         $data['orders_count_finished'] = 0;
         $data['total'] = 0;
         $data['routes_count'] = 0;
-        $data['routes_count_finished'] = 0;
+        $data['routes_finished_count'] = 0;
 
         if($action) {
 
-            $notifications = $action->notifications()->get(['when', 'quantity', 'cut'])->sortByDesc('when');
-            $cut = $notifications->where('cut', true)->sum('quantity');
+            $data['cut'] = $action->notifications()->where('cut', true)->get(['quantity'])->sum('quantity');
 
             $data['orders_count'] = count($action->orders);
             $data['orders_open'] = $action->orders->where('order_status_id', config('status.order_offen'))->where('pick_up', false)->sum('quantity');
@@ -153,7 +165,7 @@ class Helper
             $data['orders_open_pickup'] = $action->orders->where('order_status_id', '<', config('status.order_ausgeliefert'))->where('pick_up', true)->sum('quantity');
             $data['orders_finished'] = $action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert'))->sum('quantity');
             $data['orders_count_finished'] = count($action->orders->where('order_status_id', '>=', config('status.order_ausgeliefert')));
-            $data['total'] = $action->orders->sum('quantity') + $cut;
+            $data['total'] = $action->orders->sum('quantity') + $data['cut'];
             $routes = Route::where('action_id', $action['id'])->get();
             $data['routes_count'] = count($routes);
             $data['routes_finished_count'] = count(Route::where('action_id', $action['id'])->where('route_status_id', '=', config('status.route_abgeschlossen'))->get());

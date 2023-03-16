@@ -29,7 +29,7 @@ class LogbookNotification
             'user' => $user, //<-- comes from toDatabase() Method, this is my customised column
             'when' => $when, //<-- comes from toDatabase() Method, this is my customised column
             'route_id' => $route_id, //<-- comes from toDatabase() Method, this is my customised column
-            'notifiable_type'=> \Auth::user()->id,
+            'notifiable_type'=> \Auth::user()->id ?? 1,
             'type' => get_class($notification),
             'content' => $text,
             'read_at' => null,

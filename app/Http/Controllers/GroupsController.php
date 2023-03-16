@@ -34,17 +34,20 @@ class GroupsController extends Controller
                 ->withInput();
         }
 
-        $input = $request->all();
-        $user = Auth::user();
-        $input['user_id'] = $user->id;
-        $input['global'] = false;
-        $group = Group::create($input);
-        $user->update(['group_id' => $group->id, 'role_id' => config('status.role_groupleader')]);
-        GroupUser::create([
-            'user_id' => $user->id,
-            'group_id' => $group->id,
-            'role_id' => config('status.role_groupleader'), ]);
 
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $input = $request->all();
+            $input['user_id'] = $aktUser->id;
+            $input['global'] = false;
+            $group = Group::create($input);
+            $aktUser->update(['group_id' => $group->id, 'role_id' => config('status.role_groupleader')]);
+            GroupUser::create([
+                'user_id' => $aktUser->id,
+                'group_id' => $group->id,
+                'role_id' => config('status.role_groupleader'),
+            ]);
+        }
         return redirect('home');
     }
 
@@ -74,8 +77,11 @@ class GroupsController extends Controller
                 ->withInput();
         }
 
-        $input = $request->all();
-        $group->update($input);
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $input = $request->all();
+            $group->update($input);
+        }
 
         return redirect('home');
     }
@@ -83,7 +89,11 @@ class GroupsController extends Controller
     public function updateGroup(Request $request, Group $group)
     {
         //
-        Helper::updateGroup(Auth::user(), $group);
+
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            Helper::updateGroup(Auth::user(), $group);
+        }
 
         return redirect('/home');
     }

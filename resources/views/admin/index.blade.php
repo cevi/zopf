@@ -122,8 +122,8 @@
                                     {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            {!! Form::label('wann', 'Wann:') !!}
-                                            {!! Form::time('wann', now(), ['class' => 'form-control']) !!}
+                                            {!! Form::label('when', 'Wann:') !!}
+                                            {!! Form::time('when', now(), ['class' => 'form-control']) !!}
                                         </div>
                                         <div class="form-group col-md-6">
                                             {!! Form::label('user_id', 'Verantwortlicher:') !!}

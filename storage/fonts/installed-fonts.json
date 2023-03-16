@@ -1,0 +1,14 @@
+{
+    "fontawesome": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/\/fontawesome_normal_099c551533ec52a3d4474f6fc44c58ac"
+    },
+    "dashboard": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/\/dashboard_normal_34e3053f0de200617b507b0e86523c7f"
+    },
+    "map-icons": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/\/map_icons_normal_01ceda670ba1eb83541097b471b2ce59"
+    },
+    "dropify": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/\/dropify_normal_d7d7721dfd5f4ae5869740130b810c6b"
+    }
+}

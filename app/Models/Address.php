@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -9,6 +10,7 @@ class Address extends Model
 {
     //
     use SearchableTrait;
+    use HasFactory;
 
     protected $fillable = [
         'name', 'firstname', 'street', 'city_id', 'group_id', 'lat', 'lng', 'plz', 'city', 'center',

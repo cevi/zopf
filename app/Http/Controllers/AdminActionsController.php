@@ -82,38 +82,37 @@ class AdminActionsController extends Controller
     public function store(Request $request)
     {
         //
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            $address = Address::Where('id', $request->address_id)->first();
+            if (!$address) {
+                $input = $request->all();
+                if (!$aktUser->isAdmin()) {
+                    $group = $aktUser->group;
+                    $input['group_id'] = $group['id'];
+                }
+                $geocoder = Helper::getGeocoder($input['APIKey']);
+                $geocode = $geocoder->getCoordinatesForAddress($input['street'] . ', ' . $input['plz'] . ' ' . $input['city']);
+                $input['lat'] = $geocode['lat'];
+                $input['lng'] = $geocode['lng'];
+                $input['center'] = true;
 
-        $address = Address::Where('id', $request->address_id)->first();
-        if (! $address) {
-            $input = $request->all();
-            if (! Auth::user()->isAdmin()) {
-                $group = Auth::user()->group;
-                $input['group_id'] = $group['id'];
+                $address = Address::create($input);
+            } else {
+                $input = $request->all();
             }
-            $user = Auth::user();
-            $geocoder = Helper::getGeocoder($input['APIKey']);
-            $geocode = $geocoder->getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
-            $input['lat'] = $geocode['lat'];
-            $input['lng'] = $geocode['lng'];
-            $input['center'] = true;
+            $input['address_id'] = $address['id'];
 
-            // return $input;
+            $input['action_status_id'] = config('status.action_geplant');
+            $input['user_id'] = $aktUser->id;
 
-            $address = Address::create($input);
-        } else {
-            $input = $request->all();
+            $action = Action::create($input);
+            $aktUser->update(['action_id' => $action->id, 'role_id' => config('status.role_actionleader')]);
+            ActionUser::create([
+                'user_id' => $aktUser->id,
+                'action_id' => $action->id,
+                'role_id' => config('status.role_actionleader'),]);
         }
-        $input['address_id'] = $address['id'];
-
-        $input['action_status_id'] = config('status.action_geplant');
-        $input['user_id'] = Auth::user()->id;
-
-        $action = Action::create($input);
-        $user->update(['action_id' => $action->id, 'role_id' => config('status.role_actionleader')]);
-        ActionUser::create([
-            'user_id' => $user->id,
-            'action_id' => $action->id,
-            'role_id' => config('status.role_actionleader'), ]);
 
         return redirect('admin/actions');
     }
@@ -155,37 +154,40 @@ class AdminActionsController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $action = Action::findOrFail($id);
-        $address = $action->center;
-        $input = $request->all();
-        GeoCoder::setApiKey($input['APIKey']);
-        GeoCoder::setCountry('CH');
-        $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
-        $input['lat'] = $geocode['lat'];
-        $input['lng'] = $geocode['lng'];
-        $input['center'] = true;
-        if ($address) {
-            $address->update($input);
-        } else {
-            if (! Auth::user()->isAdmin()) {
-                $group = Auth::user()->group;
-                $input['group_id'] = $group['id'];
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            $action = Action::findOrFail($id);
+            $address = $action->center;
+            $input = $request->all();
+            GeoCoder::setApiKey($input['APIKey']);
+            GeoCoder::setCountry('CH');
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $input['plz'] . ' ' . $input['city']);
+            $input['lat'] = $geocode['lat'];
+            $input['lng'] = $geocode['lng'];
+            $input['center'] = true;
+            if ($address) {
+                $address->update($input);
+            } else {
+                if (!$aktUser->isAdmin()) {
+                    $group = $aktUser->group;
+                    $input['group_id'] = $group['id'];
+                }
+                $address = Address::create($input);
+                $input['address_id'] = $address['id'];
             }
-            $address = Address::create($input);
-            $input['address_id'] = $address['id'];
+            $status_id = (int)$input['action_status_id'];
+            if ($status_id != $action['action_status_id']) {
+                if ($status_id === config('status.action_aktiv')) {
+                    $input['text'] = 'Aktion ' . $action['name'] . ' wurde gestartet.';
+                    NotificationCreate::dispatch($action, $input);
+                }
+                if ($status_id === config('status.action_abgeschlossen')) {
+                    $input['text'] = 'Aktion ' . $action['name'] . ' wurde abgeschlossen.';
+                    NotificationCreate::dispatch($action, $input);
+                }
+            }
+            $action->update($input);
         }
-        $status_id = (int) $input['action_status_id'];
-        if ($status_id != $action['action_status_id']) {
-            if ($status_id === config('status.action_aktiv')) {
-                $input['text'] = 'Aktion '.$action['name'].' wurde gestartet.';
-                NotificationCreate::dispatch($action, $input);
-            }
-            if ($status_id === config('status.action_abgeschlossen')) {
-                $input['text'] = 'Aktion '.$action['name'].' wurde abgeschlossen.';
-                NotificationCreate::dispatch($action, $input);
-            }
-        }
-        $action->update($input);
 
         return redirect('/admin/actions');
     }
@@ -199,21 +201,24 @@ class AdminActionsController extends Controller
     public function complete(Request $request, $id)
     {
         //
-        $action = Action::findOrFail($id);
-        $input = $request->all();
-        if ($action->action_status_id === config('status.action_geplant')) {
-            $action->action_status_id = config('status.action_aktiv');
-            $log['text'] = 'Aktion '.$action['name'].' wurde gestartet.';
-        } else {
-            $action->action_status_id = config('status.action_abgeschlossen');
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            $action = Action::findOrFail($id);
+            $input = $request->all();
+            if ($action->action_status_id === config('status.action_geplant')) {
+                $action->action_status_id = config('status.action_aktiv');
+                $log['text'] = 'Aktion ' . $action['name'] . ' wurde gestartet.';
+            } else {
+                $action->action_status_id = config('status.action_abgeschlossen');
 
-            $cut = Logbook::where('action_id', $action['id'])->where('cut', true)->sum('quantity');
-            $input['total_amount'] = $action->orders->sum('quantity') + $cut;
-            $log['text'] = 'Aktion '.$action['name'].' wurde abgeschlossen.';
+                $cut = Logbook::where('action_id', $action['id'])->where('cut', true)->sum('quantity');
+                $input['total_amount'] = $action->orders->sum('quantity') + $cut;
+                $log['text'] = 'Aktion ' . $action['name'] . ' wurde abgeschlossen.';
+            }
+            $log['user'] = $aktUser->username;
+            NotificationCreate::dispatch($action, $log);
+            $action->update($input);
         }
-        $log['user'] = Auth::user()->username;
-        NotificationCreate::dispatch($action, $log);
-        $action->update($input);
 
         return redirect('/admin/actions');
     }
@@ -221,7 +226,10 @@ class AdminActionsController extends Controller
     public function updateAction(Request $request, Action $action)
     {
         //
-        Helper::updateAction(Auth::user(), $action);
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            Helper::updateAction($aktUser, $action);
+        }
 
         return redirect('/home');
     }

@@ -30,11 +30,10 @@ mix.styles([
     .postCss("resources/css/app.css", "public/css", [
         require("tailwindcss")]);
 mix.scripts([
-    'resources/js/libs/jquery.js',
+    'resources/js/libs/datatables.js',
     'resources/js/libs/jquery-ui.js',
     'resources/js/libs/dropify.min.js',
     'resources/js/libs/bootstrap.js',
-    'resources/js/libs/datatables.js',
     'resources/js/libs/map-icons.js',
     'resources/js/libs/markerCluster.js',
     'resources/js/libs/googlemaps.js',

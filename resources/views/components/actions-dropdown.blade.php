@@ -1,5 +1,6 @@
 <li class="nav-item dropdown">
-    <a id="navbarActionDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+    <a id="navbarActionDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+       aria-haspopup="true" aria-expanded="false" v-pre>
         @if(Auth::user()->action && !Auth::user()->action['global'] )
             {{Auth::user()->action['name']}} {{Auth::user()->action['year']}}
         @else
@@ -17,7 +18,7 @@
             <hr>
             @foreach (Auth::user()->group->actions as $action)
                 @if(!$action['global'])
-                    <div class="row" >
+                    <div class="row">
 
                         <div class="col-sm-9">
                             <a class="dropdown-item" href="{{route('admin.actions.updateAction',$action['id'])  }}"
@@ -27,7 +28,7 @@
                             </a>
                         </div>
                         <div class="col-sm-3">
-                            @if($action->user && $action->user['id']===Auth::user()->id)
+                            @if(!Auth::user()->demo && $action->user && $action->user['id']===Auth::user()->id)
                                 <a class="dropdown-item" href="{{route('actions.edit',$action)  }}">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
@@ -35,7 +36,9 @@
                         </div>
                     </div>
 
-                    <form id="actions-update-form-{{$action['id']}}" action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST" style="display: none;">
+                    <form id="actions-update-form-{{$action['id']}}"
+                          action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST"
+                          style="display: none;">
                         {{ method_field('PUT') }}
                         @csrf
                     </form>

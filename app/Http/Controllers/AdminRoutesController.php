@@ -14,8 +14,11 @@ use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use PDF;
+use Str;
 
 class AdminRoutesController extends Controller
 {
@@ -137,43 +140,48 @@ class AdminRoutesController extends Controller
 
     public function downloadPDF($id)
     {
-        $group = Auth::user()->group;
-        $action = Auth::user()->action;
-        $route = Route::findOrFail($id);
-        $center = $action->center;
-        $orders = $route->orders;
-        if ($route['photo'] === null) {
-            $key = $action['APIKey'];
+        $user = Auth::user();
+        if (!$user->demo) {
+            $group = $user->group;
+            $action = $user->action;
+            $route = Route::findOrFail($id);
+            $center = $action->center;
+            $orders = $route->orders;
+            if ($route['photo'] === null) {
+                $key = $action['APIKey'];
 
-            $response = Helper::CreateRouteSequence($route);
-            $path = $response['routes'][0]['overview_polyline']['points'];
-            $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='.strtolower($route->route_type['travelmode']).'&';
+                $response = Helper::CreateRouteSequence($route);
+                $path = $response['routes'][0]['overview_polyline']['points'];
+                $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode=' . strtolower($route->route_type['travelmode']) . '&';
 
-            foreach ($orders as $order) {
-                $address = Address::findOrFail($order['address_id']);
-                $url = $url.'&markers=color:red%7C'.$address['lat'].','.$address['lng'];
+                foreach ($orders as $order) {
+                    $address = Address::findOrFail($order['address_id']);
+                    $url = $url . '&markers=color:red%7C' . $address['lat'] . ',' . $address['lng'];
+                }
+                $url = $url . '&path=enc:' . $path;
+                $url = $url . '&key=' . $key;
+                $image = file_get_contents($url);
+                $folder = 'images/' . Str::slug($group['name']) . '/' . Str::slug($action['name']) . '_' . $action['year'] . '/';
+                $directory = storage_path('app/public/' . $folder);
+                if (!File::isDirectory($directory)) {
+                    File::makeDirectory($directory, 0775, true);
+                }
+                $path = Str::uuid() . '_' . Str::slug($route['name']) . '.png';
+                Image::make($image)->save($directory . '/' . $path, 80);
+                $save_path = $folder . $path;
+                $route->update(['photo' => $save_path]);
+            } else {
+                $save_path = $route['photo'];
             }
-            $url = $url.'&path=enc:'.$path;
-            $url = $url.'&key='.$key;
-            $image = file_get_contents($url);
-            $folder = 'images/'.$group['name'].'/'.$action['name'].'_'.$action['year'].'/';
-            if (! Storage::disk('public')->exists($folder)) {
-                Storage::disk('public')->makeDirectory($folder, 0775, true, true);
-            }
-            $path = $folder.$route['name'].'.png';
-            Storage::disk('public')->put($path, $image);
-            $route->update(['photo' => $path]);
-        } else {
-            $path = $route['photo'];
+            $routetype = $route->route_type;
+
+            $orders = $orders->sortBy('sequence');
+            $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'save_path'));
+            return $pdf->download(Str::slug($route['name']).'.pdf');
         }
-        $routetype = $route->route_type;
-
-        $orders = $orders->sortBy('sequence');
-//        return view('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));
-        $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'path'));
-
-        //return $pdf->download($route['name'].'.pdf');
-        return redirect()->back();
+        else{
+            return redirect()->back();
+        }
     }
 
     public function map()
@@ -241,21 +249,25 @@ class AdminRoutesController extends Controller
     public function store(Request $request)
     {
         //
-        $action = Auth::user()->action;
-        $input['name'] = $request->name;
-        $input['action_id'] = $action['id'];
-        $input['route_status_id'] = config('status.route_geplant');
-        if ($request->route_type_id == null) {
-            $input['route_type_id'] = config('status.route_type_driving');
-        } else {
-            $input['route_type_id'] = $request->route_type_id;
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            $action = $user->action;
+            $input['name'] = $request->name;
+            $input['action_id'] = $action['id'];
+            $input['route_status_id'] = config('status.route_geplant');
+            if ($request->route_type_id == null) {
+                $input['route_type_id'] = config('status.route_type_driving');
+            } else {
+                $input['route_type_id'] = $request->route_type_id;
+            }
+            if ($request->user_id == null) {
+                $input['user_id'] = $user->id;
+            } else {
+                $input['user_id'] = $request->user_id;
+            }
+            $route = Route::create($input);
         }
-        if ($request->user_id == null) {
-            $input['user_id'] = Auth::user()->id;
-        } else {
-            $input['user_id'] = $request->user_id;
-        }
-        $route = Route::create($input);
 
         return redirect()->to('/admin/routes/'.$route['id'].'/edit');
     }
@@ -316,8 +328,12 @@ class AdminRoutesController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $route = Route::findOrFail($id);
-        $route->update($request->all());
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            $route = Route::findOrFail($id);
+            $route->update($request->all());
+        }
 
         return redirect('/admin/routes');
     }
@@ -325,8 +341,12 @@ class AdminRoutesController extends Controller
     public function AssignOrders(Request $request)
     {
         //
-        $orders = Order::WhereIn('id', $request['id']);
-        $orders->update(['route_id' => $request['route_id']]);
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            $orders = Order::WhereIn('id', $request['id']);
+            $orders->update(['route_id' => $request['route_id']]);
+        }
 
         return redirect('/admin/routes/edit');
     }
@@ -334,8 +354,12 @@ class AdminRoutesController extends Controller
     public function RemoveOrder(Request $Request)
     {
         //
-        $order = Order::findOrFail($Request['order_id']);
-        $order->update(['route_id' => null]);
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            $order = Order::findOrFail($Request['order_id']);
+            $order->update(['route_id' => null]);
+        }
 
         return redirect()->to('/admin/routes/'.$Request['route_id'].'/edit');
     }
@@ -343,18 +367,22 @@ class AdminRoutesController extends Controller
     public function send($id)
     {
         //
-        $route = Route::findOrFail($id);
-        if ($route->route_status['id'] === config('status.route_geplant')) {
-            $route->update(['route_status_id' => config('status.route_vorbereitet')]);
-        } else {
-            $action = Auth::user()->action;
-            $log['text']  = 'Route '.$route['name'].' wurde gestartet.';
-            $log['user'] = $route->user->username;
-            Helper::CreateRouteSequence($route);
-            NotificationCreate::dispatch($action, $log);
-            $orders = $route->orders();
-            $orders->update(['order_status_id' => config('status.order_unterwegs')]);
-            $route->update(['route_status_id' => config('status.route_unterwegs')]);
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            $route = Route::findOrFail($id);
+            if ($route->route_status['id'] === config('status.route_geplant')) {
+                $route->update(['route_status_id' => config('status.route_vorbereitet')]);
+            } else {
+                $action = $user->action;
+                $log['text'] = 'Route ' . $route['name'] . ' wurde gestartet.';
+                $log['user'] = $route->user->username;
+                Helper::CreateRouteSequence($route);
+                NotificationCreate::dispatch($action, $log);
+                $orders = $route->orders();
+                $orders->update(['order_status_id' => config('status.order_unterwegs')]);
+                $route->update(['route_status_id' => config('status.route_unterwegs')]);
+            }
         }
 
         return redirect('/admin/routes');
@@ -369,7 +397,11 @@ class AdminRoutesController extends Controller
     public function destroy($id)
     {
         //
-        Route::findOrFail($id)->delete();
+
+        $user = Auth::user();
+        if (!$user->demo) {
+            Route::findOrFail($id)->delete();
+        }
 
         return redirect('/admin/routes');
     }

@@ -44,6 +44,8 @@
         }
         window.actionID = {!! auth()->user()->action_id ?? '0' !!};
     </script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'])
     @yield('styles')
 </head>

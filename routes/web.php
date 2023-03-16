@@ -12,9 +12,8 @@
 */
 
 Route::get('/', function () {
-    $actions = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0);
-    $action_counter = $actions->get()->count();
-    $total_amount = $actions->sum('total_amount');
+    $action_counter = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
+    $total_amount = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
 
     return view('welcome', compact('action_counter', 'total_amount'));
 });
@@ -103,11 +102,11 @@ Route::group(['middleware' => 'verified'], function () {
 });
 
 Route::get('/broadcasting/auth', function(Request $request) {
-    $channelName = $request->channel_name;
-    $socketId = $request->socket_id;
 
     // Verify that the user is authenticated and has permission to access the private channel
     if (auth()->check()) {
+        $channelName = $request->channel_name;
+        $socketId = $request->socket_id;
         // Create a new Pusher channel token with the user's ID as the user context
         $pusher = new \Pusher\Pusher(
             config('broadcasting.connections.pusher.key'),

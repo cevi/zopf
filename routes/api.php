@@ -17,5 +17,5 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
- Route::get('action/{action}/timeChart', 'AdminController@timeChart');
+Route::get('action/{action}/timeChart', 'AdminController@timeChart');
 Route::get('action/{action}/zopfChart', 'AdminController@zopfChart');

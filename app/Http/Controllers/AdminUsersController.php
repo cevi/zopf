@@ -108,20 +108,24 @@ class AdminUsersController extends Controller
     public function store(Request $request)
     {
         //
-        if (trim($request->password) == '') {
-            $input = $request->except('password');
-        } else {
-            $input = $request->all();
-            $input['password'] = bcrypt($request->password);
-        }
 
-        if (! Auth::user()->isAdmin()) {
-            $group = Auth::user()->group;
-            $input['group_id'] = $group['id'];
-        }
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            if (trim($request->password) == '') {
+                $input = $request->except('password');
+            } else {
+                $input = $request->all();
+                $input['password'] = bcrypt($request->password);
+            }
 
-        $user = User::create($input);
-        UserCreated::dispatch($user);
+            if (!$aktUser->isAdmin()) {
+                $group = $aktUser->group;
+                $input['group_id'] = $group['id'];
+            }
+
+            $user = User::create($input);
+            UserCreated::dispatch($user);
+        }
 
         return redirect('/admin/users');
     }
@@ -143,27 +147,38 @@ class AdminUsersController extends Controller
         $allusers = $group->users;
         $users = User::where('role_id', '<>', config('status.role_administrator'))->search($request->get('term'))->get();
 
-        return $users->diff($allusers);
+        $usersDiff = $users->diff($allusers);
+        foreach ($usersDiff as $user) {
+            $data[] = ['username' => $user->username, 'email' => $user->email, 'id' => $user->id];
+        }
+        if (count($data)) {
+            return $data;
+        } else {
+            return ['username' => '', 'email' => '', 'id' => ''];
+        }
     }
 
     public function add(Request $request)
     {
-        $input = $request->all();
-        if ($input['user_id']) {
-            $aktUser = Auth::user();
-            $group = $aktUser->group;
-            $user = User::findOrFail($input['user_id']);
-            GroupUser::create([
-                'user_id' => $user->id,
-                'group_id' => $group->id,
-                'role_id' => $input['role_id_add'], ]
-            );
-            $action = $aktUser->action;
-            ActionUser::create([
-                'user_id' => $user->id,
-                'action_id' => $action->id,
-                'role_id' => $input['role_id_add'], ]
-            );
+
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $input = $request->all();
+            if ($input['user_id']) {
+                $group = $aktUser->group;
+                $user = User::findOrFail($input['user_id']);
+                GroupUser::create([
+                        'user_id' => $user->id,
+                        'group_id' => $group->id,
+                        'role_id' => $input['role_id_add'],]
+                );
+                $action = $aktUser->action;
+                ActionUser::create([
+                        'user_id' => $user->id,
+                        'action_id' => $action->id,
+                        'role_id' => $input['role_id_add'],]
+                );
+            }
         }
 
         return redirect('/admin/users');
@@ -196,17 +211,20 @@ class AdminUsersController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $user = User::findOrFail($id);
 
-        if (trim($request->password) == '') {
-            $input = $request->except('password');
-        } else {
-            $input = $request->all();
-            $input['password'] = bcrypt($request->password);
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $user = User::findOrFail($id);
+
+            if (trim($request->password) == '') {
+                $input = $request->except('password');
+            } else {
+                $input = $request->all();
+                $input['password'] = bcrypt($request->password);
+            }
+
+            $user->update($input);
         }
-
-        $user->update($input);
-
         return redirect('/admin/users');
     }
 
@@ -219,6 +237,10 @@ class AdminUsersController extends Controller
     public function destroy($id)
     {
         //
-        User::findOrFail($id)->delete();
+
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            User::findOrFail($id)->delete();
+        }
     }
 }

@@ -79,8 +79,10 @@ class AdminLogbookController extends Controller
     {
         //
         $action = Auth::user()->action;
-        $notification = $action->notifications->where('id', $id)->first();
-        $notification->update($request->all());
+        if ($action && !Auth::user()->demo) {
+            $notification = $action->notifications->where('id', $id)->first();
+            $notification->update($request->all());
+        }
 
         return redirect('/admin');
     }
@@ -94,9 +96,13 @@ class AdminLogbookController extends Controller
     public function destroy($id)
     {
         //
-        $action = Auth::user()->action;
-        $notification = $action->notifications->where('id', $id)->first();
-        $notification->delete();
+
+        $user = Auth::user();
+        if(!$user->demo) {
+            $action = $user->action;
+            $notification = $action->notifications->where('id', $id)->first();
+            $notification->delete();
+        }
 
         return redirect('/admin');
     }

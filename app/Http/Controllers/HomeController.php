@@ -28,16 +28,14 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $group = Auth::user()->group;
         $action = Auth::user()->action;
-        if ($action) {
-            $smartsupp_token = $action['SmartsuppToken'];
-        } else {
-            $smartsupp_token = null;
+        $routes = [];
+        if($action) {
+            $routes = Route::where('user_id', $user->id)->where('action_id', $action['id'])->where('route_status_id', config('status.route_unterwegs'))->get();
         }
 
-        return view('home', compact('user', 'group', 'routes', 'action', 'smartsupp_token'));
+        return view('home', compact('user', 'group', 'routes', 'action'));
     }
 
     public function routes($id)
@@ -47,9 +45,8 @@ class HomeController extends Controller
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
         $orders = $route->orders;
-        $smartsupp_token = $action['SmartsuppToken'];
 
-        return view('home.main', compact('route', 'orders', 'routes', 'smartsupp_token'));
+        return view('home.main', compact('route', 'orders', 'routes'));
     }
 
     public function maps($id)
@@ -62,9 +59,8 @@ class HomeController extends Controller
         $orders = $orders->with('address')->get();
         $center = $action->center;
         $key = $action['APIKey'];
-        $smartsupp_token = $action['SmartsuppToken'];
 
-        return view('home.map', compact('orders', 'route', 'routes', 'center', 'key', 'smartsupp_token'));
+        return view('home.map', compact('orders', 'route', 'routes', 'center', 'key'));
     }
 
     public function delivered($id)
@@ -79,34 +75,38 @@ class HomeController extends Controller
 
     public function check_route($id, $new_status)
     {
-        $order = Order::findOrFail($id);
-        $action = Auth::user()->action;
-        $route_id = $order['route_id'];
-        if ($order['quantity'] === 1) {
-            $text = 'Ein Zopf wurde';
-        } else {
-            $text = $order['quantity'].' Zöpfe wurden';
-        }
-        $text = $text.' an '.$order->address['firstname'].' '.$order->address['name'];
-        if ($new_status === config('status.order_hinterlegt')) {
-            $log['text'] = $text.' hinterlegt.';
-        } else {
-            $log['text'] = $text.' übergeben.';
-        }
-        $log['user'] = Auth::user()->username;
-        $log['quantity'] = $order['quantity'];
-        $log['route_id'] = $route_id;
-        NotificationCreate::dispatch($action, $log);
-        $order->update(['order_status_id' => $new_status]);
-        $orders = Order::where('route_id', $route_id);
-        if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
-            $route = Route::FindOrFail($route_id);
-            $log['user'] = Auth::user()->username;
-            $log['text'] = 'Route '.$route['name'].' wurde abgeschlossen';
-            NotificationCreate::dispatch($action, $log);
-            $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
 
-            return redirect('/');
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $order = Order::findOrFail($id);
+            $action = $aktUser->action;
+            $route_id = $order['route_id'];
+            if ($order['quantity'] === 1) {
+                $text = 'Ein Zopf wurde';
+            } else {
+                $text = $order['quantity'] . ' Zöpfe wurden';
+            }
+            $text = $text . ' an ' . $order->address['firstname'] . ' ' . $order->address['name'];
+            if ($new_status === config('status.order_hinterlegt')) {
+                $log['text'] = $text . ' hinterlegt.';
+            } else {
+                $log['text'] = $text . ' übergeben.';
+            }
+            $log['user'] = $aktUser->username;
+            $log['quantity'] = $order['quantity'];
+            $log['route_id'] = $route_id;
+            NotificationCreate::dispatch($action, $log);
+            $order->update(['order_status_id' => $new_status]);
+            $orders = Order::where('route_id', $route_id);
+            if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
+                $route = Route::FindOrFail($route_id);
+                $log['user'] = Auth::user()->username;
+                $log['text'] = 'Route ' . $route['name'] . ' wurde abgeschlossen';
+                NotificationCreate::dispatch($action, $log);
+                $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
+
+                return redirect('/');
+            }
         }
 
         return back();

@@ -25,7 +25,7 @@ class CreateLogEntry extends Notification
         $this->cut = $input['cut'] ?? false;
         $this->quantity = $input['quantity'] ?? 0;
         $this->user = $input['user'] ?? Auth::user()->username;
-        $this->when = $input['wann'] ?? now();
+        $this->when = $input['when'] ?? now();
         $this->text = $input['text'] ?? '';
         $this->route_id = $input['route_id'] ?? NULL;
     }

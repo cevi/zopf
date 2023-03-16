@@ -76,5 +76,7 @@ class BasisdatenSeeder extends Seeder
         $user->update([
             'group_id' => $group['id'],
             'action_id' => $action['id'], ]);
+
+        $this->command->info('Basisdaten importiert.');
     }
 }
