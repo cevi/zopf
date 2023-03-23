@@ -43,7 +43,7 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
         //
-        if (! Auth::user()->demo) {
+        if (!Auth::user()->demo) {
             $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $feedback = Feedback::create($input);

@@ -181,22 +181,42 @@
 
         if (cluster == true) {
             var markerClusteres = null;
-            markerClusteres = new markerClusterer.MarkerClusterer({map, markers});
-            // , {
-            //     imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
-            // });
-            markerClusteres.addListener('clusterclick', function (cluster) {
+            markerClusteres = new markerClusterer.MarkerClusterer({map, markers, onClusterClick,});
+
+            function onClusterClick(event, cluster, map) {
                 var content = '';
                 var info = new google.maps.MVCObject;
-                info.set('position', cluster.center_);
-                var clickedMarkers = cluster.getMarkers();
+                var clickedMarkers = cluster.markers;
                 for (var i = 0; i < clickedMarkers.length; i++) {
                     var html = clickedMarkers[i].html;
                     content += html;
                 }
+
                 infowindow.setContent(content);
+                console.log(event);
+                console.log(cluster);
+                var latLng = event.latLng.toJSON();
+                info.set('position', new google.maps.LatLng(cluster.bounds.Va['hi'], latLng['lng']));
+                // console.log(info.position.toJson());
+                // info.position.lat -= 0.05
                 infowindow.open(map, info);
-            });
+
+            };
+            // , {
+            //     imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
+            // });
+            // markerClusteres.addListener('clusterclick', function (cluster) {
+            //     var content = '';
+            //     var info = new google.maps.MVCObject;
+            //     info.set('position', cluster.center_);
+            //     var clickedMarkers = cluster.getMarkers();
+            //     for (var i = 0; i < clickedMarkers.length; i++) {
+            //         var html = clickedMarkers[i].html;
+            //         content += html;
+            //     }
+            //     infowindow.setContent(content);
+            //     infowindow.open(map, info);
+            // });
         }
 
         bounds = new google.maps.LatLngBounds();

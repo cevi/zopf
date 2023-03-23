@@ -22,7 +22,7 @@ class AdminUsersController extends Controller
     public function index()
     {
         //
-        if (! Auth::user()->isAdmin()) {
+        if (!Auth::user()->isAdmin()) {
             $roles = Role::where('id', '>', config('status.role_administrator'))->pluck('name', 'id')->all();
         } else {
             $roles = Role::pluck('name', 'id')->all();
@@ -36,7 +36,7 @@ class AdminUsersController extends Controller
     public function createDataTables()
     {
         //
-        if (! Auth::user()->isAdmin()) {
+        if (!Auth::user()->isAdmin()) {
             $group = Auth::user()->group;
             $users = $group->allUsers;
         } else {

@@ -180,3 +180,7 @@ ile_user {
 .mobile-accordion {
     margin-bottom: 0;
 }
+
+.accordion-content {
+    margin-right: 15px;
+}

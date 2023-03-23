@@ -20,30 +20,33 @@ class Helper
     public static function CreateRouteSequence($route)
     {
         $action = $route->action;
-        $orders = $route->orders;
-        $center = $action->center;
-        $key = $action['APIKey'];
+        $response = '';
+        if(!$action->demo) {
+            $orders = $route->orders;
+            $center = $action->center;
+            $key = $action['APIKey'];
 
-        $url = 'directions/json?origin='.$center['lat'].','.$center['lng'];
-        $url = $url.'&destination='.$center['lat'].','.$center['lng'];
-        $url = $url.'&mode='.strtolower($route->route_type['travelmode']);
-        $url = $url.'&waypoints=optimize:true|';
-        foreach ($orders as $order) {
-            $address = Address::findOrFail($order['address_id']);
-            $url = $url.$address['lat'].','.$address['lng'].'|';
-        }
-        $url = rtrim($url, '| ');
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
-        $request = $client->get($url.'&key='.$key);
-        $response = json_decode($request->getBody(), true);
-        if (!$route['sequenceDone'] && ($response['status']==='OK')) {
-            foreach ($response['routes'][0]['waypoint_order'] as $key => $waypoint) {
-                $orders[$waypoint]->update(['sequence' => $key]);
+            $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
+            $url = $url . '&destination=' . $center['lat'] . ',' . $center['lng'];
+            $url = $url . '&mode=' . strtolower($route->route_type['travelmode']);
+            $url = $url . '&waypoints=optimize:true|';
+            foreach ($orders as $order) {
+                $address = Address::findOrFail($order['address_id']);
+                $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
             }
-            $route->update(['sequenceDone' => true]);
-        }
+            $url = rtrim($url, '| ');
+            $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
+            $request = $client->get($url . '&key=' . $key);
+            $response = json_decode($request->getBody(), true);
+            if (!$route['sequenceDone'] && ($response['status'] === 'OK')) {
+                foreach ($response['routes'][0]['waypoint_order'] as $key => $waypoint) {
+                    $orders[$waypoint]->update(['sequence' => $key]);
+                }
+                $route->update(['sequenceDone' => true]);
+            }
 
-        return $response;
+            return $response;
+        }
     }
 
     public static function updateGroup(User $user, Group $group)

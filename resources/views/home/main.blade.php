@@ -40,7 +40,8 @@
                     </h2>
                     <div id="accordion-collapse-body-{{$key}}" class="hidden"
                          aria-labelledby="accordion-collapse-heading-{{$key}}">
-                        <div class="row font-light border-b border-gray-200 dark:border-gray-700">
+                        <div
+                            class="row accordion-content font-light border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
                             <div class="col-sm-4">
                                 <div class="opinion-header">
                                     <span>Adressinformationen</span>
@@ -62,6 +63,7 @@
                                     </table>
                                 </div>
                             </div>
+                            <br>
                             <div class="col-sm-4">
                                 <div class="opinion-header">
                                     <span>Bemerkungen</span>
@@ -69,12 +71,14 @@
                                 <div>
                                     <span>{{$order['comments']}}</span>
                                 </div>
+                                <br>
                             </div>
                             <div class="col-sm-4">
                                 <div class="opinion-header">
                                     <span>Anzahl</span>
                                     <span>{{$order['quantity']}}</span>
                                 </div>
+                                <br>
                                 <div>
                                     <span>
                                         @if($order['order_status_id'] === config('status.order_hinterlegt'))
@@ -88,8 +92,8 @@
                                                    href="{{route('home.deposited', $order->id)}}">Hinterlegt</a></td>
                                         @endif
                                     </span>
-                                    <br>
                                 </div>
+                                <br>
                             </div>
                         </div>
                     </div>

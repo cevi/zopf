@@ -21,7 +21,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="col-lg-7"><img class="img-fluid" src="img/template-homepage.png" alt="">
+                                    <div class="col-lg-7"><img class="img-fluid" src="img/screenshots.png" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@
                         <p class="mb-3">Behalte den Überblick über deine Bestellungen, die Routen und alle wichtigen
                             Daten deiner Zopfaktion im Dashboard.</p>
                     </div>
-                    <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-easy-customize.png"
+                    <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/dashboard.png"
                                                alt="..."></div>
                 </div>
             </div>
