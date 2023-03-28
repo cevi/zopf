@@ -88,75 +88,78 @@
     {{--    <script--}}
     {{--        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>--}}
     <script>
-        $(document).ready(function () {
-            $('#datatable').DataTable({
-                responsive: true,
-                processing: true,
-                serverSide: true,
-                language: {
-                    "url": "/lang/Datatables.json"
-                },
-                ajax: "{!! route('users.CreateDataTables') !!}",
-                columns: [
-                    //    {data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
-                    {data: 'username', name: 'username'},
-                    {data: 'group', name: 'group'},
-                    {data: 'role', name: 'role'},
-                    {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
 
-                ]
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).ready(function () {
+                $('#datatable').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    language: {
+                        "url": "/lang/Datatables.json"
+                    },
+                    ajax: "{!! route('users.CreateDataTables') !!}",
+                    columns: [
+                        //    {data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
+                        {data: 'username', name: 'username'},
+                        {data: 'group', name: 'group'},
+                        {data: 'role', name: 'role'},
+                        {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
+
+                    ]
+                });
             });
-        });
-        $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
-            e.preventDefault();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
+            $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                var url = $(this).data('remote');
+                // confirm then
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {method: 'DELETE', submit: true}
+                }).always(function (data) {
+                    $('#datatable').DataTable().draw(false);
+                });
             });
-            var url = $(this).data('remote');
-            // confirm then
-            $.ajax({
-                url: url,
-                type: 'DELETE',
-                dataType: 'json',
-                data: {method: 'DELETE', submit: true}
-            }).always(function (data) {
-                $('#datatable').DataTable().draw(false);
+            //autocomplete script
+            $(document).on('focus', '.autocomplete_txt', function () {
+                $(this).autocomplete({
+                    minLength: 3,
+                    highlight: true,
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "{{ route('searchajaxuser') }}",
+                            dataType: "json",
+                            data: {
+                                term: request.term,
+                            },
+                            success: function (data) {
+                                var array = $.map(data, function (item) {
+                                    return {
+                                        label: item['email'],
+                                        value: item['email'],
+                                        data: item
+                                    }
+                                });
+                                response(array)
+                            }
+                        });
+                    },
+                    select: function (event, ui) {
+                        console.log(ui);
+                        console.log(event);
+                        var data = ui.item.data;
+                        $("[name='email_add']").val(data.value);
+                        $("[name='user_id']").val(data.id);
+                    }
+                });
             });
-        });
-        //autocomplete script
-        $(document).on('focus', '.autocomplete_txt', function () {
-            $(this).autocomplete({
-                minLength: 3,
-                highlight: true,
-                source: function (request, response) {
-                    $.ajax({
-                        url: "{{ route('searchajaxuser') }}",
-                        dataType: "json",
-                        data: {
-                            term: request.term,
-                        },
-                        success: function (data) {
-                            var array = $.map(data, function (item) {
-                                return {
-                                    label: item['email'],
-                                    value: item['email'],
-                                    data: item
-                                }
-                            });
-                            response(array)
-                        }
-                    });
-                },
-                select: function (event, ui) {
-                    console.log(ui);
-                    console.log(event);
-                    var data = ui.item.data;
-                    $("[name='email_add']").val(data.value);
-                    $("[name='user_id']").val(data.id);
-                }
-            });
-        });
+        }, false);
     </script>
 @endsection

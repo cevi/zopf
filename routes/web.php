@@ -11,6 +11,8 @@
 |
 */
 
+use App\Models\User;
+
 Route::get('/', function () {
     $action_counter = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
     $total_amount = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
@@ -27,6 +29,21 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('/loginChef', function () {
+    $user = User::where('username', 'aktionschef@demo')->first();
+    Auth::login($user);
+
+    return redirect('home');
+});
+
+Route::get('/loginLeiter', function () {
+    $user = User::where('username', 'leiter1@demo')->first();
+    Auth::login($user);
+
+    return redirect('home');
+});
+
 
 Auth::routes(['verify' => true]);
 

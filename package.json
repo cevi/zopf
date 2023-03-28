@@ -13,6 +13,7 @@
         "flowbite": "^1.5.4",
         "jquery": "^3.6.0",
         "jquery-ui": "^1.12.1",
+        "laravel-datatables-vite": "^0.5.2",
         "laravel-echo": "^1.14.2",
         "laravel-vite-plugin": "^0.7.3",
         "lodash": "^4.17.21",

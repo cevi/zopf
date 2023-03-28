@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 @section('content')
-<div class="breadcrumb-holder">
+    <div class="breadcrumb-holder">
         <div class="container-fluid">
             <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/admin/orders">Bestellungen</a></li>
-            <li class="breadcrumb-item active">Erfassen</li>
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/orders">Bestellungen</a></li>
+                <li class="breadcrumb-item active">Erfassen</li>
             </ul>
             </ul>
         </div>
@@ -41,7 +41,7 @@
                             {!! Form::text('street', null, ['class' => 'form-control ']) !!}
                         </div>
                         <div class="form-row">
-                                <div class="form-group col-md-3">
+                            <div class="form-group col-md-3">
                                 {!! Form::label('plz', 'PLZ:') !!}
                                 {!! Form::text('plz', null, ['class' => 'form-control']) !!}
                             </div>
@@ -70,21 +70,23 @@
                     <div class="form-group">
                         {!! Form::submit('Adresse Erfassen', ['class' => 'btn btn-primary'])!!}
                     </div>
-                {!! Form::close()!!}
+                    {!! Form::close()!!}
+                </div>
             </div>
-        </div>
     </section>
 @endsection
 
 
 @section('scripts')
     <script type="text/javascript">
-     $(document).ready(function() {
-        $('input[type="checkbox"]').click(function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).ready(function () {
+                $('input[type="checkbox"]').click(function () {
 
-            $(".address").toggle();
-        });
-    });
+                    $(".address").toggle();
+                });
+            });
+        }, false);
     </script>
 @endsection
 {{--  //autocomplete script

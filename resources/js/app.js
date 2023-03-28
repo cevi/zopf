@@ -5,9 +5,8 @@
  */
 
 import './bootstrap';
-import './libs/datatables.js';
 import './libs/jquery-ui.js';
-// import './libs/markerCluster.js';
+import 'laravel-datatables-vite';
 import './libs/swiper-bundle.min.js';
 import './libs/jquery.waypoints.min.js';
 import './libs/custom.js';

@@ -140,5 +140,21 @@
                 </div>
             </div>
         </section>
+        <!-- GET IT-->
+        <div class="bg-primary py-5 text-dark__white">
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-lg-6 p-3">
+                        <h3 class="text-uppercase mb-0">Versuche es gleich selbst mit einem Test-Login aus.</h3>
+                    </div>
+                    <div class="col-lg-2 p-3">
+                        <a class="btn btn-outline-light" href="/loginChef">Aktions-Leitende</a>
+                    </div>
+                    <div class="col-lg-2 p-3">
+                        <a class="btn btn-outline-light" href="/loginLeiter">Leitende</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

@@ -40,7 +40,8 @@ class AdminOrdersController extends Controller
     {
         $input = $request->all();
         $order_status = OrderStatus::where('name', '=', $input['status'])->first();
-        $pickup = $input['pickup'] != 'Alle' ? true : null;
+        $pickup = $input['pickup'] === 'Abholen' ? true : null;
+        $noRoute = $input['pickup'] === 'Keine Route' ? true : null;
         if (! Auth::user()->isAdmin()) {
             $action = Auth::user()->action;
             if ($action) {
@@ -48,9 +49,12 @@ class AdminOrdersController extends Controller
                     ->when($order_status, function ($query, $order_status) {
                         $query->where('order_status_id', '=', $order_status['id']);
                     })
-                ->when($pickup, function ($query, $pickup) {
-                    $query->where('pick_up', $pickup);
-                })
+                    ->when($pickup, function ($query, $pickup) {
+                        $query->where('pick_up', $pickup);
+                    })
+                    ->when($noRoute, function ($query, $noRoute) {
+                        $query->whereNull('route_id')->where('pick_up', false);
+                    })
                 ->get();
             } else {
                 $orders = null;
@@ -127,10 +131,9 @@ class AdminOrdersController extends Controller
             }
             Order::WhereIn('id', $request->id)->update(['route_id' => $route['id']]);
 
-            $routes = Route::where('action_id', $action['id'])->where('route_status_id', config('status.route_geplant'))->get();
         }
 
-        return view('admin.orders.index', compact('routes'));
+        return true;
     }
 
     /**

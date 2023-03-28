@@ -96,7 +96,7 @@
         </div>
         {{--        <div style="height: 800px" id="map-canvas"></div>--}}
     </section>
-    <div class="modal fade" id="ajaxModel" aria-hidden="true">
+    <div class="modal fade" id="ajaxModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -148,14 +148,6 @@
 @section('scripts')
     @include('includes.google-maps')
     <script>
-        setMapsArguments(@json($open_orders), @json($key), @json($center), null, false, true);
-        loadScript();
-        $('#chooseOrders').on('click', function () {
-            $('#ajaxModel').modal('show');
-        });
-        $('#ResizeMap').on('click', function () {
-            MapResize();
-        });
 
         function CheckboxClick(checkbox) {
             MapResize();
@@ -175,6 +167,7 @@
                 }
             });
         }
+
 
         function FillIDList(id) {
             if (clicked_markers.includes(id)) {
@@ -198,48 +191,68 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', function () {
+            setMapsArguments(@json($open_orders), @json($key), @json($center), null, false, true);
+            loadScript();
+            $('#chooseOrders').on('click', function () {
+                const myModal = new bootstrap.Modal('#ajaxModal');
+                myModal.show();
+            });
+            $('#ResizeMap').on('click', function () {
+                MapResize();
+            });
 
-        $('#AssignOrders').on('click', function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            });
-            // confirm then
-            $.ajax({
-                url: '{{route('routes.AssignOrders')}}',
-                method: 'POST',
-                data: {
-                    id: clicked_markers,
-                    route_id: @json($route['id'])},
-                success: function (data) {
-                    $('#ajaxModel').modal('hide');
-                    location.reload();
-                }
-            });
-        });
-        $(document).ready(function () {
-            $('#modal-datatable').DataTable({
-                processing: true,
-                serverSide: true,
-                pageLength: 25,
-                language: {
-                    "url": "/lang/Datatables.json"
-                },
-                ajax: "{!! route('routes.CreateModalDataTables') !!}",
-                columns: [
-                    {data: 'name', name: 'name'},
-                    {data: 'firstname', name: 'firstname'},
-                    {data: 'street', name: 'street'},
-                    {data: 'plz', name: 'plz'},
-                    {data: 'city', name: 'city'},
-                    {data: 'quantity', name: 'quantity'},
-                    {data: 'comments', name: 'comments'},
-                    {data: 'checkbox', name: 'checkbox', orderable: false, serachable: false, sClass: 'text-center'},
 
-                ],
-                "order": [[3, 'asc'], [2, 'asc'], [0, 'asc']]
+            $('#AssignOrders').on('click', function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                // confirm then
+                $.ajax({
+                    url: '{{route('routes.AssignOrders')}}',
+                    method: 'POST',
+                    data: {
+                        id: clicked_markers,
+                        route_id: @json($route['id'])},
+                    success: function (data) {
+                        const truck_modal = document.querySelector('#ajaxModal');
+                        const modal = bootstrap.Modal.getInstance(truck_modal);
+                        modal.hide();
+                        location.reload();
+                    }
+                });
             });
-        });
+            $(document).ready(function () {
+                $('#modal-datatable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    pageLength: 25,
+                    language: {
+                        "url": "/lang/Datatables.json"
+                    },
+                    ajax: "{!! route('routes.CreateModalDataTables') !!}",
+                    columns: [
+                        {data: 'name', name: 'name'},
+                        {data: 'firstname', name: 'firstname'},
+                        {data: 'street', name: 'street'},
+                        {data: 'plz', name: 'plz'},
+                        {data: 'city', name: 'city'},
+                        {data: 'quantity', name: 'quantity'},
+                        {data: 'comments', name: 'comments'},
+                        {
+                            data: 'checkbox',
+                            name: 'checkbox',
+                            orderable: false,
+                            serachable: false,
+                            sClass: 'text-center'
+                        },
+
+                    ],
+                    "order": [[3, 'asc'], [2, 'asc'], [0, 'asc']]
+                });
+            });
+        }, false);
     </script>
 @endsection
