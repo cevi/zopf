@@ -48,7 +48,7 @@
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid fa-map-location-dot"></i></div>
                         <h4 class="text-uppercase mb-3">Google-Maps-API</h4>
-                        <p class="text-gray-600 text-sm">Dasnk der Google Maps API können die Bestellungen direkt auf
+                        <p class="text-gray-600 text-sm">Dank der Google Maps API können die Bestellungen direkt auf
                             der Karte angeschaut werden und auch der schnellste Weg für die Routen wird
                             vorgeschlagen.</p>
                     </div>

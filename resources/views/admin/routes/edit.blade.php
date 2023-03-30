@@ -36,7 +36,7 @@
                         {!! Form::select('user_id', $users, null, ['class' => 'form-control']) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('route_type_id', 'Rolle:') !!}
+                        {!! Form::label('route_type_id', 'Routen Art:') !!}
                         {!! Form::select('route_type_id', $route_types, null, ['class' => 'form-control']) !!}
                     </div>
                     <div class="form-group">
@@ -72,7 +72,7 @@
                             @foreach ($orders as $order)
                                 <tbody>
                                 <tr>
-                                    <td>{{$order->address['name']}}</td>
+                                    <td><a href="{{route('orders.edit',$order)}}">{{$order->address['name']}}</a></td>
                                     <td>{{$order->address['firstname']}}</td>
                                     <td>{{$order->address['street']}}</td>
                                     <td>{{$order->address['plz']}}</td>

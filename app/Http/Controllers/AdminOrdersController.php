@@ -74,7 +74,8 @@ class AdminOrdersController extends Controller
                     return $orders->address ? $orders->address['name'] : '';
                 })
                 ->addColumn('firstname', function ($orders) {
-                    return $orders->address ? $orders->address['firstname'] : '';
+                    $firstname = $orders->address ? $orders->address['firstname'] : '';
+                    return '<a href='.\URL::route('orders.edit', $orders).'>' . $firstname . '</a>';
                 })
                 ->addColumn('street', function ($orders) {
                     return $orders->address ? $orders->address['street'] : '';
@@ -86,7 +87,18 @@ class AdminOrdersController extends Controller
                     return $orders->address ? $orders->address['plz'] : '';
                 })
                 ->addColumn('route', function ($orders) {
-                    return $orders->route ? $orders->route['name'] : '';
+                    $route = $orders->route ? $orders->route['name'] : '';
+                    if ($route <> ''){
+                        if ($orders->route['route_status_id']>config('status.route_geplant'))
+                        {
+                            $link = '<a href='.\URL::route('routes.overview', $orders->route).'>';
+                        }
+                        else {
+                            $link = '<a href='.\URL::route('routes.edit', $orders->route).'>';
+                        }
+                        $route = $link . $route . '</a>';
+                    }
+                    return $route;
                 })
                 ->addColumn('status', function ($orders) {
                     return $orders->order_status ? $orders->order_status['name'] : '';
@@ -95,19 +107,18 @@ class AdminOrdersController extends Controller
                     return $orders['pick_up'] ? 'Ja' : 'Nein';
                 })
                 ->addColumn('Actions', function ($orders) {
-                    $buttons = '<form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">'.csrf_field().
-                        '<a href='.\URL::route('orders.edit', $orders).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
+                    $buttons = '<form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">'.csrf_field();
                     if ($orders['pick_up'] && ($orders['order_status_id'] == config('status.order_offen'))) {
                         $buttons .= ' <button type="submit" class="btn btn-info btn-sm">Abgeholt</button>';
                     }
-                    $buttons .= ' <button data-remote='.\URL::route('orders.destroy', $orders).' class="btn btn-danger btn-sm">Löschen</button></form>';
+                    $buttons .= ' <a data-remote='.\URL::route('orders.destroy', $orders).'><i class="fa-solid fa-trash fa-xl"></i></a></form>';
 
                     return $buttons;
                 })
                 ->addColumn('checkbox', function ($orders) {
                     return '<input type="checkbox" name="checkbox[]" value="'.$orders->id.'"/>';
                 })
-                ->rawColumns(['Actions', 'checkbox'])
+                ->rawColumns(['Actions', 'checkbox', 'route', 'firstname'])
                 ->make(true);
         } else {
             return [];
@@ -380,7 +391,7 @@ class AdminOrdersController extends Controller
         //
         $title = 'Bestellung Bearbeiten';
         $action = Auth::user()->action;
-        $routes = Route::where('action_id', $action['id'])->where('route_status_id', '<', config('status.route_unterwegs'))->get();
+        $routes = Route::where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name', 'id')->all();
         $routes = ['' => 'Keine Route'] + $routes;
 

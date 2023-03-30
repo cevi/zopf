@@ -56,7 +56,7 @@
                             @foreach ($orders as $order)
                                 <tbody>
                                 <tr>
-                                    <td>{{$order->address['name']}}</td>
+                                    <td><a href="{{route('orders.edit',$order)}}">{{$order->address['name']}}</a></td>
                                     <td>{{$order->address['firstname']}}</td>
                                     <td>{{$order->address['street']}}</td>
                                     <td>{{$order->address['plz']}}</td>

@@ -183,7 +183,7 @@
                             orderable: false,
                             serachable: false,
                             sClass: 'text-center',
-                            "width": "15%"
+                            "width": "5%"
                         },
 
                     ]

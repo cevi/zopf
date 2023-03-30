@@ -41,7 +41,6 @@ class HomeController extends Controller
     public function routes($id)
     {
         $user = Auth::user();
-        $action = Auth::user()->action;
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
         $orders = $route->orders;

@@ -23,7 +23,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             {!! Form::label('firstname', 'Vorname:') !!}
-                            {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('firstname', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group col-md-6">
                             {!! Form::label('name', 'Name:') !!}

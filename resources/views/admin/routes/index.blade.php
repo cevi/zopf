@@ -68,7 +68,7 @@
                             orderable: false,
                             serachable: false,
                             sClass: 'text-center',
-                            "width": "20%"
+                            "width": "10%"
                         },
 
                     ]
