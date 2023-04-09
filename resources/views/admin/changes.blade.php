@@ -33,78 +33,27 @@
             <li class="mb-10 ml-4">
                 <div
                     class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.3</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V3.0</h3>
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Dark Mode <br>
-                    Kernkompetenzen fett darstellen in Spinne. <br>
-                    Spinne aktualisieren auf Änderung.
+                    Benachrichtungen mit Pusher <br>
+                    Backstuben Verlauf mit Graph <br>
+                    Verschiedene Zopfaktionen mit Gruppenzuweisungen
                 </p>
             </li>
             <li class="mb-10 ml-4">
                 <div
                     class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.2</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V2.0</h3>
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Eigene Posts können bearbeitet werden. <br>
-                    Mail wird versendet bei neuem Kurs.</p>
+                    Framework-Wechsel auf Laravel</p>
             </li>
             <li class="mb-10 ml-4">
                 <div
                     class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.1</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Löschen der Kurse aktualisiert
-                    Zähler auf der Homepage.</p>
-            </li>
-            <li class="mb-10 ml-4">
-                <div
-                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Login durch Cevi-DB Benutzerdaten.</p>
-            </li>
-            <li class="mb-10 ml-4">
-                <div
-                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V5</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Eigene Kurs-Erstellung ermöglichen. <br>
-                    Landing Page mit Screenshots, Anleitung, etc. <br>
-                    Mobile-Tauglichkeit weiter verbessern.</p>
-            </li>
-            <li class="mb-10 ml-4">
-                <div
-                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V4</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Eigene Kommentare löschen auf Teilnehmerprofilen. <br>
-                    Verbesserte Fehlermeldung bei Importproblemen aus der Cevi-DB. <br>
-                    Mobile-Tauglichkeit verbessern. Vor allem für eine schnelle Erfassung von Beobachtungen. <br>
-                    Ans Cevi-CI anpassen, damit es offizieller wirkt / Schriften gemäß RV. <br>
-                    Von der Qualifikation eine optimierte Druckansicht erstellen, während dem Gespräch ist
-                    Papier wohl oft angenehmer als ein Bildschirm (Diagramm auf ganzes A4 skalieren). <br>
-                    Meldung einbauen, damit für die Leitenden ersichtlich ist, dass TNs die Bewertung und
-                    Kommentare nicht sehen können. <br>
-                    Upload von Dateien auf dem Teilnehmerprofil (Rückmeldungen zu Programm- und Sportblöcken). <br>
-                    Passwort selber über hinterlegte Mailadresse zurücksetzen können. <br>
-                    Kernkompetenzen als Anhangstabellen an Fragen, für mehrere Kernkompetenzen bei verschiedenen
-                    Kurstypen. <br>
-                    Expertenkurs als Kurstyp registriert. <br>
-                    Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 +
-                    ++ und Schlüsselkompetenzen) <br>
-
-                </p>
-            </li>
-            <li class="mb-10 ml-4">
-                <div
-                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V3</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Die 2. Selbsteinschätzung wird für alle Teilnehmer unter dem Menüpunkt Qualifikationen
-                    freigeschalten. <br>
-                    Beim Bearbeiten des Qualifikations-Status können mittels Flag die bisherigen Antworten
-                    wieder zurückgesetzt werden.
-
-                </p>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V1.0</h3>
+                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Erstellen einer Zopfaktion <br>
+                    Erfassen von Adressen und Routen mit Google Maps API <br>
+                    Routen an Leitende zuweisen</p>
             </li>
         </ol>
     </section>

@@ -49,9 +49,9 @@ class AdminActionsController extends Controller
         })
         ->addColumn('Actions', function ($actions) {
             $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
-            $buttons = '<a href='.\URL::route('actions.edit', $actions->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
-            $buttons .= ' <a href='.\URL::route('actions.complete', $actions->id).' type="button" class="btn btn-info btn-sm">'.$text.'</a>';
-            $buttons .= ' <button data-remote='.\URL::route('actions.destroy', $actions->id).' class="btn btn-danger btn-sm">Löschen</button>';
+            $buttons = '<a href='.\URL::route('actions.edit', $actions).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
+            $buttons .= ' <a href='.\URL::route('actions.complete', $actions).' type="button" class="btn btn-info btn-sm">'.$text.'</a>';
+            $buttons .= ' <button data-remote='.\URL::route('actions.destroy', $actions).' class="btn btn-danger btn-sm">Löschen</button>';
 
             return $buttons;
         })
@@ -85,10 +85,10 @@ class AdminActionsController extends Controller
         $aktUser = Auth::user();
         if(!$aktUser->demo) {
             $address = Address::Where('id', $request->address_id)->first();
+            $group = $aktUser->group;
             if (!$address) {
                 $input = $request->all();
                 if (!$aktUser->isAdmin()) {
-                    $group = $aktUser->group;
                     $input['group_id'] = $group['id'];
                 }
                 $geocoder = Helper::getGeocoder($input['APIKey']);
@@ -112,6 +112,9 @@ class AdminActionsController extends Controller
                 'user_id' => $aktUser->id,
                 'action_id' => $action->id,
                 'role_id' => config('status.role_actionleader'),]);
+            if ($request->has('addGroupUsers')){
+                Helper::AddGroupUsersToAction($group, $action);
+            }
         }
 
         return redirect('admin/actions');
@@ -134,10 +137,9 @@ class AdminActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Action $id)
     {
         //
-        $action = Action::findOrFail($id);
         $action_statuses = ActionStatus::pluck('name', 'id')->all();
         $title = 'Aktion Bearbeiten';
 
@@ -198,12 +200,11 @@ class AdminActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function complete(Request $request, $id)
+    public function complete(Request $request, Action $id)
     {
         //
         $aktUser = Auth::user();
         if(!$aktUser->demo) {
-            $action = Action::findOrFail($id);
             $input = $request->all();
             if ($action->action_status_id === config('status.action_geplant')) {
                 $action->action_status_id = config('status.action_aktiv');
@@ -234,9 +235,11 @@ class AdminActionsController extends Controller
         return redirect('/home');
     }
 
-    public function destroy($id)
+    public function destroy(Action $action)
     {
         //
+        $action->delete();
+        Helper::updateAction($aktUser, $action);
         return redirect('/admin/actions');
     }
 }

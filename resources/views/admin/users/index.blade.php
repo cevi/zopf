@@ -66,6 +66,11 @@
                     @include('includes.form_error')
                 </div>
                 <div class="col-md-6">
+                    <a id="addGroupUsers" href="#" class="btn btn-primary">
+                        <span>Alle Personen der Gruppe zur Aktion hinzufügen</span>
+                    </a>
+                    <br>
+                    <br>
                     <table class="table table-striped table-responsive" id="datatable">
                         <thead>
                         <tr>
@@ -127,6 +132,23 @@
                     $('#datatable').DataTable().draw(false);
                 });
             });
+            $('#addGroupUsers').on('click', function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                // confirm then
+                $.ajax({
+                    url: "{{route('users.addGroupUsers')}}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {method: 'POST', submit: true},
+                }).always(function () {
+                    $('#datatable').DataTable().draw(false);
+                });
+            });
             //autocomplete script
             $(document).on('focus', '.autocomplete_txt', function () {
                 $(this).autocomplete({
@@ -142,7 +164,7 @@
                             success: function (data) {
                                 var array = $.map(data, function (item) {
                                     return {
-                                        label: item['email'],
+                                        label: item['username'] + ' - ' + item['email'],
                                         value: item['email'],
                                         data: item
                                     }

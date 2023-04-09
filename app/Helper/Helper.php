@@ -217,4 +217,18 @@ class Helper
             ],
         ]);
     }
+
+    public static function AddGroupUsersToAction(Group $group, Action $action): void
+    {
+        $users = $group->allUsers;
+        foreach ($users as $user) {
+            ActionUser::FirstOrcreate(
+                [
+                    'user_id' => $user->id,
+                    'action_id' => $action->id,
+                ],
+                [ 'role_id' => config('status.role_leader')]
+            );
+        }
+    }
 }

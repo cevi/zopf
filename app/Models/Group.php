@@ -41,7 +41,7 @@ class Group extends Model
         return $this->hasMany('App\Models\User');
     }
 
-    public function allUsers()
+    public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany('App\Models\User', 'group_users')->where('group_users.role_id', '<>', config('status.role_administrator'));
     }

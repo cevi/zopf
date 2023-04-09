@@ -80,6 +80,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/users', 'AdminUsersController');
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
+        Route::post('admin/users/addGroupUsers', ['as' => 'users.addGroupUsers', 'uses' => 'AdminUsersController@AddGroupUsersToAction']);
 
         Route::get('admin/actions/complete/{id}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
 

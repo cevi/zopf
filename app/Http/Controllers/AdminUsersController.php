@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserCreated;
+use App\Helper\Helper;
 use App\Models\ActionUser;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -182,6 +183,18 @@ class AdminUsersController extends Controller
         }
 
         return redirect('/admin/users');
+    }
+
+    public function AddGroupUsersToAction()
+    {
+        //
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            $action = $aktUser->action;
+            $group = $aktUser->group;
+            Helper::AddGroupUsersToAction($group, $action);
+        }
+        return true;
     }
 
     /**

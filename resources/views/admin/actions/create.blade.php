@@ -55,6 +55,10 @@
                             {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null, ['class' => 'form-control']) !!}
                         </div>
                     @endif
+                    <div class="form-group">
+                        {!! Form::label('addGroupUsers', 'Personen der Gruppe auf Aktion übernehmen:') !!}
+                        {!! Form::checkbox('addGroupUsers', '1', false) !!}
+                    </div>
 
                     <div class="form-group">
                         {!! Form::submit('Aktion Erfassen', ['class' => 'btn btn-primary'])!!}

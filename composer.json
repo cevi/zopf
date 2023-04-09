@@ -25,13 +25,13 @@
         "pusher/pusher-php-server": "^7.1",
         "revolution/sail-db-backup": "*",
         "spatie/geocoder": "^3.6",
+        "nunomaduro/collision": "^6.1",
         "yajra/laravel-datatables-oracle": "^9.8"
     },
     "require-dev": {
         "laravel/pint": "^1.2",
         "laravel/sail": "1.13.7",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.0",
         "spatie/laravel-ignition": "^1.0",
         "sven/artisan-view": "^3.3"
