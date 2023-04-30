@@ -70,7 +70,7 @@
                     </div>
                     {!! Form::close()!!}
 
-                    {!! Form::model($order, ['method' => 'DELETE', 'action'=>['AdminOrdersController@destroy',$order->id]]) !!}
+                    {!! Form::model($order, ['method' => 'DELETE', 'action'=>['AdminOrdersController@destroy',$order]]) !!}
                     <div class="form-group">
                         {!! Form::submit('Bestellung löschen', ['class' => 'btn btn-danger'])!!}
                     </div>

@@ -97,7 +97,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('admin/orders/mapfilter', ['as' => 'orders.mapfilter', 'uses' => 'AdminOrdersController@mapfilter']);
         Route::post('admin/orders/createRoute', ['as' => 'orders.createRoute', 'uses' => 'AdminOrdersController@createRoute']);
         Route::post('admin/orders/uploadFile', 'AdminOrdersController@uploadFile');
-        Route::post('admin/orders/pickup/{id}', ['as' => 'orders.pickup', 'uses' => 'AdminOrdersController@pickup']);
+        Route::post('admin/orders/pickup/{order}', ['as' => 'orders.pickup', 'uses' => 'AdminOrdersController@pickup']);
         Route::resource('admin/orders', 'AdminOrdersController');
 
         Route::resource('admin/addresses', 'AdminAddressesController');

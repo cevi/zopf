@@ -18,7 +18,8 @@
                 Total Anzahl Zöpfe: {{$route->zopf_count()}} <br>
                 Routen Art: {{$routetype['name']}} <br>
                 @if ($route->route_status['id']> config('status.route_offen'))
-                    <a type="button" class="btn btn-info btn-sm" href="{{route('routes.downloadPDF', $route->id)}}">Download
+                    <a type="button" class="btn btn-info btn-sm" target="_blank"
+                       href="{{route('routes.downloadPDF', $route->id)}}">Download
                         PDF</a>
                 @endif
             </header>

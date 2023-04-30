@@ -101,17 +101,20 @@ class AdminOrdersController extends Controller
                     return $route;
                 })
                 ->addColumn('status', function ($orders) {
-                    return $orders->order_status ? $orders->order_status['name'] : '';
+                    return [
+                        'display' => $orders->order_status ? $orders->order_status['name'] : '',
+                        'sort' => $orders->order_status['id'],
+                    ];
                 })
                 ->addColumn('pick_up', function ($orders) {
                     return $orders['pick_up'] ? 'Ja' : 'Nein';
                 })
                 ->addColumn('Actions', function ($orders) {
-                    $buttons = '<form action="'.\URL::route('orders.pickup', $orders->id).'" method="post">'.csrf_field();
+                    $buttons = '<div class="row"><div class ="col-6">';
                     if ($orders['pick_up'] && ($orders['order_status_id'] == config('status.order_offen'))) {
-                        $buttons .= ' <button type="submit" class="btn btn-info btn-sm">Abgeholt</button>';
+                        $buttons .= ' <a href="javascript:void(0)"  class="pick-up" title="Abgeholt" data-remote='.\URL::route('orders.pickup', $orders).'><i class="fa-solid fa-people-carry-box fa-xl"></i></a>';
                     }
-                    $buttons .= ' <a data-remote='.\URL::route('orders.destroy', $orders).'><i class="fa-solid fa-trash fa-xl"></i></a></form>';
+                    $buttons .= '</form></div><div class ="col-6"> <a href="javascript:void(0)" class="delete" data-remote='.\URL::route('orders.destroy', $orders).'><i style="color:	#FAA0A0" class="fa-solid fa-trash fa-xl"></i></a></div></div>';
 
                     return $buttons;
                 })
@@ -152,13 +155,12 @@ class AdminOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function pickup($id)
+    public function pickup(Order $order)
     {
         //
         $action = Auth::user()->action;
 
         if ($action && !Auth::user()->demo) {
-            $order = Order::findorFail($id);
             $order->update(['order_status_id' => config('status.order_abgeholt')]);
             if ($order['quantity'] === 1) {
                 $text = 'Ein Zopf wurde';

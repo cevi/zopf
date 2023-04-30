@@ -55,7 +55,8 @@
                         {data: 'group', name: 'group'},
                         {data: 'status', name: 'status'},
                         {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
-                    ]
+                    ],
+                    order: [[0, 'desc']]
                 });
             });
             $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {

@@ -176,6 +176,7 @@ class AdminRoutesController extends Controller
             $routetype = $route->route_type;
 
             $orders = $orders->sortBy('sequence');
+            return View('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'save_path'));
             $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'save_path'));
             return $pdf->download(Str::slug($route['name']).'.pdf');
         }

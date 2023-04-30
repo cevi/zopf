@@ -158,6 +158,7 @@
                             d.status = $('#status_btn_value').val()
                         }
                     },
+                    order: [[7, 'asc'], [6, 'asc'], [9, 'desc'], [3, 'asc'], [2, 'asc'], [0, 'asc']],
                     columns: [
                         {data: 'name', name: 'name', "width": "10%"},
                         {data: 'firstname', name: 'firstname', "width": "7%"},
@@ -168,7 +169,15 @@
                         {data: 'route', name: 'route', "width": "5%"},
                         {data: 'pick_up', name: 'pick_up', "width": "4%"},
                         {data: 'comments', name: 'comments', "width": "10%"},
-                        {data: 'status', name: 'status', "width": "5%"},
+                        // {data: 'status', name: 'status', "width": "5%"},
+                        {
+                            data: {
+                                _: 'status.display',
+                                sort: 'status.sort'
+                            },
+                            name: 'status',
+                            "width": "5%"
+                        },
                         {
                             data: 'checkbox',
                             name: 'checkbox',
@@ -242,7 +251,7 @@
 
 
             });
-            $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
+            $('#datatable').on('click', '.delete[data-remote]', function (e) {
                 e.preventDefault();
                 $.ajaxSetup({
                     headers: {
@@ -251,13 +260,30 @@
                 });
                 var url = $(this).data('remote');
                 // confirm then
-
                 $.ajax({
                     url: url,
                     type: 'DELETE',
-                    dataType: 'json',
-                    data: {method: 'DELETE', submit: true}
-                }).always(function (data) {
+                    // dataType: 'json',
+                    // data: {method: 'DELETE', submit: true}
+                }).always(function () {
+                    $('#datatable').DataTable().draw(false);
+                });
+            });
+            $('#datatable').on('click', '.pick-up[data-remote]', function (e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                var url = $(this).data('remote');
+                // confirm then
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    // dataType: 'json',
+                    // data: {method: 'POST', submit: true}
+                }).always(function () {
                     $('#datatable').DataTable().draw(false);
                 });
             });
