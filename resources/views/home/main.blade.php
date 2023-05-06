@@ -19,7 +19,7 @@
                                 data-accordion-target="#accordion-collapse-body-{{$key}}" aria-expanded="false"
                                 aria-controls="accordion-collapse-body-{{$key}}">
                                 <span class="col-sm-2">
-                                    <span>{{$order['sequence']+1}}</span>
+                                    <span class="font-bold">{{$order['sequence']+1}}</span>
                                 </span>
                             <span class="col-sm-4">
                                     <span>{{$order->address['firstname']}} {{$order->address['name']}}</span>
@@ -41,7 +41,7 @@
                     <div id="accordion-collapse-body-{{$key}}" class="hidden"
                          aria-labelledby="accordion-collapse-heading-{{$key}}">
                         <div
-                            class="row accordion-content font-light border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+                            class="row accordion-content font-medium border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
                             <div class="col-sm-4">
                                 <div class="opinion-header">
                                     <span>Adressinformationen</span>

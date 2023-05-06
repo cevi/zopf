@@ -71,12 +71,12 @@ class AdminRoutesController extends Controller
                         $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
                     }
                     $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
-                    if (($routes->route_status['id'] == config('status.route_geplant'))) {
+                    if (($routes->route_status['id'] == config('status.route_geplant')) && $routes['route_type']) {
                         $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button>';
-                        // <button data-remote='.\URL::route('routes.send', $routes->id).' id="send" class="btn btn-secondary btn-sm">Vorbereitet</button>';
                     }
                     if ($routes->route_status['id'] == config('status.route_vorbereitet')) {
                         $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button>';
+                        $buttons .= ' <button type="submit" name="planned" class="btn btn-secondary btn-sm">Geplant</button>';
                     }
                     $buttons .= '</form>';
 
@@ -365,16 +365,19 @@ class AdminRoutesController extends Controller
         return redirect()->to('/admin/routes/'.$Request['route_id'].'/edit');
     }
 
-    public function send($id)
+    public function send(Request $request, $id)
     {
         //
-
         $user = Auth::user();
         if (!$user->demo) {
             $route = Route::findOrFail($id);
             if ($route->route_status['id'] === config('status.route_geplant')) {
                 $route->update(['route_status_id' => config('status.route_vorbereitet')]);
-            } else {
+            }
+            elseif($request->has('planned')){
+                $route->update(['route_status_id' => config('status.route_geplant')]);
+                }
+            else{
                 $action = $user->action;
                 $log['text'] = 'Route ' . $route['name'] . ' wurde gestartet.';
                 $log['user'] = $route->user->username;
