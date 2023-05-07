@@ -10,6 +10,7 @@
                         <i class="fa-solid fa-house-chimney"></i>
                         <span class="ml-3">Home</span>
                     </a>
+                </li>
                 @if(Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global)
                     <li>
                         <a href="/admin"
