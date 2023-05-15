@@ -2,12 +2,12 @@
     <div class="container justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
 
         @auth
-            {{--            <a class="navbar-brand" href="{{ url('/home') }}">--}}
-            <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
+            <a class="navbar-brand" href="{{ url('/home') }}">
+                <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
             </a>
         @else
-            {{--            <a class="navbar-brand" href="{{ url('/') }}">--}}
-            <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
             </a>
         @endauth
         <button data-collapse-toggle="mega-menu-full" type="button"
