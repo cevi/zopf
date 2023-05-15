@@ -59,10 +59,15 @@
                         {!! Form::label('route_id', 'Route:') !!}
                         {!! Form::select('route_id', $routes, null, ['class' => 'form-control']) !!}
                     </div>
+                    
+                    <div class="form-group">
+                        {!! Form::label('order_status_id', 'Status:') !!}
+                        {!! Form::select('order_status_id', $order_statuses, null, ['class' => 'form-control']) !!}
+                    </div>
 
                     <div class="form-group">
-                        {!! Form::label('comment', 'Bemerkung:') !!}
-                        {!! Form::text('comment', null, ['class' => 'form-control']) !!}
+                        {!! Form::label('comments', 'Bemerkung:') !!}
+                        {!! Form::text('comments', null, ['class' => 'form-control']) !!}
                     </div>
 
                     <div class="form-group">
