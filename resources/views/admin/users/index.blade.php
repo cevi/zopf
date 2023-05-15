@@ -76,6 +76,7 @@
                         <tr>
                             {{-- <th></th> --}}
                             <th>Name</th>
+                            <th>E-Mail</th>
                             <th>Gruppe</th>
                             <th>Rolle</th>
                             <th>Aktionen</th>
@@ -107,6 +108,7 @@
                     columns: [
                         //    {data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
                         {data: 'username', name: 'username'},
+                        {data: 'email', name: 'email'},
                         {data: 'group', name: 'group'},
                         {data: 'role', name: 'role'},
                         {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
