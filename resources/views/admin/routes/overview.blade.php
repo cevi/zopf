@@ -83,7 +83,12 @@
 @section('scripts')
     @include('includes.google-maps')
     <script>
-        setMapsArguments(@json($orders), @json($key), @json($center), @json($route->route_type['travelmode']), false);
+        var route_type = @json($route->route_type);
+        var travel_mode = 'DRIVING';
+        if(route_type){
+            travel_mode = route_type['travel_mode'];
+        }
+        setMapsArguments(@json($orders), @json($key), @json($center), travel_mode, false);
         window.onload = loadScript;
     </script>
 @endsection
