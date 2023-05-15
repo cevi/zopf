@@ -68,6 +68,7 @@ class Helper
     {
         $action_user = ActionUser::firstOrCreate(['action_id' => $action->id, 'user_id' => $user->id]);
         $role_id = $action_user->role ? $action_user->role->id : config('status.role_leader');
+        $action_user->update(['role_id' => $role_id]);
         $user->update([
             'action_id' => $action->id,
             'role_id' => $role_id, ]);
