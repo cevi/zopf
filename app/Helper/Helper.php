@@ -52,9 +52,11 @@ class Helper
     public static function updateGroup(User $user, Group $group)
     {
         $group_user = GroupUser::firstOrCreate(['group_id' => $group->id, 'user_id' => $user->id]);
+        $role_id = $group_user->role ? $group_user->role->id : config('status.role_leader');
+        $group_user->update(['role_id' => $role_id]);
         $user->update([
             'group_id' => $group->id,
-            'role_id' => $group_user->role->id, ]);
+            'role_id' => $role_id, ]);
         if ($user->action) {
             if ($user->action->group['id'] != $group->id) {
                 $user->update(['action_id' => null]);
