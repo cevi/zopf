@@ -85,11 +85,11 @@ class HomeController extends Controller
             } else {
                 $text = $order['quantity'] . ' Zöpfe wurden';
             }
-            $text = $text . ' an ' . $order->address['firstname'] . ' ' . $order->address['name'];
+            
             if ($new_status === config('status.order_hinterlegt')) {
-                $log['text'] = $text . ' hinterlegt.';
+                $text = $text . ' bei ' . $order->address['firstname'] . ' ' . $order->address['name'] . ' hinterlegt.';
             } else {
-                $log['text'] = $text . ' übergeben.';
+                $text = $text . ' an ' . $order->address['firstname'] . ' ' . $order->address['name'] . ' übergeben.';
             }
             $log['user'] = $aktUser->username;
             $log['quantity'] = $order['quantity'];
@@ -101,6 +101,7 @@ class HomeController extends Controller
                 $route = Route::FindOrFail($route_id);
                 $log['user'] = Auth::user()->username;
                 $log['text'] = 'Route ' . $route['name'] . ' wurde abgeschlossen';
+                $log['quantity'] = 0;
                 NotificationCreate::dispatch($action, $log);
                 $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
 
