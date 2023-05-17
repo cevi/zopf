@@ -86,7 +86,7 @@ class AdminOrdersController extends Controller
                 ->addColumn('plz', function ($orders) {
                     return $orders->address ? $orders->address['plz'] : '';
                 })
-                ->addColumn('route', function ($orders) {
+                ->editColumn('route', function ($orders) {
                     $route = $orders->route ? $orders->route['name'] : '';
                     if ($route <> ''){
                         if ($orders->route['route_status_id']>config('status.route_geplant'))
@@ -183,7 +183,7 @@ class AdminOrdersController extends Controller
     {
         //
         $action = Auth::user()->action;
-        $routes = Route::where('route_status_id', config('status.route_geplant'))->:where('action_id', $action['id'])->get();
+        $routes = Route::where('route_status_id', config('status.route_geplant'))->where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name', 'id')->all();
         $title = 'Bestellung Erfassen';
 
@@ -399,7 +399,7 @@ class AdminOrdersController extends Controller
         $routes = ['' => 'Keine Route'] + $routes;
         $order_statuses = OrderStatus::pluck('name','id')->all();
 
-        return view('admin.orders.edit', compact('order', 'routes', 'title', 'order_statuses));
+        return view('admin.orders.edit', compact('order', 'routes', 'title', 'order_statuses'));
     }
 
     /**

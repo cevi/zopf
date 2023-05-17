@@ -47,7 +47,7 @@ class FeedbackController extends Controller
             $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $feedback = Feedback::create($input);
-            Mail::to(config('mail.camp.address'))->send(new FeedbackCreated($feedback));
+            Mail::to(config('mail.from.address'))->send(new FeedbackCreated($feedback));
         }
 
         return redirect('admin/changes')->with('success', 'Vielen Dank für die Rückmeldung.');

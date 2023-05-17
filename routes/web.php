@@ -75,6 +75,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
 
     Route::group(['middleware' => 'groupleader'], function () {
+
         Route::get('/admin', ['as' => 'admin.index', 'uses' => 'AdminController@index']);
         Route::post('admin/log/create', ['as' => 'admin.logcreate', 'uses' => 'AdminController@logcreate']);
 
@@ -82,7 +83,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
         Route::post('admin/users/addGroupUsers', ['as' => 'users.addGroupUsers', 'uses' => 'AdminUsersController@AddGroupUsersToAction']);
 
-        Route::get('admin/actions/complete/{id}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
+        Route::get('admin/actions/complete/{action}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
 
         Route::get('admin/routes/{id}/overview', ['as' => 'routes.overview', 'uses' => 'AdminRoutesController@overview']);
         Route::get('admin/routes/{id}/downloadPDF', ['as' => 'routes.downloadPDF', 'uses' => 'AdminRoutesController@downloadPDF']);
@@ -110,8 +111,8 @@ Route::group(['middleware' => 'verified'], function () {
 
         // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
-        Route::get('/admin/changes', 'AdminController@changes');
-        Route::post('users/feedback/send', 'FeedbackController@send');
+        Route::get('admin/changes', 'AdminController@changes');
+        Route::post('/admin/feedback', 'FeedbackController@store');
 
         Route::get('admin/notifications/read', ['as' => 'notifications.read', 'uses' => 'AdminController@notifications_read']);
 
@@ -145,7 +146,7 @@ Route::get('/broadcasting/auth', function(Request $request) {
 
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('admin/groups', 'AdminGroupsController');
-    Route::resource('/admin/feedback', 'FeedbackController');
+    Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);;
 });
 
 Route::get('admin/run-migrations', function () {

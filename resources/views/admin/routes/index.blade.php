@@ -61,7 +61,14 @@
                         {data: 'routetype', name: 'routetype', "width": "5%"},
                         {data: 'zopf_count', name: 'zopf_count', "width": "5%"},
                         {data: 'order_count', name: 'order_count', "width": "5%"},
-                        {data: 'status', name: 'status', "width": "5%"},
+                        {
+                            data: {
+                                _: 'status.display',
+                                sort: 'status.sort'
+                            },
+                            name: 'status',
+                            "width": "5%"
+                        },
                         {
                             data: 'Actions',
                             name: 'Actions',

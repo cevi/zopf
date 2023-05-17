@@ -125,18 +125,18 @@ class AdminUsersController extends Controller
                 $input['group_id'] = $group['id'];
                 if(isset($action)){
                     $input['action_id'] = $action['id'];
-                } 
+                }
             }
-            $input['email_verified_at'] = now()
+            $input['email_verified_at'] = now();
 
             $user = User::create($input);
             UserCreated::dispatch($user);
             if(isset($group)){
-                Helper::UpdateGroup($user, $group)
-            } 
+                Helper::UpdateGroup($user, $group);
+            }
             if(isset($action)){
-                Helper::UpdateACtion($user, $action)
-            } 
+                Helper::UpdateACtion($user, $action);
+            }
         }
 
         return redirect('/admin/users');

@@ -158,7 +158,8 @@
                             d.status = $('#status_btn_value').val()
                         }
                     },
-                    order: [[7, 'asc'], [6, 'asc'], [9, 'desc'], [3, 'asc'], [2, 'asc'], [0, 'asc']],
+                    // order: [[9, 'asc']],
+                    order: [[7, 'asc'], [6, 'asc'], [9, 'asc'], [3, 'asc'], [2, 'asc'], [0, 'asc']],
                     columns: [
                         {data: 'name', name: 'name', "width": "10%"},
                         {data: 'firstname', name: 'firstname', "width": "7%"},

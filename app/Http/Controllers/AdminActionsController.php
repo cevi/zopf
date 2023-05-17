@@ -137,7 +137,7 @@ class AdminActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Action $id)
+    public function edit(Action $action)
     {
         //
         $action_statuses = ActionStatus::pluck('name', 'id')->all();
@@ -200,7 +200,7 @@ class AdminActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function complete(Request $request, Action $id)
+    public function complete(Request $request, Action $action)
     {
         //
         $aktUser = Auth::user();
@@ -212,8 +212,7 @@ class AdminActionsController extends Controller
             } else {
                 $action->action_status_id = config('status.action_abgeschlossen');
 
-                $cut = Logbook::where('action_id', $action['id'])->where('cut', true)->sum('quantity');
-                $input['total_amount'] = $action->orders->sum('quantity') + $cut;
+                $input['total_amount'] = $action->notifications()->sum('quantity');
                 $log['text'] = 'Aktion ' . $action['name'] . ' wurde abgeschlossen.';
             }
             $log['user'] = $aktUser->username;
@@ -238,8 +237,11 @@ class AdminActionsController extends Controller
     public function destroy(Action $action)
     {
         //
-        $action->delete();
-        Helper::updateAction($aktUser, $action);
+        $aktUser = Auth::user();
+        if(!$aktUser->demo) {
+            $action->delete();
+            Helper::updateAction($aktUser, $action);
+        }
         return redirect('/admin/actions');
     }
 }

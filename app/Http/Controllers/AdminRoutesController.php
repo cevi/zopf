@@ -51,7 +51,10 @@ class AdminRoutesController extends Controller
         if ($routes) {
             return DataTables::of($routes)
                 ->addColumn('status', function ($routes) {
-                    return $routes->route_status ? $routes->route_status['name'] : '';
+                    return [
+                        'display' => $routes->route_status ? $routes->route_status['name'] : '',
+                        'sort' => $routes->route_status['id'],
+                    ];
                 })
                 ->addColumn('user', function ($routes) {
                     return $routes->user ? $routes->user['username'] : '';
