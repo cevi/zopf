@@ -195,7 +195,7 @@ class AdminOrdersController extends Controller
         $action = Auth::user()->action;
         $orders = Order::where('action_id', $action['id']);
         $orders = $orders->with('address')->get();
-        $cities = $action->addresses->unique('city')->pluck('city');
+        $cities = $action->addresses->unique('plz')->pluck('city', 'plz');
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
         $key = $action['APIKey'];
@@ -212,7 +212,7 @@ class AdminOrdersController extends Controller
         $status = $request->status;
         $orders = Order::where('action_id', $action['id']);
         if (isset($city) and $city != 'Alle') {
-            $addresses_id = $addresses->where('city', $city)->pluck('id')->all();
+            $addresses_id = $addresses->where('plz', $city)->pluck('id')->all();
             $orders = $orders->whereIn('address_id', $addresses_id);
         }
 

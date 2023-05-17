@@ -30,10 +30,11 @@
                                         <button class="btn btn-outline-primary btn-sm active">Alle</button>
                                     </td>
                                 </tr>
-                                @foreach ($cities as $city)
+                                @foreach ($cities as $index => $city)
                                     <tr>
                                         <td>
-                                            <button class="btn btn-outline-primary btn-sm">{{$city}}</button>
+                                            <button value="{{$index}}" class=" btn btn-outline-primary btn-sm
+                                            ">{{$city}}</button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -125,11 +126,12 @@
                 btns[i].addEventListener("click", function () {
                     var active_btn = btnContainer.getElementsByClassName("active");
                     var city_btn = active_btn[0];
+                    console.log(city_btn.value);
                     var status_btn = active_btn[1];
                     $.ajax({
                         url: "{!! route('orders.mapfilter')!!}",
                         data: {
-                            city: city_btn.textContent,
+                            city: city_btn.value,
                             status: status_btn.textContent
                         },
                         success: function (response) {

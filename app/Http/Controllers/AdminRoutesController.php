@@ -70,7 +70,7 @@ class AdminRoutesController extends Controller
                 })
                 ->addColumn('Actions', function ($routes) {
                     $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">'.csrf_field();
-                    if ($routes->route_status['id'] < 10) {
+                    if ($routes->route_status['id'] < config('status.route_abgeschlossen')) {
                         $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
                     }
                     $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
