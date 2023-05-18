@@ -90,6 +90,9 @@ function UpdateRoute($input) {
             routeProgress.ariaValueNow = routePercent;
             routeProgress.style.width = routePercent + "%";
             routeOpen.html('<span>Noch Offen</span><strong>' + route.dataset.countOpen + '</strong>');
+            if (route.dataset.countOpen <= 0) {
+                route.remove();
+            }
         }
     }
 }

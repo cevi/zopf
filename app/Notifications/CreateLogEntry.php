@@ -8,11 +8,35 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CreateLogEntry extends Notification
+class CreateLogEntry extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $input;
+    /**
+     * @var mixed
+     */
+    public mixed $input;
+    /**
+     * @var false|mixed
+     */
+    private mixed $cut;
+    /**
+     * @var int|mixed
+     */
+    private mixed $quantity;
+    private mixed $user;
+    /**
+     * @var \Illuminate\Support\Carbon|mixed
+     */
+    private mixed $when;
+    /**
+     * @var mixed|string
+     */
+    private mixed $text;
+    /**
+     * @var mixed|null
+     */
+    private mixed $route_id;
 
     /**
      * Create a new notification instance.
@@ -28,6 +52,8 @@ class CreateLogEntry extends Notification
         $this->when = $input['when'] ?? now();
         $this->text = $input['text'] ?? '';
         $this->route_id = $input['route_id'] ?? NULL;
+
+//        $this->afterCommit();
     }
 
     /**
@@ -39,16 +65,6 @@ class CreateLogEntry extends Notification
     public function via($notifiable)
     {
         return [LogbookNotification::class];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
     }
 
     /**
