@@ -1,11 +1,11 @@
 @extends('home.layout')
 
 @section('route_content')
-    <h1>{{$route->name}}</h1> <br>
+    <x-page-title :title="$title" :help="$help" :header="false"/>
 
     <div>
-        <a type="button" class="btn active btn-info btn" href="#">Liste</a>
-        <a type="button" class="btn btn-info btn" href="{{route('home.maps',$route->id)}}">Karte</a>
+        <a type="button" class="btn-primary active btn-sm" href="#">Liste</a>
+        <a type="button" class="btn-primary active btn-sm" href="{{route('home.maps',$route->id)}}">Karte</a>
     </div>
     <br>
     <!-- Author -->

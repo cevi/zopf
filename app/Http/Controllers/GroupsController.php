@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\Help;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -15,10 +16,11 @@ class GroupsController extends Controller
     public function create()
     {
         //
-        $title = 'Gruppe Erfassen';
+        $title = 'Gruppe - Erfassen';
         $users = Auth::user()->pluck('username', 'id');
+        $help = Help::where('title',$title)->first();
 
-        return view('home.groups.create', compact('users', 'title'));
+        return view('home.groups.create', compact('users', 'title', 'help'));
     }
 
     public function store(Request $request)
@@ -60,9 +62,10 @@ class GroupsController extends Controller
     public function edit(Group $group)
     {
         //
-        $title = 'Gruppe Bearbeiten';
+        $title = 'Gruppe - Bearbeiten';
+        $help = Help::where('title',$title)->first();
 
-        return view('home.groups.edit', compact('group', 'title'));
+        return view('home.groups.edit', compact('group', 'title', 'help'));
     }
 
     public function update(Request $request, Group $group)

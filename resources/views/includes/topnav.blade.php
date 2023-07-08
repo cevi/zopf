@@ -26,7 +26,7 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav ml-auto">
                 @auth
-                    @if (Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global)
+                    @if(Auth::user()->isAdmin() || (Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global))
                         <li>
                             <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>
                         </li>

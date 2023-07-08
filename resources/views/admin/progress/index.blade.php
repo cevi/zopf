@@ -1,20 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="admin/">Dashboard</a></li>
-                <li class="breadcrumb-item active">{{$title}}</li>
-            </ul>
-        </div>
-    </div>
+    <x-page-title :title="$title" :help="$help"/>
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header>
-                <h1 class="h3 display">{{$title}}</h1>
-            </header>
             <br>
             @if(count($progress)>1)
                 <div class="area-chart">
@@ -64,23 +54,18 @@
                     <th scope="col">Gebacken</th>
                     <th scope="col">Ausgeliefert</th>
                     <th scope="col">Total</th>
-                    <th scope="col">Aktionen</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($progress as $act_progress)
                     <tr>
-                        <td>{{$act_progress['when']}}</td>
+                        <td><a href="{{route('progress.edit', $act_progress)}}">{{$act_progress['when']}}</a></td>
                         <td>{{$act_progress['raw_material']}}</td>
                         <td>{{$act_progress['dough']}}</td>
                         <td>{{$act_progress['braided']}}</td>
                         <td>{{$act_progress['baked']}}</td>
                         <td>{{$act_progress['delivered']}}</td>
                         <td>{{$act_progress['total']}}</td>
-                        <td>
-                            <a href="{{route('progress.edit', $act_progress)}}" type="button"
-                               class="btn btn-primary btn-sm">Bearbeiten</a>
-                        </td>
                     </tr>
                 @endforeach
                 </tbody>

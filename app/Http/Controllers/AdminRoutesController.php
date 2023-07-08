@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Address;
+use App\Models\Help;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Route;
@@ -31,8 +32,9 @@ class AdminRoutesController extends Controller
     {
         //
         $title = 'Routen';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.routes.index', compact('title'));
+        return view('admin.routes.index', compact('title', 'help'));
     }
 
     public function createDataTables()
@@ -136,9 +138,12 @@ class AdminRoutesController extends Controller
         $orders = $route->orders;
         $routetype = $route->route_type;
         $key = $action['APIKey'];
-        $title = 'Route Übersicht';
+        $title = 'Route - Übersicht';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Routen';
+        $help['main_route'] =  '/admin/routes';
 
-        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key', 'title'));
+        return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key', 'title', 'help'));
     }
 
     public function downloadPDF($id)
@@ -197,9 +202,12 @@ class AdminRoutesController extends Controller
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
         $key = $action['APIKey'];
-        $title = 'Routenkarte';
+        $title = 'Routen - Karte';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Routen';
+        $help['main_route'] =  '/admin/routes';
 
-        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key', 'title'));
+        return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key', 'title', 'help'));
     }
 
     public function mapfilter(Request $request)
@@ -235,13 +243,16 @@ class AdminRoutesController extends Controller
     public function create()
     {
         //
-        $title = 'Route erfassen';
+        $title = 'Route - Erfassen';
         $group = Auth::user()->group;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username', 'id')->all();
         $route_types = RouteType::pluck('name', 'id')->all();
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Routen';
+        $help['main_route'] =  '/admin/routes';
 
-        return view('admin.routes.create', compact('users', 'route_types', 'title'));
+        return view('admin.routes.create', compact('users', 'route_types', 'title', 'help'));
     }
 
     /**
@@ -304,7 +315,10 @@ class AdminRoutesController extends Controller
         $route_statuses = RouteStatus::pluck('name', 'id')->all();
         $route_types = RouteType::pluck('name', 'id')->all();
         $orders = $route->orders;
-        $title = 'Route Bearbeiten';
+        $title = 'Route - Bearbeiten';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Routen';
+        $help['main_route'] =  '/admin/routes';
 
         $open_orders = Order::where([
             ['action_id', $action['id']],
@@ -319,7 +333,7 @@ class AdminRoutesController extends Controller
         $center = $action->center;
         $key = $action['APIKey'];
 
-        return view('admin.routes.edit', compact('route', 'users', 'route_statuses', 'route_types', 'orders', 'open_orders', 'center', 'key', 'title'));
+        return view('admin.routes.edit', compact('route', 'users', 'route_statuses', 'route_types', 'orders', 'open_orders', 'center', 'key', 'title', 'help'));
     }
 
     /**

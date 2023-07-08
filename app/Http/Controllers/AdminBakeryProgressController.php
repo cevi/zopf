@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Charts\ProgressChart;
 use App\Models\BakeryProgress;
+use App\Models\Help;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,7 +67,9 @@ class AdminBakeryProgressController extends Controller
                 ->backgroundColor($graphs[$i]['color']);
         }
 
-        return view('admin.progress.index', compact('users', 'progress', 'title', 'progressChart'));
+        $help = Help::where('title',$title)->first();
+
+        return view('admin.progress.index', compact('users', 'progress', 'title', 'progressChart', 'help'));
     }
 
     /**
@@ -124,13 +127,17 @@ class AdminBakeryProgressController extends Controller
     {
         //
 
-        $title = 'Backstuben Verlauf Bearbeiten';
+        $title = 'Backstuben Verlauf - Bearbeiten';
         $group = Auth::user()->group;
         $action = Auth::user()->action;
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username', 'id')->all();
 
-        return view('admin.progress.edit', compact('users', 'progress', 'title'));
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Backstuben Verlauf';
+        $help['main_route'] =  '/admin/progress';
+
+        return view('admin.progress.edit', compact('users', 'progress', 'title', 'help'));
     }
 
     /**

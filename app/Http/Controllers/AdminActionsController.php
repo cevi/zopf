@@ -9,6 +9,7 @@ use App\Models\ActionStatus;
 use App\Models\ActionUser;
 use App\Models\Address;
 use App\Models\Group;
+use App\Models\Help;
 use App\Models\Logbook;
 use DataTables;
 use Illuminate\Http\Request;
@@ -27,8 +28,9 @@ class AdminActionsController extends Controller
         //
 
         $title = 'Aktionen';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.actions.index', compact('title'));
+        return view('admin.actions.index', compact('title', 'help'));
     }
 
     public function createDataTables()
@@ -67,10 +69,13 @@ class AdminActionsController extends Controller
     public function create()
     {
         //
-        $title = 'Aktion Erfassen';
+        $title = 'Aktion - Erfassen';
         $groups = Group::pluck('name', 'id')->all();
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Aktionen';
+        $help['main_route'] =  '/admin/actions';
 
-        return view('admin.actions.create', compact('groups', 'title'));
+        return view('admin.actions.create', compact('groups', 'title', 'help'));
     }
 
     /**
@@ -141,9 +146,12 @@ class AdminActionsController extends Controller
     {
         //
         $action_statuses = ActionStatus::pluck('name', 'id')->all();
-        $title = 'Aktion Bearbeiten';
+        $title = 'Aktion - Bearbeiten';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Aktionen';
+        $help['main_route'] =  '/admin/actions';
 
-        return view('admin.actions.edit', compact('action', 'action_statuses', 'title'));
+        return view('admin.actions.edit', compact('action', 'action_statuses', 'title', 'help'));
     }
 
     /**

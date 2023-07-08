@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Models\Logbook;
 use App\Models\User;
 use Auth;
@@ -64,11 +65,12 @@ class AdminLogbookController extends Controller
     public function edit($id)
     {
         //
-        $title = 'Logbuch-Eintrag bearbeiten';
+        $title = 'Logbuch-Eintrag - Bearbeiten';
         $action = Auth::user()->action;
         $notification = $action->notifications->where('id', $id)->first();
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.logbooks.edit', compact('notification', 'title'));
+        return view('admin.logbooks.edit', compact('notification', 'title', 'help'));
     }
 
     /**

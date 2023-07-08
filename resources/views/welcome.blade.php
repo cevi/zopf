@@ -14,9 +14,11 @@
                             <div class="swiper-slide h-auto mb-5">
                                 <div class="row gy-5 h-100 align-items-center">
                                     <div class="col-lg-5 text-lg-end">
-                                        <h1 class="text-uppercase">Online-Tool für die Verwaltung von Zopfaktionen</h1>
+                                        <h2 class="text-4xl font-extrabold dark:text-white">
+                                            Online-Tool für die Verwaltung von Zopfaktionen</h2>
                                         <ul class="list-unstyled text-uppercase fw-bold mb-0">
-                                            <li class="mb-2">Erfasse Bestellungen und Routen für deine Zopfaktion und
+                                            <li class="mb-2">Erfasse Bestellungen und Routen für deine Zopfaktion
+                                                und
                                                 behalte den Überblick über alles.
                                             </li>
                                         </ul>
@@ -39,7 +41,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid fa-desktop"></i></div>
-                        <h4 class="text-uppercase mb-3">Alles Online</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Alles Online</h4>
                         <p class="text-gray-600 text-sm">Verwalte deine Bestellungen und erstelle passende Routen direkt
                             im Dashboard. Verteile die Routen an die Lieferanten mit einem Knopfdruck.</p>
                     </div>
@@ -47,7 +49,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid fa-map-location-dot"></i></div>
-                        <h4 class="text-uppercase mb-3">Google-Maps-API</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Google-Maps-API</h4>
                         <p class="text-gray-600 text-sm">Dank der Google Maps API können die Bestellungen direkt auf
                             der Karte angeschaut werden und auch der schnellste Weg für die Routen wird
                             vorgeschlagen.</p>
@@ -56,7 +58,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid  fa-file-import"></i></div>
-                        <h4 class="text-uppercase mb-3">Excel-Import</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Excel-Import</h4>
                         <p class="text-gray-600 text-sm">Importiere direkt alle deine Bestellungen aus einem Excel ins
                             System.</p>
                     </div>
@@ -64,7 +66,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid fa-chart-area"></i></div>
-                        <h4 class="text-uppercase mb-3">Graphische Darstellung</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Graphische Darstellung</h4>
                         <p class="text-gray-600 text-sm">Erhalte eine graphische Übersicht über den ganzen Verlaufe der
                             Zopfaktion.</p>
                     </div>
@@ -72,7 +74,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid  fa-print"></i></div>
-                        <h4 class="text-uppercase mb-3">Ausdruckbar</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Ausdruckbar</h4>
                         <p class="text-gray-600 text-sm">Falls gewünscht können die Routen als PDF heruntergeladen
                             werden.</p>
                     </div>
@@ -80,7 +82,7 @@
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">
                         <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i
                                 class="fa-solid  fa-mobile-alt"></i></div>
-                        <h4 class="text-uppercase mb-3">Mobile Tauglich</h4>
+                        <h4 class="text-2xl font-bold dark:text-white">Mobile Tauglich</h4>
                         <p class="text-gray-600 text-sm">Die Lieferanten sehen ihre Routen als mobile taugliche Liste
                             und als Karte.</p>
                     </div>
@@ -95,7 +97,8 @@
                     <div class="icon icon-outlined icon-outlined-white icon-lg mx-auto mb-4">
                         <img src="img/cevi_pfad.svg" alt="Cevi Logo">
                     </div>
-                    <h2 class="text-uppercase mb-3">Du willst deine Zopfaktion aufs nächste Level bringen?</h2>
+                    <h2 class="text-4xl font-bold dark:text-white">Du willst deine Zopfaktion aufs nächste Level
+                        bringen?</h2>
                     <p class="lead mb-4">Registrier dich jetzt und erstell gleich deine Aktion.</p><a
                         class="btn btn-outline-light btn-lg" href="/register">Jetzt registrieren</a>
                 </div>
@@ -110,16 +113,18 @@
                         <div class="text-center text-gray-700">
                             <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-truck"></i></div>
-                            <h1 class="counter mb-3" data-counter="{{$action_counter}}">0</h1>
-                            <h2 class="text-uppercase fw-bold mb-0">Zopf-Aktionen</h2>
+                            <h1 class="text-5xl counter font-bold dark:text-white" data-counter="{{$action_counter}}">
+                                0</h1>
+                            <h2 class="text-4xl font-bold dark:text-white">Zopf-Aktionen</h2>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6">
                         <div class="text-center text-gray-700">
                             <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-bread-slice"></i></div>
-                            <h1 class="counter mb-3" data-counter="{{$total_amount}}">0</h1>
-                            <h2 class="text-uppercase fw-bold mb-0">Anzahl Zöpfe</h2>
+                            <h1 class="text-5xl counter font-bold dark:text-white" data-counter="{{$total_amount}}">
+                                0</h1>
+                            <h2 class="text-4xl font-bold dark:text-white">Anzahl Zöpfe</h2>
                         </div>
                     </div>
                 </div>
@@ -130,7 +135,7 @@
             <div class="container">
                 <div class="row gy-4 align-items-center">
                     <div class="col-md-6 text-center">
-                        <h2 class="text-uppercase">Dashboard</h2>
+                        <h2 class="text-4xl font-bold dark:text-white">Dashboard</h2>
                         <p class="lead mb-3">Erhalte den Überblick über deine Zopfaktion</p>
                         <p class="mb-3">Behalte den Überblick über deine Bestellungen, die Routen und alle wichtigen
                             Daten deiner Zopfaktion im Dashboard.</p>
@@ -145,7 +150,8 @@
             <div class="container text-center">
                 <div class="row">
                     <div class="col-lg-6 p-3">
-                        <h3 class="text-uppercase mb-0">Versuche es gleich selbst mit einem Test-Login aus.</h3>
+                        <h3 class="text-3xl font-bold dark:text-white">Versuche es gleich selbst mit einem Test-Login
+                            aus.</h3>
                     </div>
                     <div class="col-lg-2 p-3">
                         <a class="btn btn-outline-light" href="/loginChef">Aktions-Leitende</a>

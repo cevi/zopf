@@ -7,6 +7,7 @@ use App\Helper\Helper;
 use App\Models\ActionUser;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\Help;
 use App\Models\Role;
 use App\Models\User;
 use DataTables;
@@ -29,9 +30,9 @@ class AdminUsersController extends Controller
             $roles = Role::pluck('name', 'id')->all();
         }
         $title = 'Leiter';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.users.index', compact('roles', 'title'));
-        // return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('roles', 'title', 'help'));
     }
 
     public function createDataTables()
@@ -217,10 +218,13 @@ class AdminUsersController extends Controller
     public function edit($id)
     {
         //
-        $title = 'Leiter Bearbeiten';
+        $title = 'Leiter - Bearbeiten';
         $user = User::findOrFail($id);
         $groups = Group::pluck('name', 'id')->all();
         $roles = Role::pluck('name', 'id')->all();
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Leiter';
+        $help['main_route'] =  '/admin/users';
 
         return view('admin.users.edit', compact('user', 'roles', 'groups', 'title'));
     }

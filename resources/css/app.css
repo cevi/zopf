@@ -4,6 +4,7 @@
 @import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 @import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";
 @import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+
 @import './libs/sb-admin-2.css';
 @import './libs/jquery-ui.css';
 @import './libs/style.default.premium.css';
@@ -11,10 +12,10 @@
 @import './libs/custom.css';
 @import './libs/welcome.css';
 
-/*@tailwind base;*/
+
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 :root {
     --color-bg-primary: #F4F7FA;

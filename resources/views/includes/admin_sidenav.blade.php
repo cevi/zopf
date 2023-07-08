@@ -107,6 +107,13 @@
                             <span class="ml-3">Gruppen</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{route('helps.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fa-solid fa-question"></i>
+                            <span class="ml-3">Hilfe-Artikel</span>
+                        </a>
+                    </li>
                 @endif
                 <li>
                     <a href="{{route('users.index')}}"

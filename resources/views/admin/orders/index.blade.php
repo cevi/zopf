@@ -2,19 +2,12 @@
 
 
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                <li class="breadcrumb-item active">Bestellungen</li>
-            </ul>
-        </div>
-    </div>
+
+    <x-page-title :title="$title" :help="$help"/>
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
             <header>
-                <h1 class="h3 display">Bestellungen</h1>
                 <div class="row" style="width: 30%">
                     <div class="col-md-4">
                         <a href="{{route('orders.create')}}" class="btn btn-primary btn-sm">

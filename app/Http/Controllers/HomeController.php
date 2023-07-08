@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NotificationCreate;
 use App\Helper\Helper;
+use App\Models\Help;
 use App\Models\Order;
 use App\Models\Route;
 use Illuminate\Support\Facades\Auth;
@@ -34,8 +35,10 @@ class HomeController extends Controller
         if($action) {
             $routes = Route::where('user_id', $user->id)->where('action_id', $action['id'])->where('route_status_id', config('status.route_unterwegs'))->get();
         }
+        $title = 'Routenübersicht';
+        $help = Help::where('title',$title)->first();
 
-        return view('home', compact('user', 'group', 'routes', 'action'));
+        return view('home', compact('user', 'group', 'routes', 'action', 'title', 'help'));
     }
 
     public function routes($id)
@@ -44,8 +47,10 @@ class HomeController extends Controller
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
         $orders = $route->orders;
+        $title = $route['name'];
+        $help = Help::where('title','Mobile Routen')->first();
 
-        return view('home.main', compact('route', 'orders', 'routes'));
+        return view('home.main', compact('route', 'orders', 'routes', 'title', 'help'));
     }
 
     public function maps($id)
@@ -58,8 +63,10 @@ class HomeController extends Controller
         $orders = $orders->with('address')->get();
         $center = $action->center;
         $key = $action['APIKey'];
+        $title = $route['name'];
+        $help = Help::where('title','Mobile Karten')->first();
 
-        return view('home.map', compact('orders', 'route', 'routes', 'center', 'key'));
+        return view('home.map', compact('orders', 'route', 'routes', 'center', 'key', 'title', 'help'));
     }
 
     public function delivered($id)

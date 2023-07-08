@@ -6,6 +6,7 @@ use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Imports\OrdersImport;
 use App\Models\Address;
+use App\Models\Help;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Route;
@@ -33,7 +34,9 @@ class AdminOrdersController extends Controller
             $routes = null;
         }
 
-        return view('admin.orders.index', compact('routes', 'title', 'order_statuses'));
+        $help = Help::where('title',$title)->first();
+
+        return view('admin.orders.index', compact('routes', 'title', 'order_statuses', 'help'));
     }
 
     public function createDataTables(Request $request)
@@ -185,9 +188,13 @@ class AdminOrdersController extends Controller
         $action = Auth::user()->action;
         $routes = Route::where('route_status_id', config('status.route_geplant'))->where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name', 'id')->all();
-        $title = 'Bestellung Erfassen';
+        $title = 'Bestellung - Erfassen';
 
-        return view('admin.orders.create', compact('routes', 'title'));
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Bestellung';
+        $help['main_route'] =  '/admin/orders';
+
+        return view('admin.orders.create', compact('routes', 'title', 'help'));
     }
 
     public function map()
@@ -199,9 +206,13 @@ class AdminOrdersController extends Controller
         $statuses = OrderStatus::pluck('name')->all();
         $center = $action->center;
         $key = $action['APIKey'];
-        $title = 'Bestellungskarte';
+        $title = 'Bestellung - Karte';
 
-        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center', 'key', 'title'));
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Bestellung';
+        $help['main_route'] =  '/admin/orders';
+
+        return view('admin.orders.map', compact('orders', 'cities', 'statuses', 'center', 'key', 'title', 'help'));
     }
 
     public function mapfilter(Request $request)
@@ -392,14 +403,19 @@ class AdminOrdersController extends Controller
     public function edit(Order $order)
     {
         //
-        $title = 'Bestellung Bearbeiten';
+        $title = 'Bestellung - Bearbeiten';
         $action = Auth::user()->action;
         $routes = Route::where('action_id', $action['id'])->get();
         $routes = $routes->pluck('name', 'id')->all();
         $routes = ['' => 'Keine Route'] + $routes;
         $order_statuses = OrderStatus::pluck('name','id')->all();
 
-        return view('admin.orders.edit', compact('order', 'routes', 'title', 'order_statuses'));
+
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Bestellung';
+        $help['main_route'] =  '/admin/orders';
+
+        return view('admin.orders.edit', compact('order', 'routes', 'title', 'order_statuses', 'help'));
     }
 
     /**

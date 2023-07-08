@@ -1,20 +1,11 @@
 @extends('layouts.admin')
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="/admin/routes">Routen</a></li>
-                <li class="breadcrumb-item active">Übersicht</li>
-            </ul>
-            </ul>
-        </div>
-    </div>
+
+    <x-page-title :title="$title" :help="$help"/>
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
             <header>
-                <h1 class="h3 display">Übersicht {{$route['name']}}</h1>
                 Total Anzahl Zöpfe: {{$route->zopf_count()}} <br>
                 Routen Art: {{$routetype['name']}} <br>
                 @if ($route->route_status['id']> config('status.route_offen'))
@@ -85,7 +76,7 @@
     <script>
         var route_type = @json($route->route_type);
         var travel_mode = 'DRIVING';
-        if(route_type){
+        if (route_type) {
             travel_mode = route_type['travel_mode'];
         }
         setMapsArguments(@json($orders), @json($key), @json($center), travel_mode, false);

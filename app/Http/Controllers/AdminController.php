@@ -7,6 +7,7 @@ use App\Charts\ZopfChart;
 use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Action;
+use App\Models\Help;
 use App\Models\Logbook;
 use App\Models\Route;
 use App\Models\User;
@@ -48,8 +49,9 @@ class AdminController extends Controller
         $timeChart_api = url('api/action/'.$action['id'].'/timeChart');
         $timeChart->labels(Helper::GetTimeChartData($action,true))->load($timeChart_api);
 
+        $help = Help::where('title',$title)->first();
 
-        return view('admin/index', compact('icon_array', 'open_routes', 'users', 'title', 'timeChart', 'zopfChart', 'notifications'));
+        return view('admin/index', compact('icon_array', 'open_routes', 'users', 'title', 'help', 'timeChart', 'zopfChart', 'notifications'));
     }
 
     public function logcreate(Request $request)
@@ -83,8 +85,9 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $title = 'Rückmeldungen / Änderungen';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin/changes', compact('user', 'title'));
+        return view('admin/changes', compact('user', 'title', 'help'));
     }
 
     public function notifications_read()

@@ -2,6 +2,11 @@
 
 @section('content')
 
+    <!-- Page Header-->
+
+    <x-page-title :title="$title" :help="$help"/>
+
+
     @if(Auth::user()->isActionleader() && Auth::user()->action)
         <!-- Counts Section -->
         <section class="dashboard-counts section-padding">
@@ -73,7 +78,8 @@
                                                 <td style="width:25%"><h3
                                                         class="h4 display">{{$route->user['username']}}</h3></td>
                                                 <td style="width:20%"><h3
-                                                        class="h4 display">{{$route->route_type ? $route->route_type['name'] : ''}}</h3></td>
+                                                        class="h4 display">{{$route->route_type ? $route->route_type['name'] : ''}}</h3>
+                                                </td>
                                                 <td style="width:25%"><h3
                                                         class="h4 display">{{$route->route_status['name']}}</h3></td>
                                             </tr>

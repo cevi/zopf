@@ -45,7 +45,12 @@ Route::get('/loginLeiter', function () {
 });
 
 
-Auth::routes(['verify' => true]);
+
+Auth::routes([
+    'register' => true, // Registration Routes...
+    'reset' => true, // Password Reset Routes...
+    'verify' => true, // Email Verification Routes...
+]);
 
 Route::group(['middleware' => 'verified'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -104,6 +109,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('admin/addresses', 'AdminAddressesController');
         Route::resource('admin/logbooks', 'AdminLogbookController');
         Route::resource('admin/progress', 'AdminBakeryProgressController');
+        Route::resource('admin/helps', 'AdminHelpController');
 
         // Route::get('admin/orders/bulkdelete', ['as'=>'orders.bulkdelete','uses'=>'AdminOrdersController@bulkdelete']);
 

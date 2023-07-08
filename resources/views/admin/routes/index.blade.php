@@ -2,19 +2,12 @@
 
 
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                <li class="breadcrumb-item active">Routen</li>
-            </ul>
-        </div>
-    </div>
+
+    <x-page-title :title="$title" :help="$help"/>
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
             <header>
-                <h1 class="h3 display">Routen</h1>
                 <a href="{{route('routes.create')}}" class="btn btn-primary btn-sm">
                     <span>Erfassen</span>
                 </a>
