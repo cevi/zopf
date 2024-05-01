@@ -2,68 +2,69 @@
 
 @section('content')
 
-    <x-page-title :title="$title" :help="$help"/>
-    @if (Session::has('deleted_user'))
-        <p class="bg-danger">{{session('deleted_user')}}</p>
-    @endif
-    <section>
-        <div class="container-fluid">
-            <!-- Page Header-->
-            <div class="row">
-                <div class="col-sm-3">
-                    <p>Leiter Hinzufügen:</p>
-                    {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
-                    <div class="form-group">
-                        {!! Form::label('email_add', 'E-Mail:') !!}
-                        {!! Form::email('email_add', null, ['class' => 'form-control typeahead autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('role_id_add', 'Rolle:') !!}
-                        {!! Form::select('role_id_add', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
-                    </div>
-                    {!! Form::hidden('user_id', null, ['class' => 'form-control typeahead autocomplete_txt']) !!}
-                    <div class="form-group">
-                        {!! Form::submit('Leiter Hinzufügen', ['class' => 'btn btn-primary'])!!}
-                    </div>
-                    {!! Form::close()!!}
+<x-page-title :title="$title" :help="$help" />
+@if (Session::has('deleted_user'))
+<p class="bg-danger">{{session('deleted_user')}}</p>
+@endif
+<section>
+    <div class="container-fluid">
+        <!-- Page Header-->
+        <div class="row">
+            <div class="col-sm-3">
+                <p>Leiter Hinzufügen:</p>
+                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
+                <div class="form-group">
+                    {!! Form::label('email_add', 'E-Mail:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::email('email_add', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 typeahead autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
                 </div>
-                <div class="col-sm-3">
-                    <p>Leiter Erfassen:</p>
-                    {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('username', 'Name:') !!}
-                        {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('email', 'E-Mail:') !!}
-                        {!! Form::email('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt', 'required']) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('role_id', 'Role:') !!}
-                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('password', 'Password:') !!}
-                        {!! Form::password('password', ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::submit('Leiter Erfassen', ['class' => 'btn btn-primary'])!!}
-                    </div>
-                    {!! Form::close()!!}
-
-                    @include('includes.form_error')
+                <div class="form-group">
+                    {!! Form::label('role_id_add', 'Rolle:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::select('role_id_add', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
                 </div>
-                <div class="col-md-6">
-                    <a id="addGroupUsers" href="#" class="btn btn-primary">
-                        <span>Alle Personen der Gruppe zur Aktion hinzufügen</span>
-                    </a>
-                    <br>
-                    <br>
-                    <table class="table table-striped table-responsive" id="datatable">
-                        <thead>
+                {!! Form::hidden('user_id', null, ['class' => 'form-control typeahead autocomplete_txt']) !!}
+                <div class="form-group">
+                    {!! Form::submit('Leiter Hinzufügen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                </div>
+                {!! Form::close()!!}
+            </div>
+            <div class="col-sm-3">
+                <p>Leiter Erfassen:</p>
+                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store']) !!}
+                <div class="form-group">
+                    {!! Form::label('username', 'Name:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::text('username', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'placeholder' => 'name@abt']) !!}
+                </div>
+                <div class="form-group">
+                    {!! Form::label('email', 'E-Mail:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::email('email', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'placeholder' => 'name@abt', 'required'])
+                    !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('role_id', 'Role:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('password', 'Password:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                    {!! Form::password('password', ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::submit('Leiter Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                </div>
+                {!! Form::close()!!}
+
+                @include('includes.form_error')
+            </div>
+            <div class="col-md-6">
+                <a id="addGroupUsers" href="#" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+                    <span>Alle Personen der Gruppe zur Aktion hinzufügen</span>
+                </a>
+                <br>
+                <br>
+                <table class="table table-striped table-responsive" id="datatable">
+                    <thead>
                         <tr>
                             {{-- <th></th> --}}
                             <th>Name</th>
@@ -72,26 +73,24 @@
                             <th>Rolle</th>
                             <th>Aktionen</th>
                         </tr>
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
-@section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-    {{--    <script--}}
-    {{--        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>--}}
-    <script>
-
+@push('scripts')
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script> --}}
+    <script type="module">
         document.addEventListener('DOMContentLoaded', function () {
             $(document).ready(function () {
                 $('#datatable').DataTable({
                     responsive: true,
                     processing: true,
                     serverSide: true,
+                    buttons: [],
                     language: {
                         "url": "/lang/Datatables.json"
                     },
@@ -167,8 +166,6 @@
                         });
                     },
                     select: function (event, ui) {
-                        console.log(ui);
-                        console.log(event);
                         var data = ui.item.data;
                         $("[name='email_add']").val(data.value);
                         $("[name='user_id']").val(data.id);
@@ -177,4 +174,4 @@
             });
         }, false);
     </script>
-@endsection
+@endpush

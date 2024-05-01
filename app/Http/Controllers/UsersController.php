@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,10 @@ class UsersController extends Controller
             return redirect('/home');
         }
         if ($aktUser->id == $user->id) {
-            $title = 'Eigenes Profil';
+            $title = 'Profil';
+            $help = Help::where('title',$title)->first();
 
-            return view('home.user', compact('aktUser', 'title'));
+            return view('home.user', compact('aktUser', 'title', 'help'));
         } else {
             return redirect()->back();
         }
@@ -27,7 +29,7 @@ class UsersController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if(!Auth::user()->demo){
+        if (! Auth::user()->demo) {
             if (trim($request->password) == '') {
                 $input = $request->except('password');
                 $user->update($input);

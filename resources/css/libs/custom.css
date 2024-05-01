@@ -185,3 +185,17 @@ ile_user {
 .accordion-content {
     margin-right: 15px;
 }
+
+.dark .table.table-hover tbody tr:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+.background--bg {
+    background-color: var(--color-bg-primary);
+}
+
+
+.modal-content {
+    background-color: var(--color-bg-primary);
+}

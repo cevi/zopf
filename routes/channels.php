@@ -19,5 +19,5 @@ use App\Models\Action;
 
 Broadcast::channel('notification-create.{actionId}', function ($user, $actionId) {
     return true;
-//    return $user->action['id'] === $action->id;
+    //    return $user->action['id'] === $action->id;
 });

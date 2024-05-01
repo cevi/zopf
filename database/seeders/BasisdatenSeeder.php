@@ -55,7 +55,7 @@ class BasisdatenSeeder extends Seeder
         $user = User::create([
             'id' => config('status.Administrator'),
             'username' => 'Administrator',
-            'email' => 'Administrator',
+            'email' => 'admin@zopf',
             'is_active' => 1,
             'password' => Hash::make(env('ADMIN_PASSWORD')),
             'role_id' => config('status.role_administrator'),

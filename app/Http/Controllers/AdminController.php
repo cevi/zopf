@@ -8,14 +8,10 @@ use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Action;
 use App\Models\Help;
-use App\Models\Logbook;
 use App\Models\Route;
 use App\Models\User;
-use App\Notifications\CreateLogEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Notification;
 
 class AdminController extends Controller
 {
@@ -47,9 +43,9 @@ class AdminController extends Controller
 
         $timeChart = new TimeChart;
         $timeChart_api = url('api/action/'.$action['id'].'/timeChart');
-        $timeChart->labels(Helper::GetTimeChartData($action,true))->load($timeChart_api);
+        $timeChart->labels(Helper::GetTimeChartData($action, true))->load($timeChart_api);
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin/index', compact('icon_array', 'open_routes', 'users', 'title', 'help', 'timeChart', 'zopfChart', 'notifications'));
     }
@@ -57,7 +53,7 @@ class AdminController extends Controller
     public function logcreate(Request $request)
     {
         $action = Auth::user()->action;
-        if ($action && !Auth::user()->demo) {
+        if ($action && ! Auth::user()->demo) {
             $input = $request->all();
             if (! $input['user_id']) {
                 $input['user_id'] = Auth::user()->id;
@@ -85,7 +81,7 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $title = 'Rückmeldungen / Änderungen';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin/changes', compact('user', 'title', 'help'));
     }
@@ -93,6 +89,7 @@ class AdminController extends Controller
     public function notifications_read()
     {
         Auth::user()->action->unreadNotifications->markAsRead();
+
         return redirect()->back();
     }
 
@@ -101,7 +98,7 @@ class AdminController extends Controller
         $timeChart = new TimeChart;
 
         $timeChart->minimalist(true);
-        $timeChart->labels(Helper::GetTimeChartData($action,true));
+        $timeChart->labels(Helper::GetTimeChartData($action, true));
         $timeChart->dataset('Anzahl Zöpfe', 'line', Helper::GetTimeChartData($action))
             ->color(['#4f92c7'])
             ->backgroundColor(['#a8d0f0']);
@@ -130,9 +127,8 @@ class AdminController extends Controller
 
         $data = Helper::GetZopfChartData($action);
         $icon_array = Helper::GetIconArray($data);
+
         return $icon_array;
 
     }
-
-
 }

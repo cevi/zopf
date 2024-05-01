@@ -7,8 +7,11 @@ use Illuminate\View\Component;
 class NotificationItem extends Component
 {
     public $user;
+
     public $content;
+
     public $time;
+
     /**
      * Create a new component instance.
      *

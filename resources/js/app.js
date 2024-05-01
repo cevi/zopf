@@ -6,10 +6,11 @@
 
 import './bootstrap';
 import './libs/jquery-ui.js';
+import 'bootstrap';
 import 'laravel-datatables-vite';
 import './libs/swiper-bundle.min.js';
 import './libs/jquery.waypoints.min.js';
-// import 'flowbite';
+import 'flowbite';
 import './libs/custom.js';
 
 // window.Vue = require('vue');

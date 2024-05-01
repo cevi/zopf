@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 class Action extends Model
 {
     use Notifiable;
+
     //
     public static function boot()
     {

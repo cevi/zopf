@@ -24,13 +24,13 @@ class AdminUsersController extends Controller
     public function index()
     {
         //
-        if (!Auth::user()->isAdmin()) {
+        if (! Auth::user()->isAdmin()) {
             $roles = Role::where('id', '>', config('status.role_administrator'))->pluck('name', 'id')->all();
         } else {
             $roles = Role::pluck('name', 'id')->all();
         }
         $title = 'Leiter';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin.users.index', compact('roles', 'title', 'help'));
     }
@@ -38,7 +38,7 @@ class AdminUsersController extends Controller
     public function createDataTables()
     {
         //
-        if (!Auth::user()->isAdmin()) {
+        if (! Auth::user()->isAdmin()) {
             $group = Auth::user()->group;
             $users = $group->allUsers;
         } else {
@@ -81,8 +81,8 @@ class AdminUsersController extends Controller
             })
             ->addIndexColumn()
             ->addColumn('Actions', function ($users) {
-                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
-                <button data-remote='.\URL::route('users.destroy', $users->id).' class="btn btn-danger btn-sm">Löschen</button>';
+                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>
+                <button data-remote='.\URL::route('users.destroy', $users->id).' class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-xs px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Löschen</button>';
             })
             // ->addColumn('checkbox', function ($users) {
                 // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
@@ -104,7 +104,6 @@ class AdminUsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -112,7 +111,7 @@ class AdminUsersController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             if (trim($request->password) == '') {
                 $input = $request->except('password');
             } else {
@@ -120,11 +119,11 @@ class AdminUsersController extends Controller
                 $input['password'] = bcrypt($request->password);
             }
 
-            if (!$aktUser->isAdmin()) {
+            if (! $aktUser->isAdmin()) {
                 $group = $aktUser->group;
                 $action = $aktUser->action;
                 $input['group_id'] = $group['id'];
-                if(isset($action)){
+                if (isset($action)) {
                     $input['action_id'] = $action['id'];
                 }
             }
@@ -132,10 +131,10 @@ class AdminUsersController extends Controller
 
             $user = User::create($input);
             UserCreated::dispatch($user);
-            if(isset($group)){
+            if (isset($group)) {
                 Helper::UpdateGroup($user, $group);
             }
-            if(isset($action)){
+            if (isset($action)) {
                 Helper::UpdateACtion($user, $action);
             }
         }
@@ -175,21 +174,21 @@ class AdminUsersController extends Controller
     {
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $input = $request->all();
             if ($input['user_id']) {
                 $group = $aktUser->group;
                 $user = User::findOrFail($input['user_id']);
                 GroupUser::create([
-                        'user_id' => $user->id,
-                        'group_id' => $group->id,
-                        'role_id' => $input['role_id_add'],]
+                    'user_id' => $user->id,
+                    'group_id' => $group->id,
+                    'role_id' => $input['role_id_add'], ]
                 );
                 $action = $aktUser->action;
                 ActionUser::create([
-                        'user_id' => $user->id,
-                        'action_id' => $action->id,
-                        'role_id' => $input['role_id_add'],]
+                    'user_id' => $user->id,
+                    'action_id' => $action->id,
+                    'role_id' => $input['role_id_add'], ]
                 );
             }
         }
@@ -201,11 +200,12 @@ class AdminUsersController extends Controller
     {
         //
         $aktUser = Auth::user();
-        if(!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $action = $aktUser->action;
             $group = $aktUser->group;
             Helper::AddGroupUsersToAction($group, $action);
         }
+
         return true;
     }
 
@@ -222,17 +222,16 @@ class AdminUsersController extends Controller
         $user = User::findOrFail($id);
         $groups = Group::pluck('name', 'id')->all();
         $roles = Role::pluck('name', 'id')->all();
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Leiter';
-        $help['main_route'] =  '/admin/users';
+        $help['main_route'] = '/admin/users';
 
-        return view('admin.users.edit', compact('user', 'roles', 'groups', 'title'));
+        return view('admin.users.edit', compact('user', 'roles', 'groups', 'title', 'help'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -241,7 +240,7 @@ class AdminUsersController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $user = User::findOrFail($id);
 
             if (trim($request->password) == '') {
@@ -253,6 +252,7 @@ class AdminUsersController extends Controller
 
             $user->update($input);
         }
+
         return redirect('/admin/users');
     }
 
@@ -267,7 +267,7 @@ class AdminUsersController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             User::findOrFail($id)->delete();
         }
     }

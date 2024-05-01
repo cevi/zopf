@@ -1,5 +1,6 @@
 @include('includes/map-icons')
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
 <script>
     var center, orders, latitude, longitude, bounds;
     var clicked_markers = new Array;
@@ -133,6 +134,13 @@
 
         }
 
+        var oms = new OverlappingMarkerSpiderfier(map, {
+            markersWontMove: true,
+            markersWontHide: true,
+            basicFormatEvents: true,
+            keepSpiderfied: true,
+        });
+
         if (center != null) {
             var html = "<p><b>" + center['name'] + "</b> <br/>" + center['street'];
             var marker = new mapIcons.Marker({
@@ -150,25 +158,32 @@
                 map_icon_label: '<span class="map-icon map-icon-local-government"></span>'
 
             });
-            markers.push(marker), bindInfoWindow(marker, map, html);
+            oms.addMarker(marker), bindInfoWindow(marker, map, html);
 
 
             if (latitude != center['lat']) {
                 var html = "<p><b>Deine Position</b>";
-                var marker = new google.maps.Marker({
+                var marker = new google.maps.marker.AdvancedMarkerElement ({
                     position: new google.maps.LatLng(latitude, longitude),
                     map: map,
                     html: html,
                     id: 0,
                 });
-                markers.push(marker), bindInfoWindow(marker, map, html);
+                oms.addMarker(marker), bindInfoWindow(marker, map, html);
             }
         }
 
         var icon_url = (order) => ((travelMode != null) && (orders[i].order_status_id > 15)) || ((travelMode == null) && (order.route_id == null)) ? "https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "https://maps.gstatic.com/mapfiles/markers2/marker.png";
 
         for (var i = 0, order_len = orders.length; i < order_len; i++) {
-            var html = "<p><b>" + orders[i].address['firstname'] + " " + orders[i].address['name'] + "</b> <br/>" + orders[i].address['street'] + "<br/> Zopf: " + orders[i]['quantity'];
+            var url_deliver = "{{route('home.delivered', ':id')}}";
+            url_deliver = url_deliver.replace(':id', orders[i].id);
+            var link_deliver = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deliver + '">Übergeben</a>';
+            var url_deposited = "{{route('home.deposited', ':id')}}";
+            url_deposited = url_deposited.replace(':id', orders[i].id);
+            var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
+            var html = "<p><b>" + orders[i].address['firstname'] + " " + orders[i].address['name'] + "</b> <br/>" + orders[i].address['street'] + "<br/> Zopf: " + orders[i]['quantity'] + "<br>";
+                html += link_deliver + " " + link_deposited  +'</p>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']),
                 map: map,
@@ -176,7 +191,7 @@
                 icon: new google.maps.MarkerImage(icon_url(orders[i])),
                 id: orders[i].id,
             });
-            markers.push(marker), bindInfoWindow(marker, map, html);
+            oms.addMarker(marker), bindInfoWindow(marker, map, html);
         }
 
         if (cluster == true) {

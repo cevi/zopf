@@ -5,34 +5,36 @@ namespace App\Notifications;
 use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class CreateLogEntry extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @var mixed
-     */
     public mixed $input;
+
     /**
      * @var false|mixed
      */
     private mixed $cut;
+
     /**
      * @var int|mixed
      */
     private mixed $quantity;
+
     private mixed $user;
+
     /**
      * @var \Illuminate\Support\Carbon|mixed
      */
     private mixed $when;
+
     /**
      * @var mixed|string
      */
     private mixed $text;
+
     /**
      * @var mixed|null
      */
@@ -51,9 +53,9 @@ class CreateLogEntry extends Notification implements ShouldQueue
         $this->user = $input['user'] ?? Auth::user()->username;
         $this->when = $input['when'] ?? now();
         $this->text = $input['text'] ?? '';
-        $this->route_id = $input['route_id'] ?? NULL;
+        $this->route_id = $input['route_id'] ?? null;
 
-//        $this->afterCommit();
+        //        $this->afterCommit();
     }
 
     /**

@@ -2,46 +2,45 @@
 
 @section('content')
 
-    <x-page-title :title="$title" :help="$help"/>
-    <section>
-        <div class="container-fluid">
-            <!-- Page Header-->
-            <div class="row">
-                <div class="col-sm-3">
-                    {!! Form::open(['method' => 'POST', 'action'=>'AdminGroupsController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('user_id', 'Gruppenleiter:') !!}
-                        {!! Form::select('user_id',[''=>'Bitte wählen'] +  $users, null, ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::submit('Gruppe Erfassen', ['class' => 'btn btn-primary'])!!}
-                    </div>
-                    {!! Form::close()!!}
+<x-page-title :title="$title" :help="$help" />
+<section>
+    <div class="container-fluid">
+        <!-- Page Header-->
+        <div class="row">
+            <div class="col-sm-3">
+                {!! Form::open(['method' => 'POST', 'action'=>'AdminGroupsController@store']) !!}
+                <div class="form-group">
+                    {!! Form::label('name', 'Name:') !!}
+                    {!! Form::text('name', null, ['class' => 'form-control']) !!}
                 </div>
-                <div class="col-sm-9">
-                    <table class="table table-striped table-bordered" style="width:100%" id="datatable">
-                        <thead>
+                <div class="form-group">
+                    {!! Form::label('user_id', 'Gruppenleiter:') !!}
+                    {!! Form::select('user_id',[''=>'Bitte wählen'] + $users, null, ['class' => 'form-control']) !!}
+                </div>
+                <div class="form-group">
+                    {!! Form::submit('Gruppe Erfassen', ['class' => 'btn btn-primary'])!!}
+                </div>
+                {!! Form::close()!!}
+            </div>
+            <div class="col-sm-9">
+                <table class="table table-striped table-bordered" style="width:100%" id="datatable">
+                    <thead>
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Gruppenleiter</th>
                             <th scope="col">Aktionen</th>
                         </tr>
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
-@section('scripts')
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
+@push('scripts')
+<script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
             $(document).ready(function () {
                 $('#datatable').DataTable({
                     responsive: true,
@@ -82,5 +81,5 @@
             $.fn.dataTable.ext.errMode = 'throw';
         }, false);
 
-    </script>
-@endsection
+</script>
+@endpush

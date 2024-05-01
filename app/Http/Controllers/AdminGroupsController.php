@@ -55,7 +55,6 @@ class AdminGroupsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -63,7 +62,7 @@ class AdminGroupsController extends Controller
         //
 
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             Group::create($request->all());
         }
 
@@ -99,7 +98,6 @@ class AdminGroupsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -108,7 +106,7 @@ class AdminGroupsController extends Controller
         //
 
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             Group::findOrFail($id)->update($request->all());
         }
 
@@ -126,7 +124,7 @@ class AdminGroupsController extends Controller
         //
 
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             Group::findOrFail($id)->delete();
         }
 

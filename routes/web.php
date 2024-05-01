@@ -44,8 +44,6 @@ Route::get('/loginLeiter', function () {
     return redirect('home');
 });
 
-
-
 Auth::routes([
     'register' => true, // Registration Routes...
     'reset' => true, // Password Reset Routes...
@@ -126,7 +124,7 @@ Route::group(['middleware' => 'verified'], function () {
     });
 });
 
-Route::get('/broadcasting/auth', function(Request $request) {
+Route::get('/broadcasting/auth', function (Request $request) {
 
     // Verify that the user is authenticated and has permission to access the private channel
     if (auth()->check()) {
@@ -152,7 +150,7 @@ Route::get('/broadcasting/auth', function(Request $request) {
 
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('admin/groups', 'AdminGroupsController');
-    Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);;
+    Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
 });
 
 Route::get('admin/run-migrations', function () {

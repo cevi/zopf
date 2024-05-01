@@ -16,6 +16,7 @@ class ProgressChart extends Chart
         parent::__construct();
 
         return $this->options([
+            'plugins' => '{legend: {labels: {color: "rgba(156, 163, 175,1)"}}}',
             'maintainAspectRatio' => false,
             'fill' => true,
             'responsive' => true,
@@ -29,6 +30,13 @@ class ProgressChart extends Chart
                     'title' => [
                         'display' => true,
                         'text' => 'Uhrzeit',
+                        'color' => "rgba(156, 163, 175,1)",
+                    ],
+                    'grid' => [
+                        'color' => "rgba(156, 163, 175,1)",
+                    ],
+                    'ticks' => [
+                        'color' => "rgba(156, 163, 175,1)",
                     ],
                 ],
                 'y' => [
@@ -36,6 +44,13 @@ class ProgressChart extends Chart
                     'title' => [
                         'display' => true,
                         'text' => 'Anzahl Zöpfe',
+                        'color' => "rgba(156, 163, 175,1)",
+                    ],
+                    'grid' => [
+                        'color' => "rgba(156, 163, 175,1)",
+                    ],
+                    'ticks' => [
+                        'color' => "rgba(156, 163, 175,1)",
                     ],
                 ],
             ],

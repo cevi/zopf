@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Help;
-use App\Models\Logbook;
-use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 
 class AdminLogbookController extends Controller
 {
@@ -20,7 +17,8 @@ class AdminLogbookController extends Controller
     {
         //
         $action = Auth::user()->action;
-        $notifications = $action->Notifications()->orderBy('when','DESC')->get(['id', 'user', 'when', 'content'])->toArray();
+        $notifications = $action->Notifications()->orderBy('when', 'DESC')->get(['id', 'user', 'when', 'content'])->toArray();
+
         return $notifications;
     }
 
@@ -37,7 +35,6 @@ class AdminLogbookController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -68,20 +65,19 @@ class AdminLogbookController extends Controller
         $title = 'Logbuch-Eintrag - Bearbeiten';
         $action = Auth::user()->action;
         $notification = $action->notifications->where('id', $id)->first();
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin.logbooks.edit', compact('notification', 'title', 'help'));
     }
 
     /**
      * Update the specified resource in storage.
-     *
      */
     public function update(Request $request, $id)
     {
         //
         $action = Auth::user()->action;
-        if ($action && !Auth::user()->demo) {
+        if ($action && ! Auth::user()->demo) {
             $notification = $action->notifications->where('id', $id)->first();
             $notification->update($request->all());
         }
@@ -100,7 +96,7 @@ class AdminLogbookController extends Controller
         //
 
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             $action = $user->action;
             $notification = $action->notifications->where('id', $id)->first();
             $notification->delete();
