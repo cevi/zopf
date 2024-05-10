@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ActionCreated;
 use App\Events\NotificationCreate;
 use App\Helper\Helper;
 use App\Models\Action;
@@ -52,8 +53,6 @@ class AdminActionsController extends Controller
                 $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
                 $buttons = '<a href='.\URL::route('actions.edit', $actions).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
                 $buttons .= ' <a href='.\URL::route('actions.complete', $actions).' type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</a>';
-                $buttons .= ' <button data-remote='.\URL::route('actions.destroy', $actions).' class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Löschen</button>';
-
                 return $buttons;
             })
             ->rawColumns(['Actions'])
@@ -118,6 +117,7 @@ class AdminActionsController extends Controller
             if ($request->has('addGroupUsers')) {
                 Helper::AddGroupUsersToAction($group, $action);
             }
+            ActionCreated::broadcast($action);
         }
 
         return redirect('admin/actions');
@@ -242,11 +242,7 @@ class AdminActionsController extends Controller
     public function destroy(Action $action)
     {
         //
-        $aktUser = Auth::user();
-        if (! $aktUser->demo) {
-            $action->delete();
-            Helper::updateAction($aktUser, $action);
-        }
+        Helper::deleteAction($action);
 
         return redirect('/admin/actions');
     }

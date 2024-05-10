@@ -46,7 +46,7 @@
                     </div>
                     {!! Form::close()!!}
 
-                    {!! Form::open(['method' => 'DELETE', 'action'=>['AdminUsersController@destroy', $user->id]]) !!}
+                    {!! Form::open(['method' => 'DELETE', 'action'=>['AdminUsersController@destroy', $user]]) !!}
                     <div class="form-group">
                         {!! Form::submit('Lösche Leiter', ['class' => 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
                     </div>

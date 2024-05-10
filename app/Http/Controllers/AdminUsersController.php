@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UserCreated;
 use App\Helper\Helper;
+use App\Models\Action;
 use App\Models\ActionUser;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -39,8 +40,8 @@ class AdminUsersController extends Controller
     {
         //
         if (! Auth::user()->isAdmin()) {
-            $group = Auth::user()->group;
-            $users = $group->allUsers;
+            $action = Auth::user()->action;
+            $users = $action->allUsers;
         } else {
             $users = User::all();
         }
@@ -81,8 +82,7 @@ class AdminUsersController extends Controller
             })
             ->addIndexColumn()
             ->addColumn('Actions', function ($users) {
-                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>
-                <button data-remote='.\URL::route('users.destroy', $users->id).' class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-xs px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Löschen</button>';
+                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
             })
             // ->addColumn('checkbox', function ($users) {
                 // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
@@ -262,13 +262,24 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         //
-
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            User::findOrFail($id)->delete();
+            $action = Auth::user()->action;
+            if($action===$user->action){
+                $action_global = Action::where('global', true)->first();
+                Helper::updateAction($user, $action_global);
+            }
+            ActionUser::where('action_id', $action->id)->where('user_id', $user->id)->delete();
+            // $group = Auth::user()->group;
+            // if($group===$user->group){
+            //     $group_global = Group::where('global', true)->first();
+            //     Helper::updateGroup($user, $group_global);
+            // }
+            // GroupUser::where('group_id', $group->id)->where('user_id', $user->id)->delete();
         }
+        return true;
     }
 }

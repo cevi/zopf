@@ -64,6 +64,11 @@ class Action extends Model
         return $this->belongsTo('App\Models\Address', 'address_id');
     }
 
+    public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\User', 'action_users')->where('action_users.role_id', '<>', config('status.role_administrator'));
+    }
+
     public function notifications()
     {
         return $this->morphMany(\Illuminate\Notifications\DatabaseNotification::class, 'notifiable');

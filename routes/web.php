@@ -116,7 +116,7 @@ Route::group(['middleware' => 'verified'], function () {
         // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
         Route::get('admin/changes', 'AdminController@changes');
-        Route::post('/admin/feedback', 'FeedbackController@store');
+        Route::resource('admin/groups', 'AdminGroupsController');
 
         Route::get('admin/notifications/read', ['as' => 'notifications.read', 'uses' => 'AdminController@notifications_read']);
 
@@ -149,8 +149,8 @@ Route::get('/broadcasting/auth', function (Request $request) {
 });
 
 Route::group(['middleware' => 'admin'], function () {
-    Route::resource('admin/groups', 'AdminGroupsController');
     Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
+    Route::post('users/feedback/send', 'FeedbackController@send');
 });
 
 Route::get('admin/run-migrations', function () {

@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-sm-3">
                     @if(!Auth::user()->demo && $group->user && $group->user['id']===Auth::user()->id)
-                    <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                    <a class="block py-2  text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                         href="{{route('home.groups.edit',$group)  }}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>

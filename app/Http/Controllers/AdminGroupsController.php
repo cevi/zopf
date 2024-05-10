@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\User;
 use DataTables;
+use App\Models\Help;
+use App\Models\User;
+use App\Models\Group;
+use App\Helper\Helper;
+use App\Models\GroupUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminGroupsController extends Controller
 {
@@ -17,23 +21,29 @@ class AdminGroupsController extends Controller
     public function index()
     {
         //
-        $users = User::pluck('username', 'id')->all();
+        $title = 'Gruppen';
+        $help = Help::where('title', $title)->first();
+        $users = Auth::user()->pluck('username', 'id');
 
-        return view('admin.groups.index', compact('users'));
+        return view('admin.groups.index', compact('users', 'title', 'help'));
     }
 
     public function createDataTables()
     {
         //
-        $groups = Group::all();
+        if (!Auth::user()->isAdmin()) {
+            $group = Auth::user()->group;
+            $groups = Group::where('id', $group['id'])->get();
+        } else {
+            $groups = Group::all();
+        }
 
         return DataTables::of($groups)
             ->addColumn('groupleader', function ($groups) {
-                return $groups->user['username'];
+                return $groups->user ? $groups->user['username'] : '';
             })
             ->addColumn('Actions', function ($groups) {
-                return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>
-                <button data-remote='.\URL::route('groups.destroy', $groups->id).' class="btn btn-danger btn-sm">Löschen</button>';
+                return '<a href='.\URL::route('groups.edit', $groups->id).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
             })
             // ->addColumn('checkbox', function ($users) {
                 // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
@@ -90,9 +100,11 @@ class AdminGroupsController extends Controller
     {
         //
         $group = Group::findOrFail($id);
-        $users = User::pluck('username', 'id')->all();
+        $users = $group->allUsers()->pluck('username', 'user_id')->all();
+        $title = 'Gruppe Bearbeiten';
+        $help = Help::where('title', $title)->first();
 
-        return view('admin.groups.edit', compact('group', 'users'));
+        return view('admin.groups.edit', compact('group', 'users', 'title', 'help'));
     }
 
     /**
@@ -119,13 +131,26 @@ class AdminGroupsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Group $group)
     {
-        //
-
-        $user = Auth::user();
-        if (! $user->demo) {
-            Group::findOrFail($id)->delete();
+        $aktUser = Auth::user();
+        if (!$aktUser->demo) {
+            $actions = $group->actions;
+            foreach($actions as $action){
+                Helper::deleteAction($action);
+            } 
+            if($group->actions()->count()===0){
+                $group->delete();
+            }
+            
+            $group_global = Group::where('global',true)->first();
+            $users = $group->allUsers;
+            foreach($users as $user){
+                if($group===$user->group){
+                    Helper::updateGroup($user, $group_global);
+                }
+                GroupUser::where('group_id', $group->id)->where('user_id', $user->id)->delete();
+            }
         }
 
         return redirect('admin/groups');

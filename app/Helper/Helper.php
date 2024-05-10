@@ -2,15 +2,16 @@
 
 namespace App\Helper;
 
-use App\Models\Action;
-use App\Models\ActionUser;
-use App\Models\Address;
-use App\Models\Group;
-use App\Models\GroupUser;
-use App\Models\Route;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use App\Models\Group;
+use App\Models\Route;
+use App\Models\Action;
+use App\Models\Address;
+use App\Models\GroupUser;
+use App\Models\ActionUser;
 use Spatie\Geocoder\Geocoder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Helper
 {
@@ -246,5 +247,24 @@ class Helper
             }
         }
         return $path;
+    }
+
+    public static function deleteAction(Action $action)
+    {
+        $aktUser = Auth::user();
+        if (! $aktUser->demo) {
+            if($action['amount']===null){
+                $action->delete();
+            }
+            $action_global = Action::where('global',true)->first();
+            
+            $users = $action->allUsers;
+            foreach($users as $user){
+                if($action===$user->action()){
+                    Helper::updateAction($user, $action_global);
+                }
+                ActionUser::where('action_id', $action->id)->where('user_id', $user->id)->delete();
+            }
+        }
     }
 }

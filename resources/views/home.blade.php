@@ -24,14 +24,14 @@
 </ul>
 @endif
 @else
-<h3>Du hast noch keine zugeordnete Aktion, erstelle <a href="{{ route('actions.create') }}"
-        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">hier</a>
+<h3 class="pt-20 text-3xl font-bold dark:text-white">Du hast noch keine zugeordnete Aktion, erstelle <a href="{{ route('actions.create') }}"
+        class="text-blue-600 dark:text-blue-500 hover:underline">hier</a>
     eine
     Aktion.</h3>
 @endif
 @else
-<h3>Du hast noch keine zugeordnete Gruppe, erstelle <a href="{{ route('home.groups.create') }}"
-        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">hier</a> eine
+<h3 class="pt-20 text-3xl font-bold dark:text-white">Du hast noch keine zugeordnete Gruppe, erstelle <a href="{{ route('home.groups.create') }}"
+        class="text-blue-600 dark:text-blue-500 hover:underline">hier</a> eine
     Gruppe.</h3>
 @endif
 @endsection

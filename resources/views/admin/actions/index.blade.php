@@ -50,24 +50,6 @@
                     order: [[0, 'desc']]
                 });
             });
-            $('#datatable').on('click', '.btn-danger[data-remote]', function (e) {
-                e.preventDefault();
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                });
-                var url = $(this).data('remote');
-                // confirm then
-                $.ajax({
-                    url: url,
-                    type: 'DELETE',
-                    dataType: 'json',
-                    data: {method: 'DELETE', submit: true}
-                }).always(function (data) {
-                    $('#datatable').DataTable().draw(false);
-                });
-            });
         }, false);
 </script>
 

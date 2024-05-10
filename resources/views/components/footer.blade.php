@@ -5,7 +5,7 @@
                 <p>Finde weitere Lösungen auf <a href="https://www.cevi.tools">cevi.tools</a></p>
             </div>
             <div class="col-sm-4 text-center">
-                <p>Made by Amirli, {{config('app.version')}}</p>
+                <p>Made by Amirli</p>
             </div>
             <div class="col-sm-4 text-right">
                 <p>Finde uns auch auf <a href="https://github.com/cevi/qualifikation">Github</a></p>
