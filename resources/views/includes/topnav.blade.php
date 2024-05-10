@@ -1,45 +1,34 @@
-<nav class="navbar navbar-expand-md shadow-sm border-gray-200">
-    <div class="container justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
+<nav
+    class="dark:bg-gray-800 bg-gray-100 border-b border-gray-200 px-4 lg:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+    <div class="flex flex-wrap justify-between items-center">
+        <div class="flex justify-start items-center">
 
-        @auth
-            <a class="navbar-brand" href="{{ url('/home') }}">
-                <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
+            @auth
+            <a class="navbar-brand" href="{{ url('/home') }}" class="flex items-center">
+                <img src="/img/logo.svg" alt="Zopfaktion Logo" class="mr-3 h-6 lg:h-12">
             </a>
-        @else
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
+            @else
+            <a class="navbar-brand" href="{{ url('/') }}" class="flex items-center">
+                <img src="/img/logo.svg" alt="Zopfaktion Logo" class="mr-3 h-6 lg:h-12">
             </a>
-        @endauth
-        <button data-collapse-toggle="mega-menu-full" type="button"
-                class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                aria-controls="mega-menu-full" aria-expanded="false">
-            <span class="sr-only">Hauptmenü</span>
-            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                      clip-rule="evenodd"></path>
-            </svg>
-        </button>
-
-        <div id="mega-menu-full" class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav ml-auto">
+            @endauth
+        </div>
+        <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
+            <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8">
                 @auth
-                    @if(Auth::user()->isAdmin() || (Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global))
-                        <li>
-                            <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>
-                        </li>
-                    @endif
-                    @if(Auth::user()->email_verified_at)
-                        <x-groups-dropdown/>
-                        @if (Auth::user()->group && !Auth::user()->group->global)
-                            <x-actions-dropdown/>
-                        @endif
-                    @endif
+                @if (Auth::user()->isActionleader())
+                <li>
+                    <a href="/admin" type="button"
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <span class="flex-1 ml-3 text-left whitespace-nowrap">
+                            Dashboard
+                        </span>
+                    </a>
+                </li>
+                @endif
                 @endauth
-                <x-users-dropdown/>
             </ul>
         </div>
+        <x-right-navbar />
     </div>
 </nav>

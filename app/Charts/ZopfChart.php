@@ -9,10 +9,12 @@ class ZopfChart extends Chart
     /**
      * Initializes the chart.
      *
-     * @return void
+     * @return ZopfChart
      */
     public function __construct()
     {
         parent::__construct();
+
+        return $this->options(['plugins' => '{legend: {labels: {color: "rgba(156, 163, 175,1)"}}}']);
     }
 }

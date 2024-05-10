@@ -27,22 +27,22 @@ class DemoActionSeeder extends Seeder
         //
 
         $user = User::factory()->create([
-                'username' => 'aktionschef@demo',
-                'email' => 'aktionschef@demo',
-                'slug' => 'aktionschef@demo',
-                'password' => Hash::make('aktionschef@demo'),
-                'role_id' => config('status.role_groupleader'),
-                'is_active' => true,
-                'group_id' => 1,
-                'action_id' => 1,
-                'demo' => true,
-            ]);
+            'username' => 'aktionschef@demo',
+            'email' => 'aktionschef@demo',
+            'slug' => 'aktionschef@demo',
+            'password' => Hash::make('aktionschef@demo'),
+            'role_id' => config('status.role_groupleader'),
+            'is_active' => true,
+            'group_id' => 1,
+            'action_id' => 1,
+            'demo' => true,
+        ]);
         $group = Group::create([
-                'name' => 'Demo-Gruppe',
-                'demo' => true,
-                'global' => false,
-                'user_id' => $user['id'],
-            ]);
+            'name' => 'Demo-Gruppe',
+            'demo' => true,
+            'global' => false,
+            'user_id' => $user['id'],
+        ]);
         $user->update(['group_id' => $group['id']]);
         GroupUser::create([
             'group_id' => $group['id'],
@@ -122,7 +122,7 @@ class DemoActionSeeder extends Seeder
                     'action_id' => $action['id'],
                     'user_id' => $leader[$i]['id'],
                     'route_status_id' => $status,
-                    'route_type_id' =>  min(($j + 1) * 5, 15),
+                    'route_type_id' => min(($j + 1) * 5, 15),
                 ]);
                 for ($k = 0; $k < 6; $k++) {
                     $address = Address::factory()->create([
@@ -130,8 +130,7 @@ class DemoActionSeeder extends Seeder
                     ]);
                     if ($status < 15) {
                         $order_status = 5;
-                    }
-                    else{
+                    } else {
                         $order_status = $status;
                     }
                     Order::create([
@@ -140,7 +139,7 @@ class DemoActionSeeder extends Seeder
                         'action_id' => $action['id'],
                         'address_id' => $address['id'],
                         'order_status_id' => $order_status,
-                        'comments' => fake()->sentence()
+                        'comments' => fake()->sentence(),
                     ]);
                 }
             }

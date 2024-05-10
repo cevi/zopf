@@ -32,7 +32,7 @@ class AdminRoutesController extends Controller
     {
         //
         $title = 'Routen';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin.routes.index', compact('title', 'help'));
     }
@@ -73,15 +73,15 @@ class AdminRoutesController extends Controller
                 ->addColumn('Actions', function ($routes) {
                     $buttons = '<form action="'.\URL::route('routes.send', $routes->id).'" method="post">'.csrf_field();
                     if ($routes->route_status['id'] < config('status.route_abgeschlossen')) {
-                        $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button" class="btn btn-primary btn-sm">Bearbeiten</a>';
+                        $buttons .= ' <a href='.\URL::route('routes.edit', $routes->id).' type="button"  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
                     }
-                    $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button" class="btn btn-info btn-sm">Übersicht</a>';
+                    $buttons .= ' <a href='.\URL::route('routes.overview', $routes->id).' type="button"  class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Übersicht</a>';
                     if (($routes->route_status['id'] == config('status.route_geplant')) && $routes['route_type']) {
-                        $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Vorbereitet</button>';
+                        $buttons .= ' <button type="submit" class="focus:outline-none text-white bg-orange-400 hover:bg-orange-600 focus:ring-4 focus:ring-orange-700 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-700">Vorbereitet</button>';
                     }
                     if ($routes->route_status['id'] == config('status.route_vorbereitet')) {
-                        $buttons .= ' <button type="submit" class="btn btn-secondary btn-sm">Lossenden</button>';
-                        $buttons .= ' <button type="submit" name="planned" class="btn btn-secondary btn-sm">Geplant</button>';
+                        $buttons .= ' <button type="submit" class="focus:outline-none text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-800 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Lossenden</button>';
+                        $buttons .= ' <button type="submit" name="planned" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Geplant</button>';
                     }
                     $buttons .= '</form>';
 
@@ -139,9 +139,9 @@ class AdminRoutesController extends Controller
         $routetype = $route->route_type;
         $key = $action['APIKey'];
         $title = 'Route - Übersicht';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Routen';
-        $help['main_route'] =  '/admin/routes';
+        $help['main_route'] = '/admin/routes';
 
         return view('admin.routes.overview', compact('route', 'orders', 'center', 'routetype', 'key', 'title', 'help'));
     }
@@ -160,23 +160,23 @@ class AdminRoutesController extends Controller
 
                 $response = Helper::CreateRouteSequence($route);
                 $path = $response['routes'][0]['overview_polyline']['points'];
-                $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode=' . strtolower($route->route_type['travelmode']) . '&';
+                $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='.strtolower($route->route_type['travelmode']).'&';
 
                 foreach ($orders as $order) {
                     $address = Address::findOrFail($order['address_id']);
-                    $url = $url . '&markers=color:red%7C' . $address['lat'] . ',' . $address['lng'];
+                    $url = $url.'&markers=color:red%7C'.$address['lat'].','.$address['lng'];
                 }
-                $url = $url . '&path=enc:' . $path;
-                $url = $url . '&key=' . $key;
+                $url = $url.'&path=enc:'.$path;
+                $url = $url.'&key='.$key;
                 $image = file_get_contents($url);
-                $folder = 'images/' . Str::slug($group['name']) . '/' . Str::slug($action['name']) . '_' . $action['year'] . '/';
-                $directory = storage_path('app/public/' . $folder);
-                if (!File::isDirectory($directory)) {
+                $folder = 'images/'.Str::slug($group['name']).'/'.Str::slug($action['name']).'_'.$action['year'].'/';
+                $directory = storage_path('app/public/'.$folder);
+                if (! File::isDirectory($directory)) {
                     File::makeDirectory($directory, 0775, true);
                 }
-                $path = Str::uuid() . '_' . Str::slug($route['name']) . '.png';
-                Image::make($image)->save($directory . '/' . $path, 80);
-                $save_path = $folder . $path;
+                $path = Str::uuid().'_'.Str::slug($route['name']).'.png';
+                Image::make($image)->save($directory.'/'.$path, 80);
+                $save_path = $folder.$path;
                 $route->update(['photo' => $save_path]);
             } else {
                 $save_path = $route['photo'];
@@ -184,11 +184,12 @@ class AdminRoutesController extends Controller
             $routetype = $route->route_type;
 
             $orders = $orders->sortBy('sequence');
+
             return View('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'save_path'));
             $pdf = PDF::loadView('admin.routes.pdf', compact('route', 'orders', 'center', 'routetype', 'save_path'));
+
             return $pdf->download(Str::slug($route['name']).'.pdf');
-        }
-        else{
+        } else {
             return redirect()->back();
         }
     }
@@ -203,9 +204,9 @@ class AdminRoutesController extends Controller
         $center = $action->center;
         $key = $action['APIKey'];
         $title = 'Routen - Karte';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Routen';
-        $help['main_route'] =  '/admin/routes';
+        $help['main_route'] = '/admin/routes';
 
         return view('admin.routes.map', compact('orders', 'routes', 'statuses', 'center', 'key', 'title', 'help'));
     }
@@ -248,9 +249,9 @@ class AdminRoutesController extends Controller
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username', 'id')->all();
         $route_types = RouteType::pluck('name', 'id')->all();
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Routen';
-        $help['main_route'] =  '/admin/routes';
+        $help['main_route'] = '/admin/routes';
 
         return view('admin.routes.create', compact('users', 'route_types', 'title', 'help'));
     }
@@ -258,7 +259,6 @@ class AdminRoutesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -266,7 +266,7 @@ class AdminRoutesController extends Controller
         //
 
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $action = $user->action;
             $input['name'] = $request->name;
             $input['action_id'] = $action['id'];
@@ -316,9 +316,9 @@ class AdminRoutesController extends Controller
         $route_types = RouteType::pluck('name', 'id')->all();
         $orders = $route->orders;
         $title = 'Route - Bearbeiten';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Routen';
-        $help['main_route'] =  '/admin/routes';
+        $help['main_route'] = '/admin/routes';
 
         $open_orders = Order::where([
             ['action_id', $action['id']],
@@ -339,7 +339,6 @@ class AdminRoutesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -348,7 +347,7 @@ class AdminRoutesController extends Controller
         //
 
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $route = Route::findOrFail($id);
             $route->update($request->all());
         }
@@ -361,7 +360,7 @@ class AdminRoutesController extends Controller
         //
 
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $orders = Order::WhereIn('id', $request['id']);
             $orders->update(['route_id' => $request['route_id']]);
         }
@@ -374,7 +373,7 @@ class AdminRoutesController extends Controller
         //
 
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $order = Order::findOrFail($Request['order_id']);
             $order->update(['route_id' => null]);
         }
@@ -386,17 +385,15 @@ class AdminRoutesController extends Controller
     {
         //
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $route = Route::findOrFail($id);
             if ($route->route_status['id'] === config('status.route_geplant')) {
                 $route->update(['route_status_id' => config('status.route_vorbereitet')]);
-            }
-            elseif($request->has('planned')){
+            } elseif ($request->has('planned')) {
                 $route->update(['route_status_id' => config('status.route_geplant')]);
-                }
-            else{
+            } else {
                 $action = $user->action;
-                $log['text'] = 'Route ' . $route['name'] . ' wurde gestartet.';
+                $log['text'] = 'Route '.$route['name'].' wurde gestartet.';
                 $log['user'] = $route->user->username;
                 Helper::CreateRouteSequence($route);
                 NotificationCreate::dispatch($action, $log);
@@ -420,7 +417,7 @@ class AdminRoutesController extends Controller
         //
 
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             Route::findOrFail($id)->delete();
         }
 

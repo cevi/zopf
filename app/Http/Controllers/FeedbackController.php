@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\FeedbackCreated;
+use App\Models\Help;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use App\Mail\FeedbackCreated;
+use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Ixudra\Curl\Facades\Curl;
 
 class FeedbackController extends Controller
 {
@@ -20,8 +21,10 @@ class FeedbackController extends Controller
     {
         //
         $feedbacks = Feedback::all();
+        $title= 'Feedbacks';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.feedback.index', compact('feedbacks'));
+        return view('admin.feedback.index', compact('feedbacks', 'title', 'help'));
     }
 
     /**
@@ -37,17 +40,16 @@ class FeedbackController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         //
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $feedback = Feedback::create($input);
-            Mail::to(config('mail.from.address'))->send(new FeedbackCreated($feedback));
+            Mail::to(config('mail.action.address'))->send(new FeedbackCreated($feedback));
         }
 
         return redirect('admin/changes')->with('success', 'Vielen Dank für die Rückmeldung.');
@@ -95,13 +97,17 @@ class FeedbackController extends Controller
     public function edit(Feedback $feedback)
     {
         //
-        return view('admin.feedback.edit', compact('feedback'));
+        $title = 'Feedback bearbeiten';
+
+        $help = Help::where('title',$title)->first();
+        $help['main_route'] = '/admin/feedback';
+        $help['main_title'] = 'Feedbacks';
+        return view('admin.feedback.edit', compact('feedback', 'title' ,'help'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -110,7 +116,7 @@ class FeedbackController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $feedback->update($request->all());
         }
 
@@ -128,7 +134,7 @@ class FeedbackController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $feedback->delete();
         }
 

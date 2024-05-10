@@ -67,7 +67,7 @@ class AdminBakeryProgressController extends Controller
                 ->backgroundColor($graphs[$i]['color']);
         }
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin.progress.index', compact('users', 'progress', 'title', 'progressChart', 'help'));
     }
@@ -85,7 +85,6 @@ class AdminBakeryProgressController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -94,7 +93,7 @@ class AdminBakeryProgressController extends Controller
 
         $action = Auth::user()->action;
 
-        if ($action && !Auth::user()->demo) {
+        if ($action && ! Auth::user()->demo) {
             $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $input['action_id'] = $action['id'];
@@ -109,7 +108,6 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
     public function show(BakeryProgress $bakeryProgress)
@@ -133,9 +131,9 @@ class AdminBakeryProgressController extends Controller
         $users = User::where('group_id', $group['id'])->get();
         $users = $users->pluck('username', 'id')->all();
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Backstuben Verlauf';
-        $help['main_route'] =  '/admin/progress';
+        $help['main_route'] = '/admin/progress';
 
         return view('admin.progress.edit', compact('users', 'progress', 'title', 'help'));
     }
@@ -143,7 +141,6 @@ class AdminBakeryProgressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\BakeryProgress  $bakeryProgress
      * @return \Illuminate\Http\Response
      */
@@ -153,7 +150,7 @@ class AdminBakeryProgressController extends Controller
 
         $input = $request->all();
 
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
             $progress->update($input);
         }
@@ -171,7 +168,7 @@ class AdminBakeryProgressController extends Controller
     {
         //
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             $progress->delete();
         }
 

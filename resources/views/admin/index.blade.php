@@ -1,176 +1,197 @@
 @extends('layouts.admin')
 
 @section('content')
-
-    <!-- Page Header-->
-
-    <x-page-title :title="$title" :help="$help"/>
-
-
-    @if(Auth::user()->isActionleader() && Auth::user()->action)
-        <!-- Counts Section -->
-        <section class="dashboard-counts section-padding">
-            <div class="container-fluid">
-                <div class="row">
-                    @foreach ($icon_array as $icon)
-                        <div class="col-xl-2 col-md-4 col-6">
-                            <div id="{{$icon->id}}" class="wrapper count-title d-flex">
-                                <div class="icon"><i class="fa-solid {{$icon->icon}}"></i></div>
-                                <div class="name"><strong class="text-uppercase">{{$icon->name}}</strong>
-                                    <div class="count-number">{{$icon->number}}</div>
+<!-- Page Header-->
+<x-page-title :title="$title" :help="$help" :header=false />
+@if(Auth::user()->isActionleader() && Auth::user()->action)
+<!-- Counts Section -->
+<section class="dashboard-counts section-padding">
+    <div class="container-fluid">
+        <div class="row">
+            @foreach ($icon_array as $icon)
+            <div class="col-xl-2 col-md-4 col-6">
+                <div id="{{$icon->id}}" class="wrapper count-title d-flex">
+                    <div class="icon"><i class="fa-solid {{$icon->icon}}"></i></div>
+                    <div class="name"><strong class="text-uppercase">{{$icon->name}}</strong>
+                        <div class="count-number">{{$icon->number}}</div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+<!-- Header Section-->
+<section class="section-padding">
+    <div class="container-fluid">
+        <div class="row d-flex">
+            <div class="col-lg-6 col-md-12">
+                <div href="#"
+                    class="open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Übersicht</h5>
+                    <!-- Pie Chart-->
+                    <div style="height: 400px;">
+                        {!! $zopfChart->container() !!}
+                    </div>
+                </div>
+            </div>
+            <!-- Line Chart -->
+            <div class="col-lg-6 col-md-12">
+                <div href="#"
+                    class=" open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Zeitlicher Verlauf</h5>
+                    <div class="line-chart">
+                        {{-- <canvas id="lineChart"></canvas>--}}
+                        {!! $timeChart->container() !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Statistics Section-->
+<section class="statistics">
+    <div class="container-fluid">
+        <div class="row d-flex">
+            <div class="col-lg-6 col-md-12">
+                <div id="open_routes" href="#"
+                    class=" open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Routen</h5>
+                    @if($open_routes->count() > 0)
+                        @foreach ($open_routes as $key => $route)
+                        <div id="route-{{$route['id']}}" data-count-open="{{$route->zopf_open_count()}}"
+                            data-count-all="{{$route->zopf_count()}}">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:5%">
+                                            <h3 class="h4 display">{{$key + 1 }}</h3>
+                                        </td>
+                                        <td style="width:25%"><a href="{{route('routes.overview', $route->id)}}"
+                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                <h3 class="h4 display">{{$route->name}}</h3>
+                                            </a></td>
+                                        <td style="width:25%">
+                                            <h3 class="h4 display">{{$route->user['username']}}</h3>
+                                        </td>
+                                        <td style="width:20%">
+                                            <h3 class="h4 display">{{$route->route_type ? $route->route_type['name'] : ''}}
+                                            </h3>
+                                        </td>
+                                        <td style="width:25%">
+                                            <h3 class="h4 display">{{$route->route_status['name']}}</h3>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="progress">
+                                <div id="route-progessbar-{{$route['id']}}" role="progressbar"
+                                    style="width:  {{$route->route_done_percent()}}%"
+                                    aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0" aria-valuemax="100"
+                                    class="progress-bar progress-bar bg-primary"></div>
+                            </div>
+                            <div class="page-statistics d-flex justify-content-between">
+                                <div class="page-statistics-left">
+                                    <span>Zöpfe Total</span><strong>{{$route->zopf_count()}}</strong>
+                                </div>
+                                <div id="route-open-{{$route['id']}}" class="page-statistics-right">
+                                    <span>Noch Offen</span><strong>{{$route->zopf_open_count()}}</strong>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                        @endforeach
+                    @else
+                        Erstelle Routen um hier eine Übersicht zu erhalten.
+                    @endif
                 </div>
             </div>
-        </section>
-        <!-- Header Section-->
-        <section class="section-padding">
-            <div class="container-fluid">
-                <div class="row d-flex">
-                    <div class="col-lg-6 col-md-12">
-                        <div href="#"
-                             class="open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                Übersicht</h5>
-                            <!-- Pie Chart-->
-                            <div style="height: 400px;">
-                                {!! $zopfChart->container() !!}
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Line Chart -->
-                    <div class="col-lg-6 col-md-12">
-                        <div href="#"
-                             class=" open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                Zeitlicher Verlauf</h5>
-                            <div class="line-chart">
-                                {{--                  <canvas id="lineChart"></canvas>--}}
-                                {!! $timeChart->container() !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Statistics Section-->
-        <section class="statistics">
-            <div class="container-fluid">
-                <div class="row d-flex">
-                    <div class="col-lg-6 col-md-12">
-                        <div id="open_routes" href="#"
-                             class=" open-routes block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 updates user-activity">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Routen</h5>
-                            @if($open_routes)
-                                @foreach ($open_routes as $key => $route)
-                                    <div id="route-{{$route['id']}}"
-                                         data-count-open="{{$route->zopf_open_count()}}"
-                                         data-count-all="{{$route->zopf_count()}}">
-                                        <table class="table">
-                                            <tbody>
-                                            <tr>
-                                                <td style="width:5%"><h3 class="h4 display">{{$key + 1 }}</h3></td>
-                                                <td style="width:25%"><a
-                                                        href="{{route('routes.overview', $route->id)}}"><h3
-                                                            class="h4 display">{{$route->name}}</h3></a></td>
-                                                <td style="width:25%"><h3
-                                                        class="h4 display">{{$route->user['username']}}</h3></td>
-                                                <td style="width:20%"><h3
-                                                        class="h4 display">{{$route->route_type ? $route->route_type['name'] : ''}}</h3>
-                                                </td>
-                                                <td style="width:25%"><h3
-                                                        class="h4 display">{{$route->route_status['name']}}</h3></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="progress">
-                                            <div id="route-progessbar-{{$route['id']}}" role="progressbar"
-                                                 style="width:  {{$route->route_done_percent()}}%"
-                                                 aria-valuenow=" {{$route->route_done_percent()}}" aria-valuemin="0"
-                                                 aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
-                                        </div>
-                                        <div class="page-statistics d-flex justify-content-between">
-                                            <div class="page-statistics-left">
-                                                <span>Zöpfe Total</span><strong>{{$route->zopf_count()}}</strong></div>
-                                            <div id="route-open-{{$route['id']}}" class="page-statistics-right">
-                                                <span>Noch Offen</span><strong>{{$route->zopf_open_count()}}</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+            <div class="col-lg-6 col-md-12">
+                <!-- Recent Activities Widget      -->
+                <div href="#"
+                    class="block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Logbuch</h5>
+                    <div id="logbookList" class="activities">
+                        <ol class="relative border-l border-gray-200 dark:border-gray-700">
+                            <!-- Item-->
+                            @if($notifications)
+                            @foreach ($notifications as $notification)
+                            <x-logbook-item :user="$notification['user']" :content="$notification['content']"
+                                :time="$notification['when']" :id="$notification['id']" />
+                            @endforeach
                             @endif
-                        </div>
+                        </ol>
                     </div>
-                    <div class="col-lg-6 col-md-12">
-                        <!-- Recent Activities Widget      -->
-                        <div href="#"
-                             class="block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                Logbuch</h5>
-                            <div id="logbookList" class="activities">
-                                <ol class="relative border-l border-gray-200 dark:border-gray-700">
-                                    <!-- Item-->
-                                    @if($notifications)
-                                        @foreach ($notifications as $notification)
-                                            <x-logbook-item :user="$notification['user']"
-                                                            :content="$notification['content']"
-                                                            :time="$notification['when']"
-                                                            :id="$notification['id']"/>
-                                        @endforeach
-                                    @endif
-                                </ol>
-                            </div>
-                            @if($users)
-                                <div role="tabpanel">
-                                    @include('includes.form_error')
-                                    {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            {!! Form::label('when', 'Wann:') !!}
-                                            {!! Form::time('when', now(), ['class' => 'form-control']) !!}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            {!! Form::label('user_id', 'Verantwortlicher:') !!}
-                                            {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' => 'form-control']) !!}
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            {!! Form::label('cut', 'Anzahl Aufgeschnitten:') !!}
-                                            {!! Form::text('cut', null, ['class' => 'form-control']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::label('comments', 'Kommentar:') !!}
-                                        {!! Form::text('comments', null, ['class' => 'form-control']) !!}
-                                    </div>
-                                    <div class="form-group">
-                                        {!! Form::submit('Eintrag Erfassen', ['class' => 'btn btn-primary'])!!}
-                                    </div>
-                                    {!! Form::close()!!}
+                    @if(!Auth::user()->action['global'])
+                        <div role="tabpanel">
+                            @include('includes.form_error')
+                            {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    {!! Form::label('when', 'Wann:', ['class' =>'block mb-2 text-sm font-medium
+                                    text-gray-900 dark:text-white']) !!}
+                                    {!! Form::time('when', now(), ['class' => 'bg-gray-50 border border-gray-300
+                                    text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
+                                    p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                                    dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
                                 </div>
-                            @endif
+                                <div class="form-group col-md-6">
+                                    {!! Form::label('user_id', 'Verantwortlicher:', ['class' =>'block mb-2 text-sm
+                                    font-medium text-gray-900 dark:text-white']) !!}
+                                    {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' =>
+                                    'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500
+                                    focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
+                                    dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+                                    dark:focus:border-blue-500']) !!}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    {!! Form::label('cut', 'Anzahl Aufgeschnitten:', ['class' =>'block mb-2 text-sm
+                                    font-medium text-gray-900 dark:text-white']) !!}
+                                    {!! Form::text('cut', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900
+                                    text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                                    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                                    dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('comments', 'Kommentar:', ['class' =>'block mb-2 text-sm font-medium
+                                text-gray-900 dark:text-white']) !!}
+                                {!! Form::text('comments', null, ['class' => 'bg-gray-50 border border-gray-300
+                                text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
+                                p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                                dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::submit('Eintrag Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800
+                                focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
+                                dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                            </div>
+                            {!! Form::close()!!}
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
-        </section>
-    @else
-        <section class="dashboard-counts section-padding">
-            <div class="container-fluid">
-                <h3>Du hast noch keine zugeordnete Aktion, erstelle <a href="{{ route('actions.create') }}">hier</a>
-                    eine Aktion.</h3>
-            </div>
-        </section>
-    @endif
+        </div>
+    </div>
+</section>
+@else
+<section class="dashboard-counts section-padding">
+    <div class="container-fluid">
+        <h3>Du hast noch keine zugeordnete Aktion, erstelle <a href="{{ route('actions.create') }}">hier</a>
+            eine Aktion.</h3>
+    </div>
+</section>
+@endif
 
 @endsection
 
-@section('scripts')
+@push('scripts')
     {{isset($zopfChart) ? $zopfChart->script() : ''}}
     {{isset($timeChart) ? $timeChart->script() : ''}}
 
-    <script>
+    <script type="module">
         function UpdateGraph() {
             {{ $zopfChart->id }}_refresh({{ $zopfChart->id }}_api_url);
             {{ $timeChart->id }}_refresh({{ $timeChart->id }}_api_url);
@@ -236,5 +257,4 @@
             });
         }
     </script>
-@endsection
-
+@endpush

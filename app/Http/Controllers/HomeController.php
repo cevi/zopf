@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationCreate;
-use App\Helper\Helper;
 use App\Models\Help;
 use App\Models\Order;
 use App\Models\Route;
@@ -32,11 +31,11 @@ class HomeController extends Controller
         $group = Auth::user()->group;
         $action = Auth::user()->action;
         $routes = [];
-        if($action) {
+        if ($action) {
             $routes = Route::where('user_id', $user->id)->where('action_id', $action['id'])->where('route_status_id', config('status.route_unterwegs'))->get();
         }
         $title = 'Routenübersicht';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('home', compact('user', 'group', 'routes', 'action', 'title', 'help'));
     }
@@ -48,7 +47,7 @@ class HomeController extends Controller
         $route = Route::FindOrFail($id);
         $orders = $route->orders;
         $title = $route['name'];
-        $help = Help::where('title','Mobile Routen')->first();
+        $help = Help::where('title', 'Mobile Routen')->first();
 
         return view('home.main', compact('route', 'orders', 'routes', 'title', 'help'));
     }
@@ -64,7 +63,7 @@ class HomeController extends Controller
         $center = $action->center;
         $key = $action['APIKey'];
         $title = $route['name'];
-        $help = Help::where('title','Mobile Karten')->first();
+        $help = Help::where('title', 'Mobile Karten')->first();
 
         return view('home.map', compact('orders', 'route', 'routes', 'center', 'key', 'title', 'help'));
     }
@@ -83,19 +82,19 @@ class HomeController extends Controller
     {
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $order = Order::findOrFail($id);
             $action = $aktUser->action;
             $route_id = $order['route_id'];
             if ($order['quantity'] === 1) {
                 $text = 'Ein Zopf wurde';
             } else {
-                $text = $order['quantity'] . ' Zöpfe wurden';
+                $text = $order['quantity'].' Zöpfe wurden';
             }
             if ($new_status === config('status.order_hinterlegt')) {
-                $log['text'] = $text . ' bei ' . $order->address['firstname'] . ' ' . $order->address['name'] . ' hinterlegt.';
+                $log['text'] = $text.' bei '.$order->address['firstname'].' '.$order->address['name'].' hinterlegt.';
             } else {
-                $log['text'] = $text . ' an ' . $order->address['firstname'] . ' ' . $order->address['name'] . ' übergeben.';
+                $log['text'] = $text.' an '.$order->address['firstname'].' '.$order->address['name'].' übergeben.';
             }
             $log['user'] = $aktUser->username;
             $log['quantity'] = $order['quantity'];
@@ -106,7 +105,7 @@ class HomeController extends Controller
             if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
                 $route = Route::FindOrFail($route_id);
                 $log['user'] = Auth::user()->username;
-                $log['text'] = 'Route ' . $route['name'] . ' wurde abgeschlossen';
+                $log['text'] = 'Route '.$route['name'].' wurde abgeschlossen';
                 $log['quantity'] = 0;
                 NotificationCreate::dispatch($action, $log);
                 $route->update(['route_status_id' => config('status.route_abgeschlossen')]);

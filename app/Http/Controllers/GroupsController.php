@@ -18,7 +18,7 @@ class GroupsController extends Controller
         //
         $title = 'Gruppe - Erfassen';
         $users = Auth::user()->pluck('username', 'id');
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('home.groups.create', compact('users', 'title', 'help'));
     }
@@ -36,9 +36,8 @@ class GroupsController extends Controller
                 ->withInput();
         }
 
-
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $input = $request->all();
             $input['user_id'] = $aktUser->id;
             $input['global'] = false;
@@ -50,6 +49,7 @@ class GroupsController extends Controller
                 'role_id' => config('status.role_groupleader'),
             ]);
         }
+
         return redirect('home');
     }
 
@@ -63,7 +63,7 @@ class GroupsController extends Controller
     {
         //
         $title = 'Gruppe - Bearbeiten';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('home.groups.edit', compact('group', 'title', 'help'));
     }
@@ -81,7 +81,7 @@ class GroupsController extends Controller
         }
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             $input = $request->all();
             $group->update($input);
         }
@@ -94,7 +94,7 @@ class GroupsController extends Controller
         //
 
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
+        if (! $aktUser->demo) {
             Helper::updateGroup(Auth::user(), $group);
         }
 

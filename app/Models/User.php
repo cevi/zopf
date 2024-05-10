@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Helper\Helper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use SearchableTrait;
     use HasFactory;
-
 
     /**
      * The attributes that are mass assignable.
@@ -91,6 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 return true;
             }
         }
+
         return false;
     }
 
@@ -103,5 +105,24 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function getAvatar()
+    {
+        $action = Auth::user()->action;
+        $path = null;
+        if ($action) {
+            $action_user = ActionUser::where('user_id', $this->id)->where('action_id', $action->id)->first();
+            if ($action_user) {
+                $path = Helper::getAvatarPath($action_user->avatar);
+            }
+        }
+        if ($path === null) {
+            $path = Helper::getAvatarPath($this->avatar);
+        }
+        if ($path === null) {
+            $path = '/img/default_avatar.svg';
+        }
+        return $path;
     }
 }

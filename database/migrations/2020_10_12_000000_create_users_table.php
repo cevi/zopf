@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('role_id')->index()->unsigned()->nullable();
             $table->foreign('role_id')->references('id')->on('roles');
             $table->bigInteger('group_id')->index()->unsigned()->nullable();
-            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('set Null');
             $table->bigInteger('action_id')->index()->unsigned()->nullable();
             $table->foreign('action_id')->references('id')->on('actions')->onDelete('set Null');
             $table->string('username');

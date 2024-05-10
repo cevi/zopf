@@ -1,19 +1,18 @@
 <!doctype html>
 <html lang="{{ app()->getLocale()}}">
 @include('includes/header')
-<body>
-<div id="app" class="page mainpage text-dark__black">
-    @include('includes/topnav')
 
-
-    <main class="py-4">
-        @yield('content')
-    </main>
-    <x-footer/>
-</div>
-<!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
-@yield('scripts')
+<body class="text-dark__black">
+    <div id="app" class="antialiased page mainpage">
+        @include('includes/topnav')
+        <main class="p-4 md:ml-64 h-auto pt-20">
+            @yield('content')
+        </main>
+        <x-footer />
+    </div>
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @stack('scripts')
 </body>
+
 </html>

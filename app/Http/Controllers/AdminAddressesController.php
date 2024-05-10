@@ -63,29 +63,28 @@ class AdminAddressesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         //
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             $action = $user->action;
             $city = City::Where('id', $request->city_id)->first();
-            if (!$city) {
+            if (! $city) {
                 return back()->withInput()->withErrors(['errors' => ['Ortschaft nicht gefunden.']]);
             } else {
                 $input = $request->all();
                 $input['city_id'] = $city->id;
             }
-            if (!Auth::user()->isAdmin()) {
+            if (! Auth::user()->isAdmin()) {
                 $group = Auth::user()->group;
                 $input['group_id'] = $group['id'];
             }
             GeoCoder::setApiKey($input['APIKey']);
             GeoCoder::setCountry('CH');
-            $geocode = GeoCoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' ' . $city->name);
+            $geocode = GeoCoder::getCoordinatesForAddress($input['street'].', '.$city->plz.' '.$city->name);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
 
@@ -130,7 +129,6 @@ class AdminAddressesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -138,10 +136,10 @@ class AdminAddressesController extends Controller
     {
         //
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             $address = Address::findOrFail($id);
             $city = City::Where('name', $request->city_name)->Where('plz', $request->city_plz)->first();
-            if (!$city) {
+            if (! $city) {
                 return back()->withInput()->withErrors(['errors' => ['Ortschaft nicht gefunden.']]);
             } else {
                 $input = $request->all();
@@ -151,7 +149,7 @@ class AdminAddressesController extends Controller
             GeoCoder::setApiKey($action['APIKey']);
             GeoCoder::setCountry('CH');
 
-            $geocode = Geocoder::getCoordinatesForAddress($input['street'] . ', ' . $city->plz . ' ' . $city->name);
+            $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$city->plz.' '.$city->name);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
 
@@ -171,9 +169,10 @@ class AdminAddressesController extends Controller
     {
         //
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
             Address::findOrFail($id)->delete();
         }
+
         return redirect('/admin/addresses');
     }
 }

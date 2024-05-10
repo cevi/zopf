@@ -3,62 +3,62 @@
 
 @section('content')
 
-    <x-page-title :title="$title" :help="$help"/>
-    <section>
-        <div class="container-fluid">
-            <!-- Page Header-->
-            <header>
-                <div class="row" style="width: 30%">
-                    <div class="col-md-4">
-                        <a href="{{route('orders.create')}}" class="btn btn-primary btn-sm">
-                            <span>Erfassen</span>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
-                    </div>
-                    <div class="col-md-4">
-                        <button id="chooseRoute" class="btn btn-info btn-sm">Route hinzufügen</button>
-                    </div>
+<x-page-title :title="$title" :help="$help" />
+<section>
+    <div class="container-fluid">
+        <!-- Page Header-->
+        <header>
+            <div class="row">
+                <div class="col-lg-4 col-md-12">
+                    <a href="{{route('orders.create')}}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        <span>Erfassen</span>
+                    </a>
                 </div>
+                <div class="col-lg-4 col-md-12">
+                    {!! Html::link('files/Vorlage.xlsx', 'Vorlage herunterladen', ['class' => 'font-medium text-blue-600 dark:text-blue-500 hover:underline']) !!}
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <button id="chooseRoute" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Route hinzufügen</button>
+                </div>
+            </div>
 
-                <hr>
-            </header>
-            <div id="filter_btns">
-                <div id="pickup_btn">
-                    <div class="row" style="width: 30%">
-                        <div class="col-md-4">
-                            <button class="btn btn-primary active">Alle</button>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary">Abholen</button>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary">Keine Route</button>
-                        </div>
+            <hr>
+        </header>
+        <div id="filter_btns">
+            <div id="pickup_btn">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12">
+                        <button class="btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800 active">Alle</button>
                     </div>
-                </div>
-                <div id="status_btn">
-                    <br>
-                    <div class="row">
-                        <div class="col-md-1">
-                            <button class="btn btn-secondary active">Alle</button>
-                        </div>
-                        @foreach ($order_statuses as $order_status)
-                            <div class="col-md-1">
-                                <button class="btn btn-secondary">{{$order_status}}</button>
-                            </div>
-                        @endforeach
+                    <div class="col-lg-4 col-md-12">
+                        <button class="btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Abholen</button>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <button class="btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Keine Route</button>
                     </div>
                 </div>
             </div>
-            <input type="hidden" value="Alle" id="pickup_btn_value">
-            <input type="hidden" value="Alle" id="status_btn_value">
-            <br>
-            <div class="row">
-                <div class="col-sm-12">
-                    <table class="table table-striped table-bordered table responsive" width="100%" id="datatable">
-                        <thead>
+            <div id="status_btn">
+                <br>
+                <div class="row">
+                    <div class="col-lg-2 col-md-12">
+                        <button class="btn text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900 active">Alle</button>
+                    </div>
+                    @foreach ($order_statuses as $order_status)
+                    <div class="col-lg-2 col-md-12">
+                        <button class="btn text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900">{{$order_status}}</button>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <input type="hidden" value="Alle" id="pickup_btn_value">
+        <input type="hidden" value="Alle" id="status_btn_value">
+        <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table-striped table-bordered table responsive" id="datatable">
+                    <thead>
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Vorname</th>
@@ -73,74 +73,75 @@
                             <th scope="col">Auswahl</th>
                             <th scope="col">Aktionen</th>
                         </tr>
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-4">
-                    {!! Form::open(['action' => 'AdminOrdersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
-                    <div class="form-group">
-                        {{ Form::file('csv_file',['class' => 'dropify'])}}
-                    </div>
-                    {{ Form::submit('Bestellungen hochladen', ['class' => 'btn btn-primary']) }}
-                    {!! Form::close() !!}
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4">
+                {!! Form::open(['action' => 'AdminOrdersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                <div class="form-group">
+                    {!! Form::file('csv_file', ['class' => 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400']) !!}
                 </div>
+                {{ Form::submit('Bestellungen hochladen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800']) }}
+                {!! Form::close() !!}
             </div>
-
         </div>
 
-    </section>
-    <div class="modal fade" id="ajaxModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modelHeading">Route Auswählen</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="modal-form" method="POST" action="javascript:void(0)">
-                        {{-- @if ($routes->isNotEmpty())                       --}}
-                        <div class="form-group">
-                            <label for="routes_id">Route</label>
-                            <select class="form-control" name="routes_id">
+    </div>
 
-                                <option>Wähle Route</option>
-                                @if($routes)
-                                    @foreach ($routes as $route)
-                                        <option value="{{ $route->id }}">
-                                            {{ $route->name }}
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-                        {{-- @endif  --}}
-                        <div class="form-group">
-                            <label for="Name">Name</label>
-                            <input type="text" name="Name" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <button data-remote='{{route('orders.createRoute')}}' id="createRoute"
-                                    class="btn btn-info btn-sm">Route zuweisen
-                            </button>
-                        </div>
-                    </form>
-                </div>
+</section>
+<div class="modal fade" id="ajaxModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeading">Route Auswählen</h4>
+            </div>
+            <div class="modal-body">
+                <form id="modal-form" method="POST" action="javascript:void(0)">
+                    {{-- @if ($routes->isNotEmpty()) --}}
+                    <div class="form-group">
+                        <label for="routes_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route</label>
+                        <select class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" name="routes_id">
+
+                            <option>Wähle Route</option>
+                            @if($routes)
+                            @foreach ($routes as $route)
+                            <option value="{{ $route->id }}">
+                                {{ $route->name }}
+                            </option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    {{-- @endif --}}
+                    <div class="form-group">
+                        <label for="Name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                        <input type="text" name="Name" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
+                    </div>
+                    <div class="form-group">
+                        <button data-remote='{{route('orders.createRoute')}}' id="createRoute"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Route zuweisen
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 @endsection
-@section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+@push('scripts')
+<script type="module">
+    // document.addEventListener('DOMContentLoaded', function () {
             $(document).ready(function () {
                 var table = $('#datatable').DataTable({
                     responsive: true,
                     processing: true,
                     serverSide: true,
                     pageLength: 50,
+                    buttons: [],
                     language: {
                         "url": "/lang/Datatables.json"
                     },
@@ -326,7 +327,7 @@
                     }
                 });
             });
-        }, false);
+        // }, false);
 
-    </script>
-@endsection
+</script>
+@endpush

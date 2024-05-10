@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 class Action extends Model
 {
     use Notifiable;
+
     //
     public static function boot()
     {
@@ -61,6 +62,11 @@ class Action extends Model
     public function center()
     {
         return $this->belongsTo('App\Models\Address', 'address_id');
+    }
+
+    public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\User', 'action_users')->where('action_users.role_id', '<>', config('status.role_administrator'));
     }
 
     public function notifications()

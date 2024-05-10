@@ -3,69 +3,67 @@
 
 @section('content')
 
-    <x-page-title :title="$title" :help="$help"/>
-    <section>
-        <div class="container-fluid">
-            <!-- Page Header-->
+<x-page-title :title="$title" :help="$help" />
+<section>
+    <div class="container-fluid">
+        <!-- Page Header-->
 
-            <div class="row">
-                <div class="col-sm-3">
-                    <table class="table table-borderless" id="btns">
-                        <tbody>
+        <div class="row">
+            <div class="col-sm-3">
+                <table class="table table-borderless" id="btns">
+                    <tbody>
                         <td>
                             <table class="table table-borderless" id="city_btn">
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <button class="btn btn-outline-primary btn-sm active">Alle</button>
-                                    </td>
-                                </tr>
-                                @foreach ($cities as $index => $city)
                                     <tr>
                                         <td>
-                                            <button value="{{$index}}" class=" btn btn-outline-primary btn-sm
-                                            ">{{$city}}</button>
+                                            <button class="btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-2 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800 active">Alle</button>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @foreach ($cities as $index => $city)
+                                    <tr>
+                                        <td>
+                                            <button value="{{$index}}" class="btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-2 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">{{$city}}</button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </td>
                         <td>
                             <table class="table table-borderless" id="status_btn">
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <button class="btn btn-outline-secondary btn-sm active">Alle</button>
-                                    </td>
-                                </tr>
-                                @foreach ($statuses as $status)
                                     <tr>
                                         <td>
-                                            <button class="btn btn-outline-secondary btn-sm">{{$status}}</button>
+                                            <button class="btn text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-2 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900 active">Alle</button>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @foreach ($statuses as $status)
+                                    <tr>
+                                        <td>
+                                            <button class="btn text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-2 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900">{{$status}}</button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </td>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-sm-9">
-                    <div style="height: 800px" id="map-canvas"></div>
-                </div>
+                    </tbody>
+                </table>
             </div>
-
+            <div class="col-sm-9">
+                <div style="height: 800px" id="map-canvas" class="text-gray-900"></div>
+            </div>
         </div>
-    </section>
+
+    </div>
+</section>
 
 @endsection
-@section('scripts')
-    @include('includes.google-maps')
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
+@push('scripts')
+@include('includes.google-maps')
+<script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
             // Get the container element
             var btnContainer_city = document.getElementById("city_btn");
 
@@ -135,5 +133,5 @@
             setMapsArguments(@json($orders), @json($key), @json($center));
             window.onload = loadScript;
         });
-    </script>
-@endsection
+</script>
+@endpush

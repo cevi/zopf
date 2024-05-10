@@ -16,6 +16,7 @@ class TimeChart extends Chart
         parent::__construct();
 
         return $this->options([
+            'plugins' => '{legend: {labels: {color: "rgba(156, 163, 175,1)"}}}',
             'maintainAspectRatio' => false,
             'fill' => true,
             'lineTension' => 0.3,
@@ -36,5 +37,6 @@ class TimeChart extends Chart
             'pointHitRadius' => 10,
             'spanGaps' => false,
         ]);
+
     }
 }

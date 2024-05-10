@@ -7,9 +7,13 @@ use Illuminate\View\Component;
 class LogbookItem extends Component
 {
     public $user;
+
     public $content;
+
     public $time;
+
     public $id;
+
     /**
      * Create a new component instance.
      *
@@ -22,6 +26,7 @@ class LogbookItem extends Component
         $this->time = $time;
         $this->id = $id;
     }
+
     /**
      * Get the view / contents that represent the component.
      *

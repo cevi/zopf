@@ -2,26 +2,24 @@
 
 namespace App\Helper;
 
-use App\Models\Action;
-use App\Models\ActionUser;
-use App\Models\Address;
-use App\Models\Group;
-use App\Models\GroupUser;
-use App\Models\Logbook;
-use App\Models\Route;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\Bool_;
+use App\Models\Group;
+use App\Models\Route;
+use App\Models\Action;
+use App\Models\Address;
+use App\Models\GroupUser;
+use App\Models\ActionUser;
 use Spatie\Geocoder\Geocoder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Helper
 {
-
     public static function CreateRouteSequence($route)
     {
         $action = $route->action;
         $response = '';
-        if(!$action->demo) {
+        if (!$action->demo) {
             $orders = $route->orders;
             $center = $action->center;
             $key = $action['APIKey'];
@@ -56,7 +54,8 @@ class Helper
         $group_user->update(['role_id' => $role_id]);
         $user->update([
             'group_id' => $group->id,
-            'role_id' => $role_id, ]);
+            'role_id' => $role_id,
+        ]);
         if ($user->action) {
             if ($user->action->group['id'] != $group->id) {
                 $user->update(['action_id' => null]);
@@ -71,7 +70,8 @@ class Helper
         $action_user->update(['role_id' => $role_id]);
         $user->update([
             'action_id' => $action->id,
-            'role_id' => $role_id, ]);
+            'role_id' => $role_id,
+        ]);
     }
 
     public static function getGeocoder(string $key): Geocoder
@@ -134,10 +134,10 @@ class Helper
             for ($i = 1; $i <= $diff; $i++) {
                 $graphs_time[] = date('H:i', (strtotime($graphs_time[$i - 1]) + 1800));
                 $total = 0;
-               if(strtotime($graphs[$index]->time_frame) === strtotime($graphs_time[$i])){
-                   $total = $graphs[$index]->total;
-                   $index++;
-               }
+                if (strtotime($graphs[$index]->time_frame) === strtotime($graphs_time[$i])) {
+                    $total = $graphs[$index]->total;
+                    $index++;
+                }
                 $graphs_sum[] = $total;
             }
         } else {
@@ -161,7 +161,7 @@ class Helper
         $data['routes_count'] = 0;
         $data['routes_finished_count'] = 0;
 
-        if($action) {
+        if ($action) {
 
             $data['cut'] = $action->notifications()->where('cut', true)->get(['quantity'])->sum('quantity');
 
@@ -176,6 +176,7 @@ class Helper
             $data['routes_count'] = count($routes);
             $data['routes_finished_count'] = count(Route::where('action_id', $action['id'])->where('route_status_id', '=', config('status.route_abgeschlossen'))->get());
         }
+
         return $data;
     }
 
@@ -186,19 +187,19 @@ class Helper
                 'id' => 'overview-breads',
                 'icon' => 'fa-bread-slice',
                 'name' => 'Zöpfe',
-                'number' => $data['orders_finished'] + $data['cut'].' / '.$data['total'],
+                'number' => $data['orders_finished'] + $data['cut'] . ' / ' . $data['total'],
             ],
             (object) [
                 'id' => 'overview-orders',
                 'icon' => 'fa-newspaper',
                 'name' => 'Bestellungen',
-                'number' => $data['orders_count_finished'].' / '.$data['orders_count'],
+                'number' => $data['orders_count_finished'] . ' / ' . $data['orders_count'],
             ],
             (object) [
                 'id' => 'overview-routes',
                 'icon' => 'fa-route',
                 'name' => 'Routen',
-                'number' => $data['routes_finished_count'].' / '.$data['routes_count'],
+                'number' => $data['routes_finished_count'] . ' / ' . $data['routes_count'],
             ],
             (object) [
                 'id' => 'overview-open',
@@ -230,8 +231,40 @@ class Helper
                     'user_id' => $user->id,
                     'action_id' => $action->id,
                 ],
-                [ 'role_id' => config('status.role_leader')]
+                ['role_id' => config('status.role_leader')]
             );
+        }
+    }
+
+    public static function getAvatarPath($avatar)
+    {
+        $path = null;
+        if ($avatar) {
+            if (str_starts_with($avatar, 'https')) {
+                $path = $avatar;
+            } else {
+                $path = asset("storage/" . $avatar);
+            }
+        }
+        return $path;
+    }
+
+    public static function deleteAction(Action $action)
+    {
+        $aktUser = Auth::user();
+        if (! $aktUser->demo) {
+            if($action['amount']===null){
+                $action->delete();
+            }
+            $action_global = Action::where('global',true)->first();
+            
+            $users = $action->allUsers;
+            foreach($users as $user){
+                if($action===$user->action()){
+                    Helper::updateAction($user, $action_global);
+                }
+                ActionUser::where('action_id', $action->id)->where('user_id', $user->id)->delete();
+            }
         }
     }
 }
