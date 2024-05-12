@@ -3,7 +3,7 @@
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
             <a href="{{ url('/admin') }}" class="flex items-center justify-between mr-4">
-                <img src="/img/logo.svg" alt="QualiTool Logo" class="mr-3 h-6 lg:h-12">
+                <x-logo/>
             </a>
         </div>
         <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
