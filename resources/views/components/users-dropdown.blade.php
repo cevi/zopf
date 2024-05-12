@@ -39,6 +39,12 @@
                 >Profil</a
             >
             </li>
+            @if(Auth::user()->email_verified_at)
+                <x-groups-dropdown />
+                @if (Auth::user()->group && !Auth::user()->group->global)
+                    <x-actions-dropdown />
+                @endif
+            @endif
         </ul>
         <ul
             class="py-1 text-gray-700 dark:text-gray-300"

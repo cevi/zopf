@@ -1,18 +1,15 @@
-<button type="button"
-    class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+<button type="button" data-dropdown-placement="right-start"
+    class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
     id="groups-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown-groups">
-    <span class="flex-1 ml-3 text-left whitespace-nowrap">
+    <span class="block text-sm dark:text-gray-400">
         @if(Auth::user()->group && !Auth::user()->group['global'] )
         {{Auth::user()->group['name']}}
         @else
         Meine Gruppen
         @endif <span class="caret"></span>
     </span>
-    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd">
-        </path>
+    <svg aria-hidden="true" class="w-2.5 h-2.5 ms-3 rtl:rotate-180" fill="currentColor" viewBox="0 0 6 10" xmlns="http://www.w3.org/2000/svg">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
     </svg>
 </button>
 
@@ -34,7 +31,7 @@
         <li>
             <div class="row">
 
-                <div class="col-sm-9">
+                <div class="col-9">
                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                         href="{{route('home.groups.updateGroup',$group['id'])  }}"
                         onclick="event.preventDefault();
@@ -42,7 +39,7 @@
                         {{$group['name']}}
                     </a>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     @if(!Auth::user()->demo && $group->user && $group->user['id']===Auth::user()->id)
                     <a class="block py-2  text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                         href="{{route('home.groups.edit',$group)  }}">

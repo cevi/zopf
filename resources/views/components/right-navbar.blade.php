@@ -1,14 +1,8 @@
 <div class="flex items-center lg:order-2">
     @auth
-    @if(Auth::user()->email_verified_at)
-    <x-groups-dropdown />
-    @if (Auth::user()->group && !Auth::user()->group->global)
-    <x-actions-dropdown />
-    @if (Auth::user()->isActionleader())
-    <x-notification-bell />
-    @endif
-    @endif
-    @endif
+        @if((Auth::user()->email_verified_at) && (Auth::user()->group) && (!Auth::user()->group->global) && (Auth::user()->isActionleader()))
+            <x-notification-bell />
+        @endif
     @endauth
     <x-users-dropdown />
     <x-toggle-switch />
