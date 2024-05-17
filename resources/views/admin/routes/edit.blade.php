@@ -141,115 +141,116 @@
 @endsection
 @push('scripts')
     @include('includes.google-maps')
-    <script type="module">
+    <script>
         function CheckboxClick(checkbox) {
+            MapResize();
+            for (var i = 0; i < markers.length; i++) {
+                if (markers[i].id == parseInt(checkbox.value)) {
+                    var marker = markers[i];
+                }
+            }
+            ChangeClick(marker);
+        }
+
+        function MarkerClick(marker) {
+            ChangeClick(marker)
+            $('#modal-datatable input[type=checkbox]').each(function () {
+                if (parseInt(this.value) === marker.id) {
+                    this.checked = !this.checked;
+                }
+            });
+        }
+
+
+        function FillIDList(id) {
+            if (clicked_markers.includes(id)) {
+                for (var i = 0; i < clicked_markers.length; i++) {
+                    if (clicked_markers[i] === id) {
+                        clicked_markers.splice(i, 1);
+                        result = false;
+                    }
+                }
+            } else {
+                clicked_markers.push(id)
+            }
+            return clicked_markers.includes(id);
+        }
+
+        function ChangeClick(marker) {
+            if (FillIDList(marker.id)) {
+                marker.setIcon("https://maps.gstatic.com/mapfiles/markers2/marker.png");
+            } else {
+                marker.setIcon("https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png");
+            }
+        }
+    </script>
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
+            var open_order = @json($open_orders);
+            var key = @json($key);
+            var center = @json($center);
+            setMapsArguments(open_order, key, center, null, false, true);
+            loadScript();
+            $('#chooseOrders').on('click', function () {
+                const myModal = new bootstrap.Modal('#ajaxModal');
+                myModal.show();
+            });
+            $('#ResizeMap').on('click', function () {
                 MapResize();
-                for (var i = 0; i < markers.length; i++) {
-                    if (markers[i].id == parseInt(checkbox.value)) {
-                        var marker = markers[i];
-                    }
-                }
-                ChangeClick(marker);
-            }
+            });
 
-            function MarkerClick(marker) {
-                ChangeClick(marker)
-                $('#modal-datatable input[type=checkbox]').each(function () {
-                    if (parseInt(this.value) === marker.id) {
-                        this.checked = !this.checked;
+
+            $('#AssignOrders').on('click', function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 });
-            }
-
-
-            function FillIDList(id) {
-                if (clicked_markers.includes(id)) {
-                    for (var i = 0; i < clicked_markers.length; i++) {
-                        if (clicked_markers[i] === id) {
-                            clicked_markers.splice(i, 1);
-                            result = false;
-                        }
+                // confirm then
+                $.ajax({
+                    url: '{{route('routes.AssignOrders')}}',
+                    method: 'POST',
+                    data: {
+                        id: clicked_markers,
+                        route_id: @json($route['id'])},
+                    success: function (data) {
+                        const truck_modal = document.querySelector('#ajaxModal');
+                        const modal = bootstrap.Modal.getInstance(truck_modal);
+                        modal.hide();
+                        location.reload();
                     }
-                } else {
-                    clicked_markers.push(id)
-                }
-                return clicked_markers.includes(id);
-            }
-
-            function ChangeClick(marker) {
-                if (FillIDList(marker.id)) {
-                    marker.setIcon("https://maps.gstatic.com/mapfiles/markers2/marker.png");
-                } else {
-                    marker.setIcon("https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png");
-                }
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                var open_order = @json($open_orders);
-                var key = @json($key);
-                var center = @json($center);
-                setMapsArguments(open_order, key, center, null, false, true);
-                loadScript();
-                $('#chooseOrders').on('click', function () {
-                    const myModal = new bootstrap.Modal('#ajaxModal');
-                    myModal.show();
                 });
-                $('#ResizeMap').on('click', function () {
-                    MapResize();
-                });
-
-
-                $('#AssignOrders').on('click', function () {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    });
-                    // confirm then
-                    $.ajax({
-                        url: '{{route('routes.AssignOrders')}}',
-                        method: 'POST',
-                        data: {
-                            id: clicked_markers,
-                            route_id: @json($route['id'])},
-                        success: function (data) {
-                            const truck_modal = document.querySelector('#ajaxModal');
-                            const modal = bootstrap.Modal.getInstance(truck_modal);
-                            modal.hide();
-                            location.reload();
-                        }
-                    });
-                });
-                $(document).ready(function () {
-                    $('#modal-datatable').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        pageLength: 25,
-                        buttons: [],
-                        language: {
-                            "url": "/lang/Datatables.json"
+            });
+            $(document).ready(function () {
+                $('#modal-datatable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    pageLength: 25,
+                    buttons: [],
+                    language: {
+                        "url": "/lang/Datatables.json"
+                    },
+                    ajax: "{!! route('routes.CreateModalDataTables') !!}",
+                    columns: [
+                        {data: 'name', name: 'name'},
+                        {data: 'firstname', name: 'firstname'},
+                        {data: 'street', name: 'street'},
+                        {data: 'plz', name: 'plz'},
+                        {data: 'city', name: 'city'},
+                        {data: 'quantity', name: 'quantity'},
+                        {data: 'comments', name: 'comments'},
+                        {
+                            data: 'checkbox',
+                            name: 'checkbox',
+                            orderable: false,
+                            serachable: false,
+                            sClass: 'text-center'
                         },
-                        ajax: "{!! route('routes.CreateModalDataTables') !!}",
-                        columns: [
-                            {data: 'name', name: 'name'},
-                            {data: 'firstname', name: 'firstname'},
-                            {data: 'street', name: 'street'},
-                            {data: 'plz', name: 'plz'},
-                            {data: 'city', name: 'city'},
-                            {data: 'quantity', name: 'quantity'},
-                            {data: 'comments', name: 'comments'},
-                            {
-                                data: 'checkbox',
-                                name: 'checkbox',
-                                orderable: false,
-                                serachable: false,
-                                sClass: 'text-center'
-                            },
 
-                        ],
-                        "order": [[3, 'asc'], [2, 'asc'], [0, 'asc']]
-                    });
+                    ],
+                    "order": [[3, 'asc'], [2, 'asc'], [0, 'asc']]
                 });
-            }, false);
+            });
+        }, false);
     </script>
 @endpush

@@ -45,8 +45,10 @@
     }
 
 
-    function initialize() {
-        var markers = [];
+    let map;
+    async function initialize() {
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        const { Map } = await google.maps.importLibrary("maps");
         var directionsService = new google.maps.DirectionsService;
         var directionsRenderer = new google.maps.DirectionsRenderer(
             {
@@ -85,7 +87,7 @@
             LatLngList.push(gData);
         }
 
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        map = new Map(document.getElementById('map-canvas'), mapOptions);
 
         if (travelMode != null) {
             directionsRenderer.setMap(map);
@@ -142,11 +144,11 @@
         });
 
         if (center != null) {
-            var html = "<p><b>" + center['name'] + "</b> <br/>" + center['street'];
+            var html = "<p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p>";
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(center['lat'], center['lng']),
                 map: map,
-                html: html,
+                content: html,
                 icon: {
                     path: mapIcons.shapes.MAP_PIN,
                     fillColor: '#00CCBB',
@@ -158,40 +160,41 @@
                 map_icon_label: '<span class="map-icon map-icon-local-government"></span>'
 
             });
-            oms.addMarker(marker), bindInfoWindow(marker, map, html);
+            markers.push(marker), oms.addMarker(marker), bindInfoWindow(marker, map, html);
 
 
             if (latitude != center['lat']) {
-                var html = "<p><b>Deine Position</b>";
-                var marker = new google.maps.marker.AdvancedMarkerElement ({
+                var html = "<p><b>Deine Position</b>"; 
+                var marker = new mapIcons.Marker({
                     position: new google.maps.LatLng(latitude, longitude),
                     map: map,
-                    html: html,
+                    label: 'P',
+                    content: html,
                     id: 0,
                 });
-                oms.addMarker(marker), bindInfoWindow(marker, map, html);
+                markers.push(marker), oms.addMarker(marker), bindInfoWindow(marker, map, html);
             }
         }
 
-        var icon_url = (order) => ((travelMode != null) && (orders[i].order_status_id > 15)) || ((travelMode == null) && (order.route_id == null)) ? "https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "https://maps.gstatic.com/mapfiles/markers2/marker.png";
+        var icon_url = (order) => ((travelMode != null) && (order.order_status_id > 15)) || ((travelMode == null) && (order.route_id == null)) ? "https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "https://maps.gstatic.com/mapfiles/markers2/marker.png";
 
-        for (var i = 0, order_len = orders.length; i < order_len; i++) {
+        for (const order of orders) {
             var url_deliver = "{{route('home.delivered', ':id')}}";
-            url_deliver = url_deliver.replace(':id', orders[i].id);
+            url_deliver = url_deliver.replace(':id', order.id);
             var link_deliver = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deliver + '">Übergeben</a>';
             var url_deposited = "{{route('home.deposited', ':id')}}";
-            url_deposited = url_deposited.replace(':id', orders[i].id);
+            url_deposited = url_deposited.replace(':id', order.id);
             var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
-            var html = "<p><b>" + orders[i].address['firstname'] + " " + orders[i].address['name'] + "</b> <br/>" + orders[i].address['street'] + "<br/> Zopf: " + orders[i]['quantity'] + "<br>";
+            var html = "<p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
                 html += link_deliver + " " + link_deposited  +'</p>';
             var marker = new mapIcons.Marker({
-                position: new google.maps.LatLng(orders[i].address['lat'], orders[i].address['lng']),
+                position: new google.maps.LatLng(order.address['lat'], order.address['lng']),
                 map: map,
-                html: html,
-                icon: new google.maps.MarkerImage(icon_url(orders[i])),
-                id: orders[i].id,
+                content: html,
+                icon: new google.maps.MarkerImage(icon_url(order)),
+                id: order.id,
             });
-            oms.addMarker(marker), bindInfoWindow(marker, map, html);
+            markers.push(marker), oms.addMarker(marker), bindInfoWindow(marker, map,  html);
         }
 
         if (cluster == true) {
@@ -208,8 +211,6 @@
                 }
 
                 infowindow.setContent(content);
-                console.log(event);
-                console.log(cluster);
                 var latLng = event.latLng.toJSON();
                 info.set('position', new google.maps.LatLng(cluster.bounds.Va['hi'], latLng['lng']));
                 // console.log(info.position.toJson());
@@ -242,7 +243,6 @@
         map.fitBounds(bounds);
 
     }
-
 
     function MapResize() {
         map.fitBounds(bounds);
