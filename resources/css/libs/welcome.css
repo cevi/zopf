@@ -65,6 +65,17 @@
     font-size: 1rem;
 }
 
+.text-navbar {
+    font-size: 0.8rem;
+}
+
+@media (min-width: 1920px) {
+    .text-navbar {
+        font-size: 1rem;
+    }
+}
+
+
 .text-lg {
     font-size: 1.25rem;
 }

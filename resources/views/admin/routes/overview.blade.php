@@ -7,7 +7,7 @@
         <!-- Page Header-->
         <header>
             Total Anzahl Zöpfe: {{$route->zopf_count()}} <br>
-            Routen Art: {{$routetype['name']}} <br>
+            Routen Art: {{$routetype ? $routetype['name'] : ''}} <br>
             @if ($route->route_status['id']> config('status.route_offen'))
             <a type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" target="_blank"
                 href="{{route('routes.downloadPDF', $route->id)}}">Download
