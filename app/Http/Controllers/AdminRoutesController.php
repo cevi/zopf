@@ -245,9 +245,9 @@ class AdminRoutesController extends Controller
     {
         //
         $title = 'Route - Erfassen';
-        $group = Auth::user()->group;
-        $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username', 'id')->all();
+        $action = Auth::user()->action;
+        $users = $action->allUsers();
+        $users = $users->pluck('username', 'users.id')->all();
         $route_types = RouteType::pluck('name', 'id')->all();
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Routen';
@@ -308,10 +308,9 @@ class AdminRoutesController extends Controller
     {
         //
         $route = Route::findOrFail($id);
-        $group = Auth::user()->group;
         $action = Auth::user()->action;
-        $users = User::where('group_id', $group['id'])->get();
-        $users = $users->pluck('username', 'id')->all();
+        $users = $action->allUsers();
+        $users = $users->pluck('username', 'users.id')->all();
         $route_statuses = RouteStatus::pluck('name', 'id')->all();
         $route_types = RouteType::pluck('name', 'id')->all();
         $orders = $route->orders;

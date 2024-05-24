@@ -58,7 +58,7 @@ class AdminBakeryProgressController extends Controller
         $graphs[5]['label'] = 'Ausgeliefert';
         $graphs[5]['color'] = '#8BB8A8';
 
-        $progressChart = new ProgressChart();
+        $progressChart = new ProgressChart;
         $progressChart->minimalist(true);
         $progressChart->labels($graphs[0]['time']);
         for ($i = 1; $i < 6; $i++) {

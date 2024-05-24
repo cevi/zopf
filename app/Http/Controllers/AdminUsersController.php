@@ -56,6 +56,9 @@ class AdminUsersController extends Controller
 
                 return $group_name;
             })
+            ->addColumn('picture', function ($user) {
+                return '<img class="img-user" alt="" src="' . $user->getAvatar() . '">';
+            })
             ->addColumn('role', function (User $user) {
                 $role_name = '';
                 if (Auth::user()->isAdmin()) {
@@ -87,7 +90,7 @@ class AdminUsersController extends Controller
             // ->addColumn('checkbox', function ($users) {
                 // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
             // })
-            ->rawColumns(['Actions'])
+            ->rawColumns(['picture', 'Actions'])
             ->make(true);
     }
 
@@ -137,6 +140,7 @@ class AdminUsersController extends Controller
             if (isset($action)) {
                 Helper::UpdateACtion($user, $action);
             }
+            Helper::updateAvatar($request, $user);
         }
 
         return redirect('/admin/users');
@@ -249,8 +253,8 @@ class AdminUsersController extends Controller
                 $input = $request->all();
                 $input['password'] = bcrypt($request->password);
             }
-
             $user->update($input);
+            Helper::updateAvatar($request, $user);
         }
 
         return redirect('/admin/users');

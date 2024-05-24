@@ -5,11 +5,11 @@
 
             @auth
             <a class="navbar-brand" href="{{ url('/home') }}" class="flex items-center">
-                <img src="/img/logo.svg" alt="Zopfaktion Logo" class="mr-3 h-6 lg:h-12">
+                <x-logo/>
             </a>
             @else
             <a class="navbar-brand" href="{{ url('/') }}" class="flex items-center">
-                <img src="/img/logo.svg" alt="Zopfaktion Logo" class="mr-3 h-6 lg:h-12">
+                <x-logo/>
             </a>
             @endauth
         </div>

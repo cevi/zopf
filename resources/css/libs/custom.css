@@ -199,3 +199,27 @@ ile_user {
 .modal-content {
     background-color: var(--color-bg-primary);
 }
+
+nav .logo {
+    width: 80%;
+    height: 100%;
+}
+@media (min-width: 1920px) {
+    nav .logo {
+        width: 100%;
+    }
+}
+
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.preview {
+    overflow: hidden;
+    width: 160px;
+    height: 160px;
+    margin: 10px;
+    border: 1px solid red;
+}

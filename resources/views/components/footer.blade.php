@@ -8,7 +8,7 @@
                 <p>Made by Amirli</p>
             </div>
             <div class="col-sm-4 text-right">
-                <p>Finde uns auch auf <a href="https://github.com/cevi/qualifikation">Github</a></p>
+                <p>Finde uns auch auf <a href="https://github.com/jeromesigg/zopf">Github</a></p>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Help;
 use App\Models\User;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -33,6 +34,7 @@ class UsersController extends Controller
             if (trim($request->password) == '') {
                 $input = $request->except('password');
                 $user->update($input);
+                Helper::updateAvatar($request, $user);
             } else {
                 $request->validate([
                     'password' => ['required', 'confirmed'],
@@ -41,6 +43,7 @@ class UsersController extends Controller
                 $input['password'] = bcrypt($request->password);
                 $input['password_change_at'] = now();
                 $user->update($input);
+                Helper::updateAvatar($request, $user);
                 Session::flash('message', 'Passwort erfolgreich verändert!');
             }
         }

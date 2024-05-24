@@ -1,16 +1,16 @@
 <nav
-    class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+    class="dark:bg-gray-800 border-b bg-gray-100 border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
-            <a href="{{ url('/admin') }}" class="flex items-center justify-between mr-4">
-                <img src="/img/logo.svg" alt="QualiTool Logo" class="mr-3 h-6 lg:h-12">
+            <a href="{{ url('/admin') }}" class="flex items-center justify-between">
+                <x-logo/>
             </a>
         </div>
         <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-            <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8">
+            <ul class="flex flex-col font-medium lg:flex-row xl:space-x-8">
                 <li>
                     <a href="/home" type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fas fa-home"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Home
@@ -19,7 +19,7 @@
                 </li>
                 <li>
                     <a href="/admin" type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fas fa-home"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Dashboard
@@ -29,7 +29,7 @@
                 @if(Auth::user()->isActionleader() && Auth::user()->action && !Auth::user()->action->global)
                 <li>
                     <a href="{{route('orders.index')}}" type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fa-solid fa-newspaper"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Bestellungen
@@ -38,7 +38,7 @@
                 </li>
                 <li>
                     <a href="{{route('routes.index')}}" type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fa-solid fa-route"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Routen
@@ -47,7 +47,7 @@
                 </li>
                 <li>
                     <button type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         id="maps-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown-maps">
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Karten
@@ -61,7 +61,7 @@
                         </svg>
                     </button>
                 </li>
-                <div class="hidden z-50 my-4 w-80 text-base list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                <div class="hidden z-50 my-4 w-80 text-navbar list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown-maps">
                     <ul aria-labelledby="dropdown-maps" class="py-1 text-gray-700 dark:text-gray-300">
                         <li>
@@ -86,7 +86,7 @@
                 </div>
                 <li>
                     <button type="button"
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         id="dashboard-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown-dashboard">
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">
                             Aktions-Administration
@@ -100,7 +100,7 @@
                         </svg>
                     </button>
                 </li>
-                <div class="hidden z-50 my-4 w-80 text-base list-none navbar-background rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                <div class="hidden z-50 my-4 w-80 text-navbar list-none navbar-background rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown-dashboard">
                     <ul aria-labelledby="dropdown-dashboard" class="py-1 text-gray-700 dark:text-gray-300">
                         <li>
