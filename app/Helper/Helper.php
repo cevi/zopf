@@ -9,9 +9,12 @@ use App\Models\Action;
 use App\Models\Address;
 use App\Models\GroupUser;
 use App\Models\ActionUser;
+use Illuminate\Support\Str;
 use Spatie\Geocoder\Geocoder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class Helper
 {
@@ -236,19 +239,6 @@ class Helper
         }
     }
 
-    public static function getAvatarPath($avatar)
-    {
-        $path = null;
-        if ($avatar) {
-            if (str_starts_with($avatar, 'https')) {
-                $path = $avatar;
-            } else {
-                $path = asset("storage/" . $avatar);
-            }
-        }
-        return $path;
-    }
-
     public static function deleteAction(Action $action)
     {
         $aktUser = Auth::user();
@@ -266,5 +256,35 @@ class Helper
                 ActionUser::where('action_id', $action->id)->where('user_id', $user->id)->delete();
             }
         }
+    }
+
+    public static function updateAvatar($request, $user){
+        if ($file = $request->file('avatar')) {
+            $input = $request->all();
+            if ($input['cropped_photo_id']) {
+                $save_path = 'profiles/'.$user['id'];
+                $directory = storage_path('app/public/'.$save_path);
+                File::deleteDirectory($directory);
+                File::makeDirectory($directory, 0775, true);
+                $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+                Image::make($input['cropped_photo_id'])->save($directory.'/'.$name, 80);
+                $input['avatar'] = $save_path.'/'.$name;
+                $user->update(['avatar' => $input['avatar']]);
+            }
+        }
+    }
+
+    public static function getAvatarPath($avatar)
+    {
+        $path = null;
+        if($avatar){
+            if(str_starts_with($avatar, 'https')){
+                $path = $avatar;
+            }
+            else{
+                $path = asset("storage/".$avatar);
+            }
+        }
+        return $path;
     }
 }

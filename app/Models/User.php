@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 'role_id', 'is_active', 'group_id', 'action_id', 'demo', 'email_verified_at', 'password_change_at', 'slug',
+        'username', 'email', 'password', 'role_id', 'is_active', 'group_id', 'action_id', 'demo', 'email_verified_at', 'password_change_at', 'slug', 'avatar'
     ];
 
     /**
@@ -109,17 +109,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getAvatar()
     {
-        $action = Auth::user()->action;
-        $path = null;
-        if ($action) {
-            $action_user = ActionUser::where('user_id', $this->id)->where('action_id', $action->id)->first();
-            if ($action_user) {
-                $path = Helper::getAvatarPath($action_user->avatar);
-            }
-        }
-        if ($path === null) {
-            $path = Helper::getAvatarPath($this->avatar);
-        }
+        $path = Helper::getAvatarPath($this->avatar);
         if ($path === null) {
             $path = '/img/default_avatar.svg';
         }

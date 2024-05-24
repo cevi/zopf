@@ -1,6 +1,6 @@
 <!-- drawer component -->
 <div id="drawer-right-example"
-    class="fixed top-[72px] right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-gray-100 w-80 dark:bg-gray-800"
+    class="fixed top-[72px] right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-gray-100 w-80 dark:bg-gray-800 mt-6"
     tabindex="-1" aria-labelledby="drawer-right-label">
     <h5 id="drawer-right-label"
         class="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">

@@ -1,13 +1,13 @@
 <nav
-    class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+    class="dark:bg-gray-800 border-b bg-gray-100 border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
-            <a href="{{ url('/admin') }}" class="flex items-center justify-between mr-4">
+            <a href="{{ url('/admin') }}" class="flex items-center justify-between">
                 <x-logo/>
             </a>
         </div>
         <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-            <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8">
+            <ul class="flex flex-col font-medium lg:flex-row xl:space-x-8">
                 <li>
                     <a href="/home" type="button"
                         class="flex items-center p-2 w-full text-navbar font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
