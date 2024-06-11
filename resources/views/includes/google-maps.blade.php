@@ -13,6 +13,10 @@
         this.travelMode = travelMode;
         this.cluster = cluster;
         this.markerAdd = markerAdd;
+        for (var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }
+        markers.length = 0;
     }
 
     function loadScript() {

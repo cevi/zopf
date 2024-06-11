@@ -13,7 +13,7 @@
     </svg>
 </button>
 
-<div class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+<div class="hidden z-50 my-4 w-60 text-base list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
     id="dropdown-actions">
     <ul aria-labelledby="dropdown-actions" class="py-1 text-gray-700 dark:text-gray-300">
         @if(!Auth::user()->demo )
@@ -25,36 +25,36 @@
 
         @if(count(Auth::user()->group->actions) > 0)
         <hr>
-        @foreach (Auth::user()->group->actions as $action)
-        @if(!$action['global'])
-        <li>
-            <div class="row">
+        @foreach (Auth::user()->group->actions->sortByDesc('year') as $action)
+            @if(!$action['global'] && (!($action['action_status_id']>config('status.action_aktiv') && $action['user_id'] <> Auth::user()->id) || ($action['id'] == Auth::user()->action['id'])))
+            <li class="container">
+                <div class="row">
 
-                <div class="col-9">
-                    <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                        href="{{route('admin.actions.updateAction',$action['id'])  }}"
-                        onclick="event.preventDefault();
-                                               document.getElementById('actions-update-form-{{$action['id']}}').submit();">
-                        {{$action['name']}} {{$action['year']}}
-                    </a>
+                    <div class="col-10">
+                        <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                            href="{{route('admin.actions.updateAction',$action['id'])  }}"
+                            onclick="event.preventDefault();
+                                                document.getElementById('actions-update-form-{{$action['id']}}').submit();">
+                            {{$action['name']}} {{$action['year']}}
+                        </a>
+                    </div>
+                    <div class="col-2">
+                        @if(!Auth::user()->demo && $action->user && $action->user['id']===Auth::user()->id)
+                        <a class="block py-2 text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                            href="{{route('actions.edit',$action)  }}">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        @endif
+                    </div>
                 </div>
-                <div class="col-3">
-                    @if(!Auth::user()->demo && $action->user && $action->user['id']===Auth::user()->id)
-                    <a class="block py-2 text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                        href="{{route('actions.edit',$action)  }}">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    @endif
-                </div>
-            </div>
 
-            <form id="actions-update-form-{{$action['id']}}"
-                action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST" style="display: none;">
-                {{ method_field('PUT') }}
-                @csrf
-            </form>
-        </li>
-        @endif
+                <form id="actions-update-form-{{$action['id']}}"
+                    action="{{route('admin.actions.updateAction',$action['id'])  }}" method="POST" style="display: none;">
+                    {{ method_field('PUT') }}
+                    @csrf
+                </form>
+            </li>
+            @endif
         @endforeach
         @endif
     </ul>

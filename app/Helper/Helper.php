@@ -50,10 +50,15 @@ class Helper
         }
     }
 
-    public static function updateGroup(User $user, Group $group)
+    public static function updateGroup(User $user, Group $group, $fromUser = false)
     {
         $group_user = GroupUser::firstOrCreate(['group_id' => $group->id, 'user_id' => $user->id]);
-        $role_id = $group_user->role ? $group_user->role->id : config('status.role_leader');
+        if($fromUser){
+            $role_id = $user->role ? $user->role->id : config('status.role_leader');
+        }
+        else{
+            $role_id = $group_user->role ? $group_user->role->id : config('status.role_leader');
+        }
         $group_user->update(['role_id' => $role_id]);
         $user->update([
             'group_id' => $group->id,
@@ -66,10 +71,15 @@ class Helper
         }
     }
 
-    public static function updateAction(User $user, Action $action)
+    public static function updateAction(User $user, Action $action, $fromUser = false)
     {
         $action_user = ActionUser::firstOrCreate(['action_id' => $action->id, 'user_id' => $user->id]);
-        $role_id = $action_user->role ? $action_user->role->id : config('status.role_leader');
+        if($fromUser){
+            $role_id = $user->role ? $user->role->id : config('status.role_leader');
+        }
+        else{
+            $role_id = $action_user->role ? $action_user->role->id : config('status.role_leader');
+        }
         $action_user->update(['role_id' => $role_id]);
         $user->update([
             'action_id' => $action->id,

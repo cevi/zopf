@@ -82,7 +82,6 @@
                             <th>E-Mail</th>
                             <th>Gruppe</th>
                             <th>Rolle</th>
-                            <th>Aktionen</th>
                         </tr>
                     </thead>
                 </table>
@@ -136,14 +135,11 @@
                     },
                     ajax: "{!! route('users.CreateDataTables') !!}",
                     columns: [
-                        //    {data: 'checkbox', name: 'checkbox', orderable:false,serachable:false,sClass:'text-center'},
                         {data: 'picture', name: 'picture'},
                         {data: 'username', name: 'username'},
                         {data: 'email', name: 'email'},
                         {data: 'group', name: 'group'},
                         {data: 'role', name: 'role'},
-                        {data: 'Actions', name: 'Actions', orderable: false, serachable: false, sClass: 'text-center'},
-
                     ]
                 });
             });
