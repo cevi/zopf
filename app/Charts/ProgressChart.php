@@ -41,6 +41,7 @@ class ProgressChart extends Chart
                 ],
                 'y' => [
                     'stacked' => true,
+                    'beginAtZero' => true,
                     'title' => [
                         'display' => true,
                         'text' => 'Anzahl Zöpfe',

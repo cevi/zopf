@@ -223,3 +223,7 @@ img {
     margin: 10px;
     border: 1px solid red;
 }
+
+.img-user{
+    max-width: 50%;
+}

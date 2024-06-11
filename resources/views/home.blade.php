@@ -6,7 +6,7 @@
 
 <x-page-title :title="$title" :help="$help" :header="false" />
 <!-- Author -->
-<p class="lead">
+<p class="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
     @if(!$routes->isEmpty())
     Hallo {{$user->username}}, du hast folgende offene Routen:
     @else
@@ -19,7 +19,7 @@
     @foreach ($routes as $route)
 
     <li><a href="{{route('home.routes',$route->id)}}"
-            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$route->name}}</a></li>
+        class="inline-flex items-center text-lg text-blue-600 dark:text-blue-500 hover:underline">{{$route->name}}</a></li>
     @endforeach
 </ul>
 @endif
