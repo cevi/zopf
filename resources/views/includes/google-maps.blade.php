@@ -148,7 +148,7 @@
         });
 
         if (center != null) {
-            var html = "<p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p>";
+            var html = "<div class='maps-content'><p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p></div>";
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(center['lat'], center['lng']),
                 map: map,
@@ -168,7 +168,7 @@
 
 
             if (latitude != center['lat']) {
-                var html = "<p><b>Deine Position</b>"; 
+                var html = "<div classt='content'><p><b>Deine Position</b></div>"; 
                 var marker = new mapIcons.Marker({
                     position: new google.maps.LatLng(latitude, longitude),
                     map: map,
@@ -189,8 +189,8 @@
             var url_deposited = "{{route('home.deposited', ':id')}}";
             url_deposited = url_deposited.replace(':id', order.id);
             var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
-            var html = "<p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
-                html += link_deliver + " " + link_deposited  +'</p>';
+            var html = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
+                html += link_deliver + " " + link_deposited  +'</p></div>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(order.address['lat'], order.address['lng']),
                 map: map,
