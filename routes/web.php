@@ -90,6 +90,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::get('admin/routes/{id}/overview', ['as' => 'routes.overview', 'uses' => 'AdminRoutesController@overview']);
         Route::get('admin/routes/{id}/downloadPDF', ['as' => 'routes.downloadPDF', 'uses' => 'AdminRoutesController@downloadPDF']);
+        Route::get('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
         Route::get('admin/routes/map', ['as' => 'routes.map', 'uses' => 'AdminRoutesController@map']);
         Route::get('admin/routes/mapfilter', ['as' => 'routes.mapfilter', 'uses' => 'AdminRoutesController@mapfilter']);
         Route::post('admin/routes/{id}/send', ['as' => 'routes.send', 'uses' => 'AdminRoutesController@send']);

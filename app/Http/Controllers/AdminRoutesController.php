@@ -236,6 +236,17 @@ class AdminRoutesController extends Controller
         return $orders;
     }
 
+    public function deliverAll(Route $route)
+    {
+        $orders = $route->orders()->get();
+        foreach($orders as $order){
+            if($order->order_status['id'] <= config('status.order_unterwegs')){
+                Helper::checkRoute($order['id'], config('status.order_ausgeliefert'));
+            }
+        }
+        return back();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

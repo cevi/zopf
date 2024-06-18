@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use App\Models\User;
 use App\Models\Group;
+use App\Models\Order;
 use App\Models\Route;
 use App\Models\Action;
 use App\Models\Address;
@@ -11,6 +12,7 @@ use App\Models\GroupUser;
 use App\Models\ActionUser;
 use Illuminate\Support\Str;
 use Spatie\Geocoder\Geocoder;
+use App\Events\NotificationCreate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -296,5 +298,44 @@ class Helper
             }
         }
         return $path;
+    }
+
+    public static function checkRoute($id, $new_status)
+    {
+        
+        $aktUser = Auth::user();
+        if (! $aktUser->demo) {
+            $order = Order::findOrFail($id);
+            $action = $aktUser->action;
+            $route_id = $order['route_id'];
+            if ($order['quantity'] === 1) {
+                $text = 'Ein Zopf wurde';
+            } else {
+                $text = $order['quantity'].' Zöpfe wurden';
+            }
+            if ($new_status === config('status.order_hinterlegt')) {
+                $log['text'] = $text.' bei '.$order->address['firstname'].' '.$order->address['name'].' hinterlegt.';
+            } else {
+                $log['text'] = $text.' an '.$order->address['firstname'].' '.$order->address['name'].' übergeben.';
+            }
+            $log['user'] = $aktUser->username;
+            $log['quantity'] = $order['quantity'];
+            $log['route_id'] = $route_id;
+            NotificationCreate::dispatch($action, $log);
+            $order->update(['order_status_id' => $new_status]);
+            $orders = Order::where('route_id', $route_id);
+            if ($orders->min('order_status_id') > config('status.order_unterwegs')) {
+                $route = Route::FindOrFail($route_id);
+                $log['user'] = Auth::user()->username;
+                $log['text'] = 'Route '.$route['name'].' wurde abgeschlossen';
+                $log['quantity'] = 0;
+                NotificationCreate::dispatch($action, $log);
+                $route->update(['route_status_id' => config('status.route_abgeschlossen')]);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
