@@ -111,7 +111,6 @@
             }, function (response, status) {
                 if (status === 'OK') {
                     directionsRenderer.setDirections(response);
-                    // console.log(response);
                 } else {
                     window.alert('Directions request failed due to ' + status);
                 }
@@ -217,26 +216,9 @@
                 infowindow.setContent(content);
                 var latLng = event.latLng.toJSON();
                 info.set('position', new google.maps.LatLng(cluster.bounds.Va['hi'], latLng['lng']));
-                // console.log(info.position.toJson());
-                // info.position.lat -= 0.05
                 infowindow.open(map, info);
 
             };
-            // , {
-            //     imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
-            // });
-            // markerClusteres.addListener('clusterclick', function (cluster) {
-            //     var content = '';
-            //     var info = new google.maps.MVCObject;
-            //     info.set('position', cluster.center_);
-            //     var clickedMarkers = cluster.getMarkers();
-            //     for (var i = 0; i < clickedMarkers.length; i++) {
-            //         var html = clickedMarkers[i].html;
-            //         content += html;
-            //     }
-            //     infowindow.setContent(content);
-            //     infowindow.open(map, info);
-            // });
         }
 
         bounds = new google.maps.LatLngBounds();
