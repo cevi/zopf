@@ -50,6 +50,13 @@
       0 => 'Laravel\\Sail\\SailServiceProvider',
     ),
   ),
+  'laravel/telescope' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Telescope\\TelescopeServiceProvider',
+    ),
+  ),
   'laravel/tinker' => 
   array (
     'providers' => 
@@ -135,13 +142,6 @@
     'aliases' => 
     array (
       'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
-    ),
-  ),
-  'sven/artisan-view' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Sven\\ArtisanView\\ServiceProvider',
     ),
   ),
   'yajra/laravel-datatables-oracle' => 

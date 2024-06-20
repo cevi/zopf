@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ff42d38831eb8d549ae9960007b6f94",
+    "content-hash": "7665a4d4487a7caf189317267a7d0ec8",
     "packages": [
         {
             "name": "balping/json-raw-encoder",
@@ -7834,6 +7834,75 @@
             "time": "2022-03-11T14:11:15+00:00"
         },
         {
+            "name": "laravel/telescope",
+            "version": "v5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/telescope.git",
+                "reference": "139459218d021453d69436ac5b888c1d9ae9451f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/139459218d021453d69436ac5b888c1d9ae9451f",
+                "reference": "139459218d021453d69436ac5b888c1d9ae9451f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "^8.37|^9.0|^10.0|^11.0",
+                "php": "^8.0",
+                "symfony/console": "^5.3|^6.0|^7.0",
+                "symfony/var-dumper": "^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "ext-gd": "*",
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "laravel/octane": "^1.4|^2.0|dev-develop",
+                "orchestra/testbench": "^6.40|^7.37|^8.17|^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.0|^10.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Telescope\\TelescopeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Telescope\\": "src/",
+                    "Laravel\\Telescope\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                }
+            ],
+            "description": "An elegant debug assistant for the Laravel framework.",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "monitoring"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/telescope/issues",
+                "source": "https://github.com/laravel/telescope/tree/v5.1.0"
+            },
+            "time": "2024-06-17T14:55:08+00:00"
+        },
+        {
             "name": "mockery/mockery",
             "version": "1.6.12",
             "source": {
@@ -9782,68 +9851,6 @@
                 }
             ],
             "time": "2023-01-03T19:28:04+00:00"
-        },
-        {
-            "name": "sven/artisan-view",
-            "version": "v3.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/svenluijten/artisan-view.git",
-                "reference": "98bc0b06dd3bc22dc637a21e7c822ebe11519c02"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/svenluijten/artisan-view/zipball/98bc0b06dd3bc22dc637a21e7c822ebe11519c02",
-                "reference": "98bc0b06dd3bc22dc637a21e7c822ebe11519c02",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^8.0 || ^9.0 || ^10.0 < 10.23.0",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "graham-campbell/testbench": "^5.6 || ^6.0",
-                "mockery/mockery": "^1.4",
-                "phpunit/phpunit": "^9.0 || ^10.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Sven\\ArtisanView\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Sven\\ArtisanView\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sven Luijten",
-                    "email": "contact@svenluijten.com",
-                    "homepage": "https://svenluijten.com"
-                }
-            ],
-            "description": "Manage your views in Laravel projects through artisan",
-            "keywords": [
-                "artisan",
-                "blade",
-                "laravel",
-                "templates",
-                "views"
-            ],
-            "support": {
-                "issues": "https://github.com/svenluijten/artisan-view/issues",
-                "source": "https://github.com/svenluijten/artisan-view/tree/v3.6.1"
-            },
-            "abandoned": "laravel/framework",
-            "time": "2023-09-15T09:48:34+00:00"
         },
         {
             "name": "theseer/tokenizer",
