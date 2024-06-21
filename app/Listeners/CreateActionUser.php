@@ -37,7 +37,7 @@ class CreateActionUser
                 'action_id' => $action['id'],
             ]);
         }
-        if (! $event->user->role) {
+        if (!$event->user->role) {
             $event->user->update([
                 'role_id' => config('status.role_leader'),
             ]);

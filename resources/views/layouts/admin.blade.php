@@ -15,6 +15,12 @@
 
     <!-- jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+        window.Echo.private(`notification-create.${window.actionID}`)
+            .listen('NotificationCreate', (e) => {
+                UpdateNotifications(e);
+            });
+    </script>
     @stack('scripts')
 </body>
 

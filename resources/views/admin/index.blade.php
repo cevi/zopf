@@ -196,6 +196,7 @@
             {{ $zopfChart->id }}_refresh({{ $zopfChart->id }}_api_url);
             {{ $timeChart->id }}_refresh({{ $timeChart->id }}_api_url);
         }
+        window.UpdateGraph = UpdateGraph;
 
         function UpdateList(input) {
             $.ajax({
@@ -233,6 +234,7 @@
                 }
             });
         }
+        window.UpdateList = UpdateList;
 
 
         function UpdateIconArray(action) {
@@ -256,5 +258,6 @@
                 }
             });
         }
+        window.UpdateIconArray = UpdateIconArray;
     </script>
 @endpush

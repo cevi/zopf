@@ -52,10 +52,12 @@ function UpdateNotifications(data) {
         UpdateList(data['input']);
     }
 }
+window.UpdateNotifications = UpdateNotifications;
 
 function UpdateNotificationsSymbol() {
     $('#notificationSymbol').html('<div class ="inline-flex relative -top-2 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-900">');
 }
+window.UpdateNotificationsSymbol = UpdateNotificationsSymbol;
 
 function UpdateNotification(input) {
     var notificationsWrapper = $('#dropdownNotifications');
@@ -76,6 +78,7 @@ function UpdateNotification(input) {
         '</div>';
     notificationsList.html(Notification + notificationsList.html());
 }
+window.UpdateNotification = UpdateNotification;
 
 function UpdateRoute($input) {
     if ($input['route_id'] !== undefined) {
@@ -96,11 +99,7 @@ function UpdateRoute($input) {
         }
     }
 }
-
-window.Echo.private(`notification-create.${window.actionID}`)
-    .listen('NotificationCreate', (e) => {
-        UpdateNotifications(e);
-    });
+window.UpdateRoute = UpdateRoute;
 
 var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
 var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');

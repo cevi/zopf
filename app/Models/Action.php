@@ -66,7 +66,7 @@ class Action extends Model
 
     public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany('App\Models\User', 'action_users')->where('action_users.role_id', '<>', config('status.role_administrator'));
+        return $this->belongsToMany('App\Models\User', 'action_users')->where('action_users.role_id', '<>', config('status.role_administrator'))->orderBy('username');
     }
 
     public function notifications()

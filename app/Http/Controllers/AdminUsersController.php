@@ -47,6 +47,9 @@ class AdminUsersController extends Controller
         }
 
         return DataTables::of($users)
+            ->addColumn('username', function (User $user) {
+                return '<a href='.\URL::route('users.edit', $user).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$user['username'].'</a>';
+            })
             ->addColumn('group', function (User $user) {
                 if (Auth::user()->isAdmin()) {
                     $group_name = $user->group ? $user->group['name'] : '';
@@ -84,13 +87,10 @@ class AdminUsersController extends Controller
                 return $role_name;
             })
             ->addIndexColumn()
-            ->addColumn('Actions', function ($users) {
-                return '<a href='.\URL::route('users.edit', $users->id).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
-            })
             // ->addColumn('checkbox', function ($users) {
                 // return '<input type="checkbox" id="'.$users->id.'" name="someCheckbox" />';
             // })
-            ->rawColumns(['picture', 'Actions'])
+            ->rawColumns(['picture', 'username'])
             ->make(true);
     }
 
@@ -135,10 +135,10 @@ class AdminUsersController extends Controller
             $user = User::create($input);
             UserCreated::dispatch($user);
             if (isset($group)) {
-                Helper::UpdateGroup($user, $group);
+                Helper::UpdateGroup($user, $group, true);
             }
             if (isset($action)) {
-                Helper::UpdateACtion($user, $action);
+                Helper::UpdateAction($user, $action, true);
             }
             Helper::updateAvatar($request, $user);
         }
@@ -253,7 +253,17 @@ class AdminUsersController extends Controller
                 $input = $request->all();
                 $input['password'] = bcrypt($request->password);
             }
+            if (! $aktUser->isAdmin()) {
+                $group = $aktUser->group;
+                $action = $aktUser->action;
+            }
             $user->update($input);
+            if (isset($group)) {
+                Helper::UpdateGroup($user, $group, true);
+            }
+            if (isset($action)) {
+                Helper::UpdateAction($user, $action, true);
+            }
             Helper::updateAvatar($request, $user);
         }
 

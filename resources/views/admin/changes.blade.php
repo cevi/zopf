@@ -33,6 +33,18 @@
             <li class="mb-10 ml-4">
                 <div
                     class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V4.1</h3>
+                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+                    Möglichkeit alle Bestellungen abzuschliessen mit einem Klick <br>
+                    Login mit Cevi-DB<br>
+                    Karten-Filter korrigiert<br>
+                    Backstubenverlauf startet bei 0<br>
+                    Notifications korrigiert<br>
+                </p>
+            </li>
+            <li class="mb-10 ml-4">
+                <div
+                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V4.0</h3>
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
                     Neues Design <br>

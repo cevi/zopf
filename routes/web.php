@@ -12,6 +12,7 @@
 */
 
 use App\Models\User;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     $action_counter = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
@@ -49,6 +50,9 @@ Auth::routes([
     'reset' => true, // Password Reset Routes...
     'verify' => true, // Email Verification Routes...
 ]);
+
+Route::get('login/hitobito', [LoginController::class, 'redirectToHitobitoOAuth'])->name('login.hitobito');
+Route::get('login/hitobito/callback', [LoginController::class, 'handleHitobitoOAuthCallback'])->name('login.hitobito.callback');
 
 Route::group(['middleware' => 'verified'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -90,6 +94,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::get('admin/routes/{id}/overview', ['as' => 'routes.overview', 'uses' => 'AdminRoutesController@overview']);
         Route::get('admin/routes/{id}/downloadPDF', ['as' => 'routes.downloadPDF', 'uses' => 'AdminRoutesController@downloadPDF']);
+        Route::get('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
         Route::get('admin/routes/map', ['as' => 'routes.map', 'uses' => 'AdminRoutesController@map']);
         Route::get('admin/routes/mapfilter', ['as' => 'routes.mapfilter', 'uses' => 'AdminRoutesController@mapfilter']);
         Route::post('admin/routes/{id}/send', ['as' => 'routes.send', 'uses' => 'AdminRoutesController@send']);

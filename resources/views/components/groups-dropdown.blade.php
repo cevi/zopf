@@ -25,38 +25,38 @@
         </li>
         @endif
         @if(count(Auth::user()->groups) >1 )
-        <hr>
-        @foreach (Auth::user()->groups as $group)
-        @if(!$group['global'])
-        <li>
-            <div class="row">
+            <hr>
+            @foreach (Auth::user()->groups->sortByDesc('name') as $group)
+                @if(!$group['global'])
+                <li class="container">
+                    <div class="row">
 
-                <div class="col-9">
-                    <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                        href="{{route('home.groups.updateGroup',$group['id'])  }}"
-                        onclick="event.preventDefault();
-                                                       document.getElementById('groups-update-form-{{$group['id']}}').submit();">
-                        {{$group['name']}}
-                    </a>
-                </div>
-                <div class="col-3">
-                    @if(!Auth::user()->demo && $group->user && $group->user['id']===Auth::user()->id)
-                    <a class="block py-2  text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                        href="{{route('home.groups.edit',$group)  }}">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    @endif
-                </div>
-            </div>
+                        <div class="col-10">
+                            <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                href="{{route('home.groups.updateGroup',$group['id'])  }}"
+                                onclick="event.preventDefault();
+                                                            document.getElementById('groups-update-form-{{$group['id']}}').submit();">
+                                {{$group['name']}}
+                            </a>
+                        </div>
+                        <div class="col-2">
+                            @if(!Auth::user()->demo && $group->user && $group->user['id']===Auth::user()->id)
+                            <a class="block py-2 text-center text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                href="{{route('home.groups.edit',$group)  }}">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            @endif
+                        </div>
+                    </div>
 
-            <form id="groups-update-form-{{$group['id']}}" action="{{route('home.groups.updateGroup',$group['id'])  }}"
-                method="POST" style="display: none;">
-                {{ method_field('PUT') }}
-                @csrf
-            </form>
-        </li>
-        @endif
-        @endforeach
+                    <form id="groups-update-form-{{$group['id']}}" action="{{route('home.groups.updateGroup',$group['id'])  }}"
+                        method="POST" style="display: none;">
+                        {{ method_field('PUT') }}
+                        @csrf
+                    </form>
+                </li>
+                @endif
+            @endforeach
         @endif
     </ul>
 </div>

@@ -13,6 +13,10 @@
         this.travelMode = travelMode;
         this.cluster = cluster;
         this.markerAdd = markerAdd;
+        for (var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }
+        markers.length = 0;
     }
 
     function loadScript() {
@@ -107,7 +111,6 @@
             }, function (response, status) {
                 if (status === 'OK') {
                     directionsRenderer.setDirections(response);
-                    // console.log(response);
                 } else {
                     window.alert('Directions request failed due to ' + status);
                 }
@@ -144,7 +147,7 @@
         });
 
         if (center != null) {
-            var html = "<p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p>";
+            var html = "<div class='maps-content'><p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p></div>";
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(center['lat'], center['lng']),
                 map: map,
@@ -164,7 +167,7 @@
 
 
             if (latitude != center['lat']) {
-                var html = "<p><b>Deine Position</b>"; 
+                var html = "<div classt='content'><p><b>Deine Position</b></div>"; 
                 var marker = new mapIcons.Marker({
                     position: new google.maps.LatLng(latitude, longitude),
                     map: map,
@@ -185,8 +188,8 @@
             var url_deposited = "{{route('home.deposited', ':id')}}";
             url_deposited = url_deposited.replace(':id', order.id);
             var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
-            var html = "<p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
-                html += link_deliver + " " + link_deposited  +'</p>';
+            var html = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
+                html += link_deliver + " " + link_deposited  +'</p></div>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(order.address['lat'], order.address['lng']),
                 map: map,
@@ -213,26 +216,9 @@
                 infowindow.setContent(content);
                 var latLng = event.latLng.toJSON();
                 info.set('position', new google.maps.LatLng(cluster.bounds.Va['hi'], latLng['lng']));
-                // console.log(info.position.toJson());
-                // info.position.lat -= 0.05
                 infowindow.open(map, info);
 
             };
-            // , {
-            //     imagePath: 'https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m', zoomOnClick: false
-            // });
-            // markerClusteres.addListener('clusterclick', function (cluster) {
-            //     var content = '';
-            //     var info = new google.maps.MVCObject;
-            //     info.set('position', cluster.center_);
-            //     var clickedMarkers = cluster.getMarkers();
-            //     for (var i = 0; i < clickedMarkers.length; i++) {
-            //         var html = clickedMarkers[i].html;
-            //         content += html;
-            //     }
-            //     infowindow.setContent(content);
-            //     infowindow.open(map, info);
-            // });
         }
 
         bounds = new google.maps.LatLngBounds();
