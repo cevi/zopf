@@ -97,10 +97,27 @@ class LoginController extends Controller
         if ($userFromDB = User::where('foreign_id', $socialiteUser->getId())->first()) {
             // User is logging in
             return $this->updateEmailIfAppropriate($userFromDB, $socialiteUser);
-        } else {
+            
+        } elseif ($userFromDB = User::where('email',$socialiteUser->getEmail())->first()) {
+            return $this->updateForeignIdIfAppropriate($userFromDB, $socialiteUser);
+        } 
+        else {
+
             // User is registering
             return $this->createNewHitobitoUser($socialiteUser);
         }
+    }
+    
+    private function updateForeignIdIfAppropriate(User $user, SocialiteUser $socialiteUser)
+    {
+        $foreignID = $socialiteUser->getId();
+        if ($user->foreign_id != $foreignID && User::where('foreign_id', $foreignID)->doesntExist()) {
+            //Update email only if it is not occupied by someone else
+            $user->foreign_id = $foreignID;
+            $user->save();
+        }
+
+        return $user;
     }
 
     private function updateEmailIfAppropriate(User $user, SocialiteUser $socialiteUser)
