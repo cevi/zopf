@@ -230,7 +230,6 @@
                     logbook.html(Notification);
                 },
                 error: function (data) {
-                    console.log(data);
                 }
             });
         }
@@ -254,7 +253,6 @@
                     }
                 },
                 error: function (data) {
-                    console.log(data);
                 }
             });
         }
