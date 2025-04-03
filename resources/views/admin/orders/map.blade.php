@@ -114,7 +114,6 @@
                 btns[i].addEventListener("click", function () {
                     var active_btn = btnContainer.getElementsByClassName("active");
                     var city_btn = active_btn[0];
-                    console.log(city_btn.value);
                     var status_btn = active_btn[1];
                     $.ajax({
                         url: "{!! route('orders.mapfilter')!!}",

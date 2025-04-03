@@ -62,17 +62,7 @@
 
         var mapOptions = {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            styles: [
-                {
-                    featureType: "poi",
-                    stylers: [{visibility: "off"}],
-                },
-                {
-                    featureType: "transit",
-                    elementType: "labels.icon",
-                    stylers: [{visibility: "off"}],
-                },
-            ]
+            mapId: 'DEMO_MAP_ID',
         };
 
         var LatLngList = new Array;
@@ -115,8 +105,7 @@
                     window.alert('Directions request failed due to ' + status);
                 }
             });
-        }
-        ;
+        };
 
         var infowindow = new google.maps.InfoWindow();
         var infoWindowClosed = true;
@@ -188,14 +177,15 @@
             var url_deposited = "{{route('home.deposited', ':id')}}";
             url_deposited = url_deposited.replace(':id', order.id);
             var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
-            var html = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
-                html += link_deliver + " " + link_deposited  +'</p></div>';
+            var address = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
+            var html = address + link_deliver + " " + link_deposited  +'</p></div>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(order.address['lat'], order.address['lng']),
                 map: map,
                 content: html,
                 icon: new google.maps.MarkerImage(icon_url(order)),
                 id: order.id,
+                address: address,
             });
             markers.push(marker), oms.addMarker(marker), bindInfoWindow(marker, map,  html);
         }
@@ -209,13 +199,13 @@
                 var info = new google.maps.MVCObject;
                 var clickedMarkers = cluster.markers;
                 for (var i = 0; i < clickedMarkers.length; i++) {
-                    var html = clickedMarkers[i].html;
+                    var html = clickedMarkers[i].address;
                     content += html;
                 }
 
                 infowindow.setContent(content);
                 var latLng = event.latLng.toJSON();
-                info.set('position', new google.maps.LatLng(cluster.bounds.Va['hi'], latLng['lng']));
+                info.set('position', new google.maps.LatLng(latLng['lat'], latLng['lng']));
                 infowindow.open(map, info);
 
             };
