@@ -18,13 +18,6 @@
       0 => 'ConsoleTVs\\Charts\\ChartsServiceProvider',
     ),
   ),
-  'fideloper/proxy' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    ),
-  ),
   'genealabs/laravel-caffeine' => 
   array (
     'providers' => 
@@ -52,13 +45,13 @@
   ),
   'laravel/socialite' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Socialite\\SocialiteServiceProvider',
-    ),
     'aliases' => 
     array (
       'Socialite' => 'Laravel\\Socialite\\Facades\\Socialite',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laravel\\Socialite\\SocialiteServiceProvider',
     ),
   ),
   'laravel/tinker' => 
@@ -87,15 +80,26 @@
       'Html' => 'Collective\\Html\\HtmlFacade',
     ),
   ),
-  'maatwebsite/excel' => 
+  'livewire/livewire' => 
   array (
+    'aliases' => 
+    array (
+      'Livewire' => 'Livewire\\Livewire',
+    ),
     'providers' => 
     array (
-      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+      0 => 'Livewire\\LivewireServiceProvider',
     ),
+  ),
+  'maatwebsite/excel' => 
+  array (
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -128,35 +132,70 @@
   ),
   'spatie/geocoder' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\Geocoder\\GeocoderServiceProvider',
-    ),
     'aliases' => 
     array (
       'Geocoder' => 'Spatie\\Geocoder\\Facades\\Geocoder',
     ),
+    'providers' => 
+    array (
+      0 => 'Spatie\\Geocoder\\GeocoderServiceProvider',
+    ),
   ),
   'spatie/laravel-ignition' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
-    ),
     'aliases' => 
     array (
       'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
     ),
+    'providers' => 
+    array (
+      0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
+    ),
   ),
-  'yajra/laravel-datatables-oracle' => 
+  'yajra/laravel-datatables-buttons' => 
   array (
     'providers' => 
     array (
-      0 => 'Yajra\\DataTables\\DataTablesServiceProvider',
+      0 => 'Yajra\\DataTables\\ButtonsServiceProvider',
     ),
+  ),
+  'yajra/laravel-datatables-editor' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\EditorServiceProvider',
+    ),
+  ),
+  'yajra/laravel-datatables-export' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\ExportServiceProvider',
+    ),
+  ),
+  'yajra/laravel-datatables-fractal' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\FractalServiceProvider',
+    ),
+  ),
+  'yajra/laravel-datatables-html' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\HtmlServiceProvider',
+    ),
+  ),
+  'yajra/laravel-datatables-oracle' => 
+  array (
     'aliases' => 
     array (
       'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
+    ),
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     ),
   ),
 );
