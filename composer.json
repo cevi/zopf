@@ -9,31 +9,30 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-dompdf": "^3.0",
         "consoletvs/charts": "^6.5",
         "fakerphp/faker": "^1.21",
-        "genealabs/laravel-caffeine": "^11.0",
+        "genealabs/laravel-caffeine": "^12.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.7",
-        "laravel/framework": "^10.0",
+        "laravel/framework": "^12.0",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.2",
-        "laravelcollective/html": "^6.0",
         "maatwebsite/excel": "^3.1",
         "nicolaslopezj/searchable": "^1.12",
         "pusher/pusher-php-server": "^7.1",
         "revolution/sail-db-backup": "*",
         "spatie/geocoder": "^3.6",
-        "yajra/laravel-datatables": "^10.0"
+        "yajra/laravel-datatables": "^12.0"
     },
     "require-dev": {
         "laravel/pint": "^1.2",
         "laravel/sail": "^1.18",
         "laravel/telescope": "^5.1",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^7.0",
-        "phpunit/phpunit": "^10.0",
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.0"
     },
     "config": {

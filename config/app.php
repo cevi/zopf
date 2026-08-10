@@ -161,7 +161,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
         Spatie\Geocoder\GeocoderServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
 
