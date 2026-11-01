@@ -43,9 +43,7 @@ class BasisdatenSeeder extends Seeder
         RouteType::create(['id' => config('status.route_type_cycling'), 'name' => 'Fahrrad', 'travelmode' => 'BICYCLING']);
         RouteType::create(['id' => config('status.route_type_driving'), 'name' => 'Auto', 'travelmode' => 'DRIVING']);
 
-        $path = base_path('storage/app/cities.sql');
-        DB::unprepared(file_get_contents($path));
-        $this->command->info('City table seeded!');
+        $this->seedCities();
 
         Role::create(['id' => config('status.role_administrator'), 'name' => 'Administrator']);
         Role::create(['id' => config('status.role_groupleader'), 'name' => 'Gruppen Chef']);
@@ -78,5 +76,15 @@ class BasisdatenSeeder extends Seeder
             'action_id' => $action['id'], ]);
 
         $this->command->info('Basisdaten importiert.');
+    }
+
+    /**
+     * Ortschaften aus storage/app/cities.sql (nicht im Repository).
+     */
+    protected function seedCities()
+    {
+        $path = base_path('storage/app/cities.sql');
+        DB::unprepared(file_get_contents($path));
+        $this->command->info('City table seeded!');
     }
 }

@@ -25,7 +25,7 @@ class AddressFactory extends Factory
             'lng' => fake()->longitude(8.47, 8.55),
             'plz' => '8000',
             'city' => 'Zürich',
-            'center' => 'false',
+            'center' => false,
 
         ];
     }
