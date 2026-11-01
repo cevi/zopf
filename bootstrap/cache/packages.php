@@ -75,17 +75,6 @@
       0 => 'Laravel\\Ui\\UiServiceProvider',
     ),
   ),
-  'livewire/livewire' => 
-  array (
-    'aliases' => 
-    array (
-      'Livewire' => 'Livewire\\Livewire',
-    ),
-    'providers' => 
-    array (
-      0 => 'Livewire\\LivewireServiceProvider',
-    ),
-  ),
   'maatwebsite/excel' => 
   array (
     'aliases' => 
