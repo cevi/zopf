@@ -156,21 +156,9 @@ Route::get('/broadcasting/auth', function (Request $request) {
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
     Route::post('users/feedback/send', 'FeedbackController@send');
-});
 
-Route::get('admin/run-migrations', function () {
-    return Artisan::call('migrate', ['--force' => true]);
-});
-
-Route::get('admin/run-migrations-seed', function () {
-    return Artisan::call('migrate', ['--force' => true, '--seed' => true]);
-});
-
-Route::get('admin/run-deployment', function () {
-    echo 'config:cache <br>';
-    Artisan::call('config:cache');
-    echo 'view:cache <br>';
-    Artisan::call('view:cache');
-
-    return true;
+    Route::get('admin/maintenance', ['as' => 'admin.maintenance', 'uses' => 'AdminMaintenanceController@index']);
+    Route::post('admin/maintenance/migrate', ['as' => 'admin.maintenance.migrate', 'uses' => 'AdminMaintenanceController@migrate']);
+    Route::post('admin/maintenance/cache', ['as' => 'admin.maintenance.cache', 'uses' => 'AdminMaintenanceController@cache']);
+    Route::post('admin/maintenance/clear', ['as' => 'admin.maintenance.clear', 'uses' => 'AdminMaintenanceController@clear']);
 });

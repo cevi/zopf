@@ -19,20 +19,22 @@
             @endif
         </header>
         @if($route->route_status['id'] === config('status.route_geplant'))
-            {!! Form::model($route, ['method' => 'POST', 'action'=>['AdminRoutesController@send',$route->id]]) !!}
+            <form method="POST" action="{{ action('AdminRoutesController@send', $route->id) }}" accept-charset="UTF-8">
+                @csrf
 
             <div class="form-group">
-                {!! Form::submit('Vorbereitet', ['class' =>  'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                <x-form.submit value="Vorbereitet" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
             </div>
-            {!! Form::close()!!}
+            </form>
         @endif
         @if($route->route_status['id'] === config('status.route_vorbereitet'))
-            {!! Form::model($route, ['method' => 'POST', 'action'=>['AdminRoutesController@send',$route->id]]) !!}
+            <form method="POST" action="{{ action('AdminRoutesController@send', $route->id) }}" accept-charset="UTF-8">
+                @csrf
 
             <div class="form-group">
-                {!! Form::submit('Lossenden', ['class' =>  'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                <x-form.submit value="Lossenden" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
             </div>
-            {!! Form::close()!!}
+            </form>
         @endif
         <div class="row">
             <div class="col-xl-6">

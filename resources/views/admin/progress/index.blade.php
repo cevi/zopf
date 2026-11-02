@@ -12,38 +12,39 @@
         </div>
         <br>
         @endif
-        {!! Form::open(['method' => 'POST', 'action'=>'AdminBakeryProgressController@store']) !!}
+        <form method="POST" action="{{ action('AdminBakeryProgressController@store') }}" accept-charset="UTF-8">
+            @csrf
         <div class="row">
             <div class="form-group col-xl-1 col-6">
-                {!! Form::label('when', 'Wann:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::time('when', now(), ['required', 'class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="when" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Wann:</x-form.label>
+                <x-form.input name="when" type="time" :value="now()" id="when" required class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-2 col-6">
-                {!! Form::label('raw_material', 'Roh-Materialien:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::number('raw_material', null, ['class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="raw_material" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Roh-Materialien:</x-form.label>
+                <x-form.input name="raw_material" type="number" id="raw_material" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-2 col-6">
-                {!! Form::label('dough', 'Teig:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::number('dough', null, ['class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="dough" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Teig:</x-form.label>
+                <x-form.input name="dough" type="number" id="dough" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-2 col-6">
-                {!! Form::label('braided', 'Gezöpfelt:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::number('braided', null, ['class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="braided" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gezöpfelt:</x-form.label>
+                <x-form.input name="braided" type="number" id="braided" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-2 col-6">
-                {!! Form::label('baked', 'Gebacken:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::number('baked', null,['class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="baked" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gebacken:</x-form.label>
+                <x-form.input name="baked" type="number" id="baked" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-2 col-6">
-                {!! Form::label('delivered', 'Ausgeliefert:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::number('delivered', null, ['class' =>'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <x-form.label for="delivered" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ausgeliefert:</x-form.label>
+                <x-form.input name="delivered" type="number" id="delivered" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
             </div>
             <div class="form-group col-xl-1 col-2">
                 <br>
-                {!! Form::submit('Eintrag Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                <x-form.submit value="Eintrag Erfassen" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
             </div>
         </div>
-        {!! Form::close()!!}
+        </form>
         <table class="table table-striped">
             <thead>
                 <tr>

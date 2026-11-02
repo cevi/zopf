@@ -17,54 +17,56 @@
             <h1 class="h3 display">Adressen bearbeiten</h1>
         </header>
         <div class="row">
-            {!! Form::model($address, ['method' => 'Patch', 'action'=>['AdminAddressesController@update',$address->id]])
-            !!}
+            <form method="POST" action="{{ action('AdminAddressesController@update', $address->id) }}" accept-charset="UTF-8">
+                @csrf
+                @method('PATCH')
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    {!! Form::label('firstname', 'Vorname:') !!}
-                    {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
+                    <x-form.label for="firstname">Vorname:</x-form.label>
+                    <x-form.input name="firstname" :model="$address" id="firstname" class="form-control" />
                 </div>
                 <div class="form-group col-md-6">
-                    {!! Form::label('name', 'Name:') !!}
-                    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                    <x-form.label for="name">Name:</x-form.label>
+                    <x-form.input name="name" :model="$address" id="name" class="form-control" />
                 </div>
             </div>
 
             <div class="form-group">
-                {!! Form::label('street', 'Strasse:') !!}
-                {!! Form::text('street', null, ['class' => 'form-control']) !!}
+                <x-form.label for="street">Strasse:</x-form.label>
+                <x-form.input name="street" :model="$address" id="street" class="form-control" />
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    {!! Form::label('city_plz', 'PLZ:') !!}
-                    {!! Form::text('city_plz', $city_plz, ['class' => 'form-control autocomplete_txt']) !!}
+                    <x-form.label for="city_plz">PLZ:</x-form.label>
+                    <x-form.input name="city_plz" :value="$city_plz" :model="$address" id="city_plz" class="form-control autocomplete_txt" />
                 </div>
                 <div class="form-group col-md-9">
-                    {!! Form::label('city_name', 'Ort:') !!}
-                    {!! Form::text('city_name', $city_name, ['class' => 'form-control autocomplete_txt']) !!}
+                    <x-form.label for="city_name">Ort:</x-form.label>
+                    <x-form.input name="city_name" :value="$city_name" :model="$address" id="city_name" class="form-control autocomplete_txt" />
                 </div>
-                {!! Form::hidden('city_id', $city_id, ['class' => 'form-control autocomplete_txt']) !!}
+                <x-form.input name="city_id" type="hidden" :value="$city_id" :model="$address" class="form-control autocomplete_txt" />
             </div>
 
             @if (Auth::user()->isAdmin())
             <div class="form-group">
-                {!! Form::label('group_id', 'Gruppe:') !!}
-                {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null, ['class' => 'form-control']) !!}
+                <x-form.label for="group_id">Gruppe:</x-form.label>
+                <x-form.select name="group_id" :options="['' => 'Wähle Gruppe'] + $groups" :model="$address" id="group_id" class="form-control" />
             </div>
             @endif
 
             <div class="form-group">
-                {!! Form::submit('Update Adresse', ['class' => 'btn btn-primary'])!!}
+                <x-form.submit value="Update Adresse" class="btn btn-primary" />
             </div>
-            {!! Form::close()!!}
+            </form>
 
-            {!! Form::model($address, ['method' => 'DELETE',
-            'action'=>['AdminAddressesController@destroy',$address->id]]) !!}
+            <form method="POST" action="{{ action('AdminAddressesController@destroy', $address->id) }}" accept-charset="UTF-8">
+                @csrf
+                @method('DELETE')
             <div class="form-group">
-                {!! Form::submit('Adresse löschen', ['class' => 'btn btn-danger'])!!}
+                <x-form.submit value="Adresse löschen" class="btn btn-danger" />
             </div>
-            {!! Form::close()!!}
+            </form>
         </div>
     </div>
 

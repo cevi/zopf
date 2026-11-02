@@ -157,6 +157,15 @@
                                 </span>
                             </a>
                         </li>
+                        <li>
+                            <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                href="{{ route('admin.maintenance') }}">
+                                <i class="fas fa-screwdriver-wrench"></i>
+                                <span class="flex-1 ml-3 text-left whitespace-nowrap">
+                                    Wartung
+                                </span>
+                            </a>
+                        </li>
                         </li>
                         @endif
                         <li>

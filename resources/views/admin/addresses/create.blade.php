@@ -20,46 +20,47 @@
 
             <div class="col-sm-6">
                 @include('includes.form_error')
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminAddressesController@store']) !!}
+                <form method="POST" action="{{ action('AdminAddressesController@store') }}" accept-charset="UTF-8">
+                    @csrf
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        {!! Form::label('firstname', 'Vorname:') !!}
-                        {!! Form::text('firstname', null, ['class' => 'form-control']) !!}
+                        <x-form.label for="firstname">Vorname:</x-form.label>
+                        <x-form.input name="firstname" id="firstname" class="form-control" />
                     </div>
                     <div class="form-group col-md-6">
-                        {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                        <x-form.label for="name">Name:</x-form.label>
+                        <x-form.input name="name" id="name" class="form-control" />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('street', 'Strasse:') !!}
-                    {!! Form::text('street', null, ['class' => 'form-control']) !!}
+                    <x-form.label for="street">Strasse:</x-form.label>
+                    <x-form.input name="street" id="street" class="form-control" />
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        {!! Form::label('city_plz', 'PLZ:') !!}
-                        {!! Form::text('city_plz', null, ['class' => 'form-control autocomplete_txt']) !!}
+                        <x-form.label for="city_plz">PLZ:</x-form.label>
+                        <x-form.input name="city_plz" id="city_plz" class="form-control autocomplete_txt" />
                     </div>
                     <div class="form-group col-md-9">
-                        {!! Form::label('city_name', 'Ort:') !!}
-                        {!! Form::text('city_name', null, ['class' => 'form-control autocomplete_txt']) !!}
+                        <x-form.label for="city_name">Ort:</x-form.label>
+                        <x-form.input name="city_name" id="city_name" class="form-control autocomplete_txt" />
                     </div>
-                    {!! Form::hidden('city_id', null, ['class' => 'form-control autocomplete_txt']) !!}
+                    <x-form.input name="city_id" type="hidden" class="form-control autocomplete_txt" />
                 </div>
 
                 @if (Auth::user()->isAdmin())
                 <div class="form-group">
-                    {!! Form::label('group_id', 'Gruppe:') !!}
-                    {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null, ['class' => 'form-control']) !!}
+                    <x-form.label for="group_id">Gruppe:</x-form.label>
+                    <x-form.select name="group_id" :options="['' => 'Wähle Gruppe'] + $groups" id="group_id" class="form-control" />
                 </div>
                 @endif
 
                 <div class="form-group">
-                    {!! Form::submit('Adresse Erfassen', ['class' => 'btn btn-primary'])!!}
+                    <x-form.submit value="Adresse Erfassen" class="btn btn-primary" />
                 </div>
-                {!! Form::close()!!}
+                </form>
             </div>
         </div>
     </div>

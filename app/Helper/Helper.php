@@ -10,10 +10,10 @@ use App\Models\Action;
 use App\Models\Address;
 use App\Models\GroupUser;
 use App\Models\ActionUser;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Spatie\Geocoder\Geocoder;
 use App\Events\NotificationCreate;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
@@ -123,19 +123,28 @@ class Helper
         ];
     }
 
-    public static function GetTimeChartData(Action $action, $graph_time = false)
+    public static function GetTimeChartData(?Action $action, $graph_time = false)
     {
+        // Benutzer ohne aktuelle Aktion: leeres Diagramm.
+        if (! $action) {
+            return [0];
+        }
 
-        $graphs = $action->notifications()->select(
-            DB::raw('sum(quantity) as total'),
-            DB::raw("CASE
-                    WHEN MOD(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30, 1) >= 0.5
-                        THEN date_format(DATE_ADD('2020-01-01 00:00:00', Interval CEILING(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
-                    ELSE date_format(DATE_ADD('2020-01-01 00:00:00', Interval FLOOR(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
-                    END AS time_frame"),
-        )
-            ->groupBy('time_frame')
-            ->orderBy('time_frame', 'ASC')->get();
+
+        // Zöpfe pro halbe Stunde, gerundet auf die nächste halbe Stunde (ab :15 bzw. :45 aufgerundet).
+        // In PHP statt SQL, damit es auf MySQL und SQLite (Tests) gleich läuft.
+        $graphs = $action->notifications()
+            ->whereNotNull('when')
+            ->get(['quantity', 'when'])
+            ->groupBy(function ($notification) {
+                $time = Carbon::parse($notification->when);
+                $minutes = intdiv($time->hour * 60 + $time->minute + 15, 30) * 30 % 1440;
+
+                return sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60);
+            })
+            ->map(fn ($group, $timeFrame) => (object) ['time_frame' => $timeFrame, 'total' => $group->sum('quantity')])
+            ->sortKeys()
+            ->values();
 
         if (count($graphs) > 0) {
             $graphs_time_min = strtotime($graphs->first()->time_frame);
@@ -163,7 +172,7 @@ class Helper
         return $graph_time ? $graphs_time : $graphs_sum;
     }
 
-    public static function GetZopfChartData(Action $action): array
+    public static function GetZopfChartData(?Action $action): array
     {
         $data['cut'] = 0;
         $data['orders_count'] = 0;

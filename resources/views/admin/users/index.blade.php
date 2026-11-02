@@ -15,56 +15,57 @@
         <div class="row">
             <div class="col-sm-3">
                 <p>Leiter Hinzufügen:</p>
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
+                <form method="POST" action="{{ action('AdminUsersController@add') }}" accept-charset="UTF-8">
+                    @csrf
                 <div class="form-group">
-                    {!! Form::label('email_add', 'E-Mail:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::email('email_add', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 typeahead autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
+                    <x-form.label for="email_add" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-Mail:</x-form.label>
+                    <x-form.input name="email_add" type="email" id="email_add" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 typeahead autocomplete_txt" placeholder="name@abt" required />
                 </div>
                 <div class="form-group">
-                    {!! Form::label('role_id_add', 'Rolle:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('role_id_add', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
+                    <x-form.label for="role_id_add" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rolle:</x-form.label>
+                    <x-form.select name="role_id_add" :options="['' => 'Wähle Rolle'] + $roles" id="role_id_add" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                 </div>
-                {!! Form::hidden('user_id', null, ['class' => 'form-control typeahead autocomplete_txt']) !!}
+                <x-form.input name="user_id" type="hidden" class="form-control typeahead autocomplete_txt" />
                 <div class="form-group">
-                    {!! Form::submit('Leiter Hinzufügen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                    <x-form.submit value="Leiter Hinzufügen" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
                 </div>
-                {!! Form::close()!!}
+                </form>
             </div>
             <div class="col-sm-3">
                 <p>Leiter Erfassen:</p>
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store',  'files' => true]) !!}
+                <form method="POST" action="{{ action('AdminUsersController@store') }}" accept-charset="UTF-8" enctype="multipart/form-data">
+                    @csrf
                 <div class="form-group">
-                    {!! Form::label('username', 'Name:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::text('username', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'placeholder' => 'name@abt']) !!}
+                    <x-form.label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name:</x-form.label>
+                    <x-form.input name="username" id="username" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@abt" />
                 </div>
                 <div class="form-group">
-                    {!! Form::label('email', 'E-Mail:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::email('email', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'placeholder' => 'name@abt', 'required'])
-                    !!}
+                    <x-form.label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-Mail:</x-form.label>
+                    <x-form.input name="email" type="email" id="email" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@abt" required />
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('role_id', 'Role:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="role_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role:</x-form.label>
+                    <x-form.select name="role_id" :options="['' => 'Wähle Rolle'] + $roles" id="role_id" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
                 
                 <div class="form-group">
-                    {!! Form::label('avatar', 'Bild:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::file('avatar', ['class' => 'photo block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400']) !!}
+                    <x-form.label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bild:</x-form.label>
+                    <x-form.input name="avatar" type="file" id="avatar" class="photo block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
                 </div>
                 <div class="form-group">
-                    {!! Form::hidden('cropped_photo_id', null, ['class' => 'form-control', 'id' => 'cropped_photo_id']) !!}
+                    <x-form.input name="cropped_photo_id" type="hidden" class="form-control" id="cropped_photo_id" />
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('password', 'Password:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::password('password', ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password:</x-form.label>
+                    <x-form.input name="password" type="password" id="password" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
 
                 <div class="form-group">
-                    {!! Form::submit('Leiter Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                    <x-form.submit value="Leiter Erfassen" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
                 </div>
-                {!! Form::close()!!}
+                </form>
 
                 @include('includes.form_error')
             </div>

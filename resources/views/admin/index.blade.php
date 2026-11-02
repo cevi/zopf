@@ -74,7 +74,7 @@
                                                 <h3 class="h4 display">{{$route->name}}</h3>
                                             </a></td>
                                         <td style="width:25%">
-                                            <h3 class="h4 display">{{$route->user['username']}}</h3>
+                                            <h3 class="h4 display">{{ $route->user['username'] ?? '–' }}</h3>
                                         </td>
                                         <td style="width:20%">
                                             <h3 class="h4 display">{{$route->route_type ? $route->route_type['name'] : ''}}
@@ -127,48 +127,48 @@
                     @if(!Auth::user()->action['global'])
                         <div role="tabpanel">
                             @include('includes.form_error')
-                            {!! Form::open(['method' => 'POST', 'action'=>'AdminController@logcreate']) !!}
+                            <form method="POST" action="{{ action('AdminController@logcreate') }}" accept-charset="UTF-8">
+                                @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    {!! Form::label('when', 'Wann:', ['class' =>'block mb-2 text-sm font-medium
-                                    text-gray-900 dark:text-white']) !!}
-                                    {!! Form::time('when', now(), ['class' => 'bg-gray-50 border border-gray-300
+                                    <x-form.label for="when" class="block mb-2 text-sm font-medium
+                                    text-gray-900 dark:text-white">Wann:</x-form.label>
+                                    <x-form.input name="when" type="time" :value="now()" id="when" class="bg-gray-50 border border-gray-300
                                     text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
                                     p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                                    dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                                    dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                 </div>
                                 <div class="form-group col-md-6">
-                                    {!! Form::label('user_id', 'Verantwortlicher:', ['class' =>'block mb-2 text-sm
-                                    font-medium text-gray-900 dark:text-white']) !!}
-                                    {!! Form::select('user_id', [''=>'Wähle Leiter'] + $users, null, ['class' =>
-                                    'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500
+                                    <x-form.label for="user_id" class="block mb-2 text-sm
+                                    font-medium text-gray-900 dark:text-white">Verantwortlicher:</x-form.label>
+                                    <x-form.select name="user_id" :options="['' => 'Wähle Leiter'] + $users" id="user_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500
                                     focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
                                     dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
-                                    dark:focus:border-blue-500']) !!}
+                                    dark:focus:border-blue-500" />
                                 </div>
                                 <div class="form-group col-md-3">
-                                    {!! Form::label('cut', 'Anzahl Aufgeschnitten:', ['class' =>'block mb-2 text-sm
-                                    font-medium text-gray-900 dark:text-white']) !!}
-                                    {!! Form::text('cut', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900
+                                    <x-form.label for="cut" class="block mb-2 text-sm
+                                    font-medium text-gray-900 dark:text-white">Anzahl Aufgeschnitten:</x-form.label>
+                                    <x-form.input name="cut" id="cut" class="bg-gray-50 border border-gray-300 text-gray-900
                                     text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                     dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                                    dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                                    dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                {!! Form::label('comments', 'Kommentar:', ['class' =>'block mb-2 text-sm font-medium
-                                text-gray-900 dark:text-white']) !!}
-                                {!! Form::text('comments', null, ['class' => 'bg-gray-50 border border-gray-300
+                                <x-form.label for="comments" class="block mb-2 text-sm font-medium
+                                text-gray-900 dark:text-white">Kommentar:</x-form.label>
+                                <x-form.input name="comments" id="comments" class="bg-gray-50 border border-gray-300
                                 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
                                 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                                dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                                dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                             </div>
                             <div class="form-group">
-                                {!! Form::submit('Eintrag Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800
+                                <x-form.submit value="Eintrag Erfassen" class="text-white bg-blue-700 hover:bg-blue-800
                                 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
-                                dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                                dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
                             </div>
-                            {!! Form::close()!!}
+                            </form>
                         </div>
                     @endif
                 </div>
@@ -193,8 +193,10 @@
 
     <script type="module">
         function UpdateGraph() {
-            {{ $zopfChart->id }}_refresh({{ $zopfChart->id }}_api_url);
-            {{ $timeChart->id }}_refresh({{ $timeChart->id }}_api_url);
+            @if ($zopfChart && $timeChart)
+                {{ $zopfChart->id }}_refresh({{ $zopfChart->id }}_api_url);
+                {{ $timeChart->id }}_refresh({{ $timeChart->id }}_api_url);
+            @endif
         }
         window.UpdateGraph = UpdateGraph;
 
@@ -215,7 +217,7 @@
                         '</span>';
 
                     Object.values(data).forEach((element) => {
-                        var route = "{{route('logbooks.edit', '')}}" + element.id + "edit";
+                        var route = "{{ route('logbooks.edit', ':id') }}".replace(':id', element.id);
                         Notification += Symbol +
                             '<div class="justify-between items-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">' +
                             '<time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">' + element.when + '</time>' +

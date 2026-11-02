@@ -37,13 +37,18 @@ class AdminController extends Controller
         $data = Helper::GetZopfChartData($action);
         $icon_array = Helper::GetIconArray($data);
 
-        $zopfChart = new ZopfChart;
-        $zopfChart_api = url('api/action/'.$action['id'].'/zopfChart');
-        $zopfChart->labels(['Offen', 'Unterwegs', 'Abholen', 'Aufgeschnitten', 'Abgeschlossen'])->load($zopfChart_api);
+        // Ohne Aktion zeigt die Seite nur einen Hinweis, Diagramme gibt es dann keine.
+        $zopfChart = null;
+        $timeChart = null;
+        if ($action) {
+            $zopfChart = new ZopfChart;
+            $zopfChart->labels(['Offen', 'Unterwegs', 'Abholen', 'Aufgeschnitten', 'Abgeschlossen'])
+                ->load(url('api/action/'.$action->id.'/zopfChart'));
 
-        $timeChart = new TimeChart;
-        $timeChart_api = url('api/action/'.$action['id'].'/timeChart');
-        $timeChart->labels(Helper::GetTimeChartData($action, true))->load($timeChart_api);
+            $timeChart = new TimeChart;
+            $timeChart->labels(Helper::GetTimeChartData($action, true))
+                ->load(url('api/action/'.$action->id.'/timeChart'));
+        }
 
         $help = Help::where('title', $title)->first();
 
