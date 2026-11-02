@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **96 Testfälle in 14 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **114 Testfälle in 15 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -102,6 +102,7 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | Entfernt | `RemovedPagesTest` | 3 | Adressverwaltung `admin/addresses` entfernt |
 | Wartung | `MaintenancePageTest` | 3 | öffentliche Wartungsseite (503) für `php artisan down` |
 | Sicherheit | `Security/SideEffectRoutesTest` | 12 | Aktionen mit Seiteneffekt nur per POST, keine Request-Felder beim Abschliessen |
+| Sicherheit | `Security/UserAccountsTest` | 18 | Profil und Benutzerverwaltung: keine Rechte-Ausweitung, keine fremden Konten |
 | Sicherheit | `Security/ForeignIdsTest` | 13 | fremde Bestellungen, Routen, Aktionen → 403 (Policies) |
 | JS | `tests/js/escape-html.test.js` | 4 | `escapeHtml` für Logbuch und Benachrichtigungen |
 | Sicherheit | `Security/MaintenanceTest` | 16 | Admin-Wartungsseite: Artisan nur per POST und nur für Admins, alte `run-*`-URLs weg |
@@ -231,6 +232,24 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | `test_complete_ignores_request_fields` | `complete()` übernahm `$request->all()` (z. B. `group_id`, `APIKey`, `demo`) |
 | `test_leader_route_page_uses_post_forms` / `test_route_overview_uses_post_form` | Knöpfe sind Formulare, keine Links |
 
+**[`Security/UserAccountsTest`](Feature/Security/UserAccountsTest.php)**: `UserPolicy` (`updateProfile`, `manage`, `assignRole`). Vorher konnte jeder eingeloggte Leiter sich über das Profil zum Administrator machen (`role_id` aus `$request->all()`), fremde Profile und Benutzer ändern (E-Mail, Passwort → Konto übernehmen) und Aktionsleiter konnten Administratoren anlegen bzw. hinzufügen.
+
+| Test | Prüft |
+|---|---|
+| `test_leader_updates_own_profile` / `test_leader_changes_own_password_with_confirmation` | eigenes Profil |
+| `test_profile_ignores_role_and_status` | Rolle, Gruppe, Aktion, Demo nie aus dem Profil |
+| `test_foreign_profile_is_forbidden` | fremdes Profil → 403, unverändert |
+| `test_groupleader_edits_leader_of_own_group` | Benutzer der eigenen Gruppe |
+| `test_role_select_offers_only_allowed_roles` / `test_create_form_offers_only_allowed_roles` | Auswahl zeigt nur erlaubte Rollen |
+| `test_nobody_but_admin_can_grant_admin` | Aktions-/Gruppenleiter machen sich nicht zum Admin |
+| `test_actionleader_cannot_promote_to_groupleader` | Rolle höchstens die eigene |
+| `test_actionleader_cannot_edit_groupleader` / `test_admin_cannot_be_edited_by_groupleader` | keine Benutzer mit mehr Rechten |
+| `test_user_of_other_group_is_forbidden` | fremde Gruppe → 403 |
+| `test_admin_grants_any_role` | Admin darf alles |
+| `test_user_update_ignores_unknown_fields` | nur Formularfelder |
+| `test_actionleader_cannot_create_admin` / `test_actionleader_creates_leader` | Benutzer erfassen |
+| `test_add_cannot_grant_higher_role` / `test_add_with_allowed_role` | bestehenden Benutzer hinzufügen |
+
 **[`Security/ForeignIdsTest`](Feature/Security/ForeignIdsTest.php)**: Policies `OrderPolicy::deliver`, `RoutePolicy::deliverAll`, `ActionPolicy::complete`. Regeln siehe [Fachliche Regeln](#fachliche-regeln-die-die-tests-festhalten).
 
 | Test | Prüft |
@@ -268,6 +287,8 @@ Abgestimmt mit der Projektleitung. Wer sie ändert, muss auch die Tests anpassen
 - Route "Alle Bestellungen abschliessen" und Routenblatt: Routen der eigenen aktuellen Aktion, Admin alle.
 - Aktion starten/abschliessen: Aktionen der eigenen Gruppe (wie die Aktionen-Tabelle), Admin alle.
 - Nicht erlaubter Zugriff auf fremde Objekte: 403.
+- Profil: nur das eigene; nur Benutzername, E-Mail, Passwort (mit Bestätigung), Avatar.
+- Benutzerverwaltung: Nicht-Admins nur Benutzer der eigenen aktuellen Gruppe mit gleich vielen oder weniger Rechten; als Rolle (auch beim Erfassen und Hinzufügen) höchstens die eigene. Admin: alles.
 
 ---
 

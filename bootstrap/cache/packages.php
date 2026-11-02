@@ -36,6 +36,13 @@
       0 => 'Intervention\\Image\\ImageServiceProvider',
     ),
   ),
+  'laravel/dusk' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Dusk\\DuskServiceProvider',
+    ),
+  ),
   'laravel/sail' => 
   array (
     'providers' => 

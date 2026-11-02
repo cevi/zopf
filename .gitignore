@@ -13,3 +13,8 @@ npm-debug.log
 yarn-error.log
 mysql_backup
 /.claude
+# Dusk
+/database/dusk.sqlite
+/tests/Browser/screenshots
+/tests/Browser/console
+/tests/Browser/source

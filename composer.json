@@ -27,6 +27,7 @@
         "yajra/laravel-datatables": "^13.0"
     },
     "require-dev": {
+        "laravel/dusk": "^8.7",
         "laravel/pint": "^1.2",
         "laravel/sail": "^1.18",
         "laravel/telescope": "^5.1",

@@ -26,11 +26,8 @@ class AdminUsersController extends Controller
     public function index()
     {
         //
-        if (! Auth::user()->isAdmin()) {
-            $roles = Role::where('id', '>', config('status.role_administrator'))->pluck('name', 'id')->all();
-        } else {
-            $roles = Role::pluck('name', 'id')->all();
-        }
+        // Nur Rollen, die der Benutzer vergeben darf (höchstens die eigene)
+        $roles = Role::all()->filter(fn ($role) => Auth::user()->can('assignRole', [User::class, $role->id]))->pluck('name', 'id')->all();
         $title = 'Leiter';
         $help = Help::where('title', $title)->first();
 
@@ -115,11 +112,15 @@ class AdminUsersController extends Controller
         //
 
         $aktUser = Auth::user();
+        if ($request->filled('role_id')) {
+            $this->authorize('assignRole', [User::class, (int) $request->input('role_id')]);
+        }
         if (! $aktUser->demo) {
-            if (trim($request->password) == '') {
-                $input = $request->except('password');
-            } else {
-                $input = $request->all();
+            // Nur die Felder des Formulars; Gruppe und Aktion setzt bei Nicht-Admins der Controller.
+            $input = $request->only($aktUser->isAdmin()
+                ? ['username', 'email', 'role_id', 'is_active', 'group_id']
+                : ['username', 'email', 'role_id', 'is_active']);
+            if (trim((string) $request->password) != '') {
                 $input['password'] = bcrypt($request->password);
             }
 
@@ -180,9 +181,10 @@ class AdminUsersController extends Controller
     {
 
         $aktUser = Auth::user();
+        $this->authorize('assignRole', [User::class, (int) $request->input('role_id_add')]);
         if (! $aktUser->demo) {
-            $input = $request->all();
-            if ($input['user_id']) {
+            $input = $request->only(['user_id', 'role_id_add']);
+            if ($input['user_id'] ?? null) {
                 $group = $aktUser->group;
                 $user = User::findOrFail($input['user_id']);
                 GroupUser::create([
@@ -226,8 +228,10 @@ class AdminUsersController extends Controller
         //
         $title = 'Leiter - Bearbeiten';
         $user = User::findOrFail($id);
+        $this->authorize('manage', $user);
         $groups = Group::pluck('name', 'id')->all();
-        $roles = Role::pluck('name', 'id')->all();
+        // Nur Rollen, die der Benutzer vergeben darf (höchstens die eigene)
+        $roles = Role::all()->filter(fn ($role) => Auth::user()->can('assignRole', [User::class, $role->id]))->pluck('name', 'id')->all();
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Leiter';
         $help['main_route'] = '/admin/users';
@@ -248,11 +252,16 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $user = User::findOrFail($id);
+            $this->authorize('manage', $user);
+            if ($request->filled('role_id')) {
+                $this->authorize('assignRole', [User::class, (int) $request->input('role_id')]);
+            }
 
-            if (trim($request->password) == '') {
-                $input = $request->except('password');
-            } else {
-                $input = $request->all();
+            // Nur die Felder des Formulars; die Gruppe setzt nur der Admin direkt.
+            $input = $request->only($aktUser->isAdmin()
+                ? ['username', 'email', 'role_id', 'is_active', 'group_id']
+                : ['username', 'email', 'role_id', 'is_active']);
+            if (trim((string) $request->password) != '') {
                 $input['password'] = bcrypt($request->password);
             }
             if (! $aktUser->isAdmin()) {
@@ -280,7 +289,7 @@ class AdminUsersController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $this->authorize('manage', $user);
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $action = Auth::user()->action;
