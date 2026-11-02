@@ -164,6 +164,7 @@ class AdminUsersController extends Controller
         $users = User::where('role_id', '<>', config('status.role_administrator'))->search($request->get('term'))->get();
 
         $usersDiff = $users->diff($allusers);
+        $data = [];
         foreach ($usersDiff as $user) {
             $data[] = ['username' => $user->username, 'email' => $user->email, 'id' => $user->id];
         }

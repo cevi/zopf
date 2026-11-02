@@ -63,8 +63,7 @@ class AdminLogbookController extends Controller
     {
         //
         $title = 'Logbuch-Eintrag - Bearbeiten';
-        $action = Auth::user()->action;
-        $notification = $action->notifications->where('id', $id)->first();
+        $notification = $this->findOwn($id);
         $help = Help::where('title', $title)->first();
 
         return view('admin.logbooks.edit', compact('notification', 'title', 'help'));
@@ -76,10 +75,10 @@ class AdminLogbookController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $action = Auth::user()->action;
-        if ($action && ! Auth::user()->demo) {
-            $notification = $action->notifications->where('id', $id)->first();
-            $notification->update($request->all());
+        $notification = $this->findOwn($id);
+        if (! Auth::user()->demo) {
+            // Nur die Felder des Formulars (sonst liesse sich z. B. notifiable_id auf eine fremde Aktion setzen).
+            $notification->update($request->only(['content', 'user', 'when', 'cut']));
         }
 
         return redirect('/admin');
@@ -95,13 +94,22 @@ class AdminLogbookController extends Controller
     {
         //
 
-        $user = Auth::user();
-        if (! $user->demo) {
-            $action = $user->action;
-            $notification = $action->notifications->where('id', $id)->first();
+        $notification = $this->findOwn($id);
+        if (! Auth::user()->demo) {
             $notification->delete();
         }
 
         return redirect('/admin');
+    }
+
+    /**
+     * Logbuch-Eintrag der aktuellen Aktion des Benutzers, sonst 404.
+     */
+    private function findOwn(string $id)
+    {
+        $notification = Auth::user()->action?->notifications()->find($id);
+        abort_if(! $notification, 404);
+
+        return $notification;
     }
 }

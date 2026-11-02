@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **79 Testfälle in 9 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **96 Testfälle in 14 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -84,6 +84,11 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | Formulare | `FormComponentsTest` | 13 | Formular-Komponenten (Ersatz für `Form::`): old() vor Wert vor Model |
 | Dashboard | `AdminDashboardTest` | 3 | Dashboard mit und ohne Aktion, Logbuch-Links |
 | Dashboard | `TimeChartDataTest` | 5 | Zeitdiagramm: Zöpfe pro halbe Stunde |
+| Ajax | `AjaxEndpointsTest` | 4 | JSON-Endpunkte ohne Parameter (früher 500) |
+| Rückmeldungen | `FeedbackTest` | 3 | Seite `admin/changes`: Rückmeldung speichern und per Mail melden |
+| Logbuch | `LogbookTest` | 3 | nur eigene Einträge, nur Formularfelder |
+| Routenblatt | `RoutePdfTest` | 4 | `downloadPDF`: Google gefakt, Fehler von Google, fremde Route |
+| Entfernt | `RemovedPagesTest` | 3 | Adressverwaltung `admin/addresses` entfernt |
 | Wartung | `MaintenancePageTest` | 3 | öffentliche Wartungsseite (503) für `php artisan down` |
 | Sicherheit | `Security/SideEffectRoutesTest` | 12 | Aktionen mit Seiteneffekt nur per POST, keine Request-Felder beim Abschliessen |
 | Sicherheit | `Security/ForeignIdsTest` | 13 | fremde Bestellungen, Routen, Aktionen → 403 (Policies) |
@@ -110,8 +115,8 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 
 **[`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php)**: ruft jede GET-Route mit jeder Rolle auf (Gast, Leiter, Leiter ohne Route, Aktionsleiter, Gruppenleiter, Admin), jeweils mit dem Standardobjekt und einer Route in Planung ohne Leiter. Erwartet keinen Status >= 500. Neue Routen werden automatisch mitgetestet; fehlt ein Wert für einen Parameter, meldet der Test das.
 
-- `EXCLUDED`: Routen mit Seiteneffekten per GET (Aktion abschliessen, alles ausliefern, ausgeliefert/deponiert), OAuth, Demo-Logins, Pusher.
-- `KNOWN_ISSUES`: bekannte Serverfehler mit Rolle und Grund. Der Test bleibt grün, solange genau diese auftreten; ein behobener Fehler macht ihn rot, bis der Eintrag entfernt ist.
+- `EXCLUDED`: OAuth, Demo-Logins, Pusher, signierte URL. Google Maps ist gefakt (`Http::fake`).
+- `KNOWN_ISSUES`: bekannte Serverfehler mit Rolle und Grund (zurzeit leer). Der Test bleibt grün, solange genau diese auftreten; ein behobener Fehler macht ihn rot, bis der Eintrag entfernt ist.
 - Grenze: findet nur 500er, keine fehlenden Berechtigungen (die sind 200).
 
 ### Formulare
@@ -153,6 +158,44 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | `test_only_own_action_is_counted` | nur Einträge der eigenen Aktion |
 | `test_empty_action_returns_zero` | Aktion ohne Einträge |
 | `test_without_action_returns_zero` | Benutzer ohne Aktion (auch `GetZopfChartData`) |
+
+### Fehler aus dem Smoke-Test
+
+**[`AjaxEndpointsTest`](Feature/AjaxEndpointsTest.php)**
+
+| Test | Prüft |
+|---|---|
+| `test_orders_datatable_without_filters_lists_own_orders` | Bestellungen-Tabelle ohne Filter `status`/`pickup` |
+| `test_user_search_without_term_returns_placeholder` | Benutzersuche ohne Treffer |
+| `test_icon_array_without_action_is_not_found` | Zahlen ohne Aktion → 404 statt 500 |
+| `test_icon_array_with_action_returns_icons` | Zahlen einer Aktion |
+
+**[`FeedbackTest`](Feature/FeedbackTest.php)**: Das Formular auf `admin/changes` zeigte auf `FeedbackController@store`, die Route fehlte (Seite 500).
+
+| Test | Prüft |
+|---|---|
+| `test_groupleader_sees_changes_page` | Seite mit Formular |
+| `test_groupleader_sends_feedback` | gespeichert mit eigenem `user_id` (nicht aus dem Request), Mail versendet |
+| `test_leader_cannot_send_feedback` | Leiter wird abgewiesen |
+
+**[`LogbookTest`](Feature/LogbookTest.php)**
+
+| Test | Prüft |
+|---|---|
+| `test_actionleader_edits_own_entry` | Bearbeiten und Speichern |
+| `test_foreign_entry_is_not_found` | Eintrag einer fremden Aktion → 404 (vorher 500), unverändert |
+| `test_update_only_changes_form_fields` | `update()` übernahm `$request->all()` (z. B. `notifiable_id` einer fremden Aktion) |
+
+**[`RoutePdfTest`](Feature/RoutePdfTest.php)**: `Helper::CreateRouteSequence()` und die Static-Maps-Karte laufen über Laravels `Http`-Client (vorher Guzzle bzw. `file_get_contents`, in Tests nicht abfangbar: der Smoke-Test schickte echte Anfragen an Google).
+
+| Test | Prüft |
+|---|---|
+| `test_google_error_redirects_back_with_message` | Fehlerantwort von Google → zurück mit Meldung (vorher 500) |
+| `test_existing_map_is_reused_without_google` | vorhandene Karte, kein Aufruf an Google |
+| `test_foreign_route_is_forbidden` | fremde Route → 403 (`RoutePolicy::view`), kein Aufruf an Google |
+| `test_overview_shows_error_message` | Meldung auf der Routen-Übersicht |
+
+**[`RemovedPagesTest`](Feature/RemovedPagesTest.php)**: `admin/addresses` (Liste, Erfassen, Bearbeiten) war nirgends verlinkt, nutzte die alte City-Tabelle und gab überall 500. Entfernt; Adressen entstehen über Bestellungen und den Import.
 
 ### Wartung
 
@@ -211,7 +254,7 @@ Abgestimmt mit der Projektleitung. Wer sie ändert, muss auch die Tests anpassen
 - Aktionsleiter sehen nur ihre eigene Aktion, Leiter nur ihre eigenen Routen.
 - Die Demo-Logins (`aktionschef@demo`, `leiter1@demo`) sind gewollt, auch auf Prod.
 - Bestellung übergeben/hinterlegt: Leiter nur auf der eigenen Route, Aktionsleiter und höher alle Bestellungen der eigenen aktuellen Aktion, Admin alle.
-- Route "Alle Bestellungen abschliessen": Routen der eigenen aktuellen Aktion, Admin alle.
+- Route "Alle Bestellungen abschliessen" und Routenblatt: Routen der eigenen aktuellen Aktion, Admin alle.
 - Aktion starten/abschliessen: Aktionen der eigenen Gruppe (wie die Aktionen-Tabelle), Admin alle.
 - Nicht erlaubter Zugriff auf fremde Objekte: 403.
 

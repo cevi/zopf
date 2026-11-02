@@ -8,6 +8,7 @@ use App\Models\Help;
 use App\Models\User;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -31,7 +32,6 @@ class AllRoutesSmokeTest extends TestCase
         'loginChef' => 'Demo-Login, braucht DemoActionSeeder',
         'loginLeiter' => 'Demo-Login, braucht DemoActionSeeder',
         'broadcasting/auth' => 'Pusher',
-        'admin/routes/{id}/downloadPDF' => 'ruft Google Maps direkt über Guzzle auf (Http::fake greift nicht), vorübergehend',
     ];
 
     /**
@@ -39,38 +39,7 @@ class AllRoutesSmokeTest extends TestCase
      * Ist einer behoben, schlägt der Test fehl, bis der Eintrag hier entfernt ist.
      */
     private const KNOWN_ISSUES = [
-        'orders/createDataTables' => [
-            'roles' => ['leader', 'leaderWithoutRoute', 'actionleader', 'groupleader', 'admin'],
-            'reason' => 'Parameter "status" fehlt ohne DataTables-Request (AdminOrdersController:45)',
-        ],
-        'admin/users/searchajaxuser' => [
-            'roles' => ['leader', 'leaderWithoutRoute', 'actionleader', 'groupleader'],
-            'reason' => '$data undefiniert ohne Suchbegriff (AdminUsersController:170)',
-        ],
-        'admin/icon_array' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Parameter "action" fehlt (AdminController:131)',
-        ],
-        'admin/addresses' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Cannot access offset of type string on string (admin/addresses/index.blade.php)',
-        ],
-        'admin/addresses/create' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Route searchajaxcity ist in routes/web.php auskommentiert',
-        ],
-        'admin/addresses/{address}/edit' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Adresse ohne Ort: property "name" on null (AdminAddressesController:123)',
-        ],
-        'admin/changes' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Formular zeigt auf FeedbackController@store, die Route ist per except([\'store\']) ausgenommen',
-        ],
-        'admin/logbooks/{logbook}/edit' => [
-            'roles' => ['admin'],
-            'reason' => 'Logbuch-Eintrag einer fremden Aktion: $notification ist null statt 404 (AdminLogbookController@edit)',
-        ],
+        // 'route/{uri}' => ['roles' => ['rolle'], 'reason' => 'Warum es (noch) kracht'],
     ];
 
     public static function roles(): array
@@ -88,6 +57,8 @@ class AllRoutesSmokeTest extends TestCase
     #[DataProvider('roles')]
     public function test_no_get_route_returns_a_server_error(string $role)
     {
+        // Google Maps (Routenblatt) nie wirklich aufrufen
+        Http::fake(['maps.googleapis.com/*' => Http::response(['status' => 'REQUEST_DENIED', 'routes' => []])]);
         $s = ActionScenario::create();
         $user = $role === 'gast' ? null : ($role === 'admin' ? ActionScenario::admin() : $s->users()[$role]);
         $values = $this->routeParameters($s);

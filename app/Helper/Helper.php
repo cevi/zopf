@@ -11,6 +11,7 @@ use App\Models\Address;
 use App\Models\GroupUser;
 use App\Models\ActionUser;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Geocoder\Geocoder;
 use App\Events\NotificationCreate;
@@ -38,10 +39,9 @@ class Helper
                 $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
             }
             $url = rtrim($url, '| ');
-            $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
-            $request = $client->get($url . '&key=' . $key);
-            $response = json_decode($request->getBody(), true);
-            if (!$route['sequenceDone'] && ($response['status'] === 'OK')) {
+            // Laravel-Http-Client statt Guzzle direkt: in Tests mit Http::fake() abfangbar.
+            $response = Http::baseUrl('https://maps.googleapis.com/maps/api/')->get($url . '&key=' . $key)->json();
+            if (!$route['sequenceDone'] && (($response['status'] ?? null) === 'OK')) {
                 foreach ($response['routes'][0]['waypoint_order'] as $key => $waypoint) {
                     $orders[$waypoint]->update(['sequence' => $key]);
                 }

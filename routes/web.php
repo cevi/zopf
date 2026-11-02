@@ -109,18 +109,16 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/orders/pickup/{order}', ['as' => 'orders.pickup', 'uses' => 'AdminOrdersController@pickup']);
         Route::resource('admin/orders', 'AdminOrdersController');
 
-        Route::resource('admin/addresses', 'AdminAddressesController');
         Route::resource('admin/logbooks', 'AdminLogbookController');
         Route::resource('admin/progress', 'AdminBakeryProgressController');
         Route::resource('admin/helps', 'AdminHelpController');
 
         // Route::get('admin/orders/bulkdelete', ['as'=>'orders.bulkdelete','uses'=>'AdminOrdersController@bulkdelete']);
 
-        // Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
-
         // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
         Route::get('admin/changes', 'AdminController@changes');
+        Route::post('admin/feedback', ['as' => 'feedback.store', 'uses' => 'FeedbackController@store']);
         Route::resource('admin/groups', 'AdminGroupsController');
 
         Route::get('admin/notifications/read', ['as' => 'notifications.read', 'uses' => 'AdminController@notifications_read']);

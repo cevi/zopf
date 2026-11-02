@@ -20,6 +20,9 @@
                 </form>
             @endif
         </header>
+        @if (session('error'))
+            <div class="p-4 my-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">{{ session('error') }}</div>
+        @endif
         @if($route->route_status['id'] === config('status.route_geplant'))
             <form method="POST" action="{{ action('AdminRoutesController@send', $route->id) }}" accept-charset="UTF-8">
                 @csrf

@@ -16,6 +16,7 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use PDF;
@@ -153,12 +154,16 @@ class AdminRoutesController extends Controller
             $group = $user->group;
             $action = $user->action;
             $route = Route::findOrFail($id);
+            $this->authorize('view', $route);
             $center = $action->center;
             $orders = $route->orders;
             if ($route['photo'] === null) {
                 $key = $action['APIKey'];
 
                 $response = Helper::CreateRouteSequence($route);
+                if (($response['status'] ?? null) !== 'OK') {
+                    return back()->with('error', 'Karte konnte nicht erstellt werden (Google Maps: '.($response['status'] ?? 'keine Antwort').').');
+                }
                 $path = $response['routes'][0]['overview_polyline']['points'];
                 $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='.strtolower($route->route_type['travelmode']).'&';
 
@@ -168,7 +173,7 @@ class AdminRoutesController extends Controller
                 }
                 $url = $url.'&path=enc:'.$path;
                 $url = $url.'&key='.$key;
-                $image = file_get_contents($url);
+                $image = Http::get($url)->body();
                 $folder = 'images/'.Str::slug($group['name']).'/'.Str::slug($action['name']).'_'.$action['year'].'/';
                 $directory = storage_path('app/public/'.$folder);
                 if (! File::isDirectory($directory)) {

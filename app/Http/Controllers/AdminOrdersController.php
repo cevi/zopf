@@ -41,10 +41,10 @@ class AdminOrdersController extends Controller
 
     public function createDataTables(Request $request)
     {
-        $input = $request->all();
-        $order_status = OrderStatus::where('name', '=', $input['status'])->first();
-        $pickup = $input['pickup'] === 'Abholen' ? true : null;
-        $noRoute = $input['pickup'] === 'Keine Route' ? true : null;
+        // Filter sind optional (ohne Parameter: alle Bestellungen).
+        $order_status = OrderStatus::where('name', '=', $request->input('status'))->first();
+        $pickup = $request->input('pickup') === 'Abholen' ? true : null;
+        $noRoute = $request->input('pickup') === 'Keine Route' ? true : null;
         if (! Auth::user()->isAdmin()) {
             $action = Auth::user()->action;
             if ($action) {

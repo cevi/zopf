@@ -127,8 +127,7 @@ class AdminController extends Controller
 
     public function GetIconArray(Request $request)
     {
-        $input = $request->all();
-        $action = Action::findOrFail($input['action']['id']);
+        $action = Action::findOrFail($request->input('action.id'));
 
         $data = Helper::GetZopfChartData($action);
         $icon_array = Helper::GetIconArray($data);
