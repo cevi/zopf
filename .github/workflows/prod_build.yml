@@ -6,7 +6,12 @@ on:
       - 'master'
 
 jobs:
+  # Nur getestete Stände bauen.
+  tests:
+    uses: ./.github/workflows/tests.yml
+
   prod_build:
+    needs: tests
     runs-on: ubuntu-latest
     steps:
 

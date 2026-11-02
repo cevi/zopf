@@ -11,6 +11,7 @@ Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 - [Tests ausführen](#tests-ausführen)
 - [Aufbau](#aufbau)
+- [CI und Code-Stil](#ci-und-code-stil)
 - [Übersicht aller Tests](#übersicht-aller-tests)
 - [Fachliche Regeln, die die Tests festhalten](#fachliche-regeln-die-die-tests-festhalten)
 - [Neuen Test schreiben](#neuen-test-schreiben)
@@ -72,6 +73,16 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | `Route::factory()` | geplant, zu Fuss | `underway()`, `completed()` |
 | `Order::factory()` | offen, Adresse in der Gruppe der Aktion | `onRoute($route)`, `pickUp()` |
 | `Address::factory()` | Adresse in Zürich | |
+
+---
+
+## CI und Code-Stil
+
+- **GitHub Actions** ([`.github/workflows/tests.yml`](../.github/workflows/tests.yml)): Jobs `pint`, `phpunit` und `js` bei jedem Push auf `develop` und bei jedem Pull Request. Der Prod-Build (`prod_build.yml`, Push auf `master`) ruft die Tests zuerst auf und baut nur, wenn sie grün sind. Die CI läuft ohne `.env`-Werte und ohne `public/build`: Was lokal nur dank der eigenen `.env` grün ist, fällt dort auf.
+- **Code-Stil:** Laravel Pint, Preset `laravel` ([`pint.json`](../pint.json)). Lokal: `vendor/bin/pint` (formatieren) bzw. `vendor/bin/pint --test` (nur prüfen).
+- **Git-Hook** ([`.githooks/pre-commit`](../.githooks/pre-commit)): formatiert gestagte PHP-Dateien vor jedem Commit. `composer install` aktiviert ihn (`core.hooksPath`). Teilweise gestagte Dateien blockieren den Commit; überspringen mit `git commit --no-verify`.
+- **VS Code:** formatiert PHP beim Speichern mit Pint (Erweiterung `open-southeners.laravel-pint`, wird beim Öffnen empfohlen).
+- **Formatierungs-Commit:** steht in [`.git-blame-ignore-revs`](../.git-blame-ignore-revs), damit `git blame` die ursprünglichen Autoren zeigt. Lokal einmal: `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
 
 ---
 

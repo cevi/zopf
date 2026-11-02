@@ -13,5 +13,10 @@
             "database": "zopf",
             "username": "zopf"
         }
-    ]
+    ],
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint",
+        "editor.formatOnSave": true
+    },
+    "laravel-pint.enable": true
 }
