@@ -14,8 +14,10 @@
             @endif
 
             @if ($route->route_status['id'] === config('status.route_unterwegs'))
-                <a type="button" class="ml-4 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-                href="{{route('routes.deliverAll', $route)}}">Alle Bestellungen abschliessen</a>
+                <form method="POST" action="{{ route('routes.deliverAll', $route) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="ml-4 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Alle Bestellungen abschliessen</button>
+                </form>
             @endif
         </header>
         @if($route->route_status['id'] === config('status.route_geplant'))

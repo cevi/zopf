@@ -220,10 +220,10 @@
                         var route = "{{ route('logbooks.edit', ':id') }}".replace(':id', element.id);
                         Notification += Symbol +
                             '<div class="justify-between items-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">' +
-                            '<time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">' + element.when + '</time>' +
+                            '<time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">' + escapeHtml(element.when) + '</time>' +
                             '<div class="text-sm font-normal text-gray-500 dark:text-gray-300">' +
-                            '<strong><a href="' + route + '">' + element.user + ': </a></strong>' +
-                            element.content +
+                            '<strong><a href="' + escapeHtml(route) + '">' + escapeHtml(element.user) + ': </a></strong>' +
+                            escapeHtml(element.content) +
                             '</div>' +
                             '</div>' +
                             '</li>';

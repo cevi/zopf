@@ -52,7 +52,9 @@ class AdminActionsController extends Controller
             ->addColumn('Actions', function ($actions) {
                 $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
                 $buttons = '<a href='.\URL::route('actions.edit', $actions).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
-                $buttons .= ' <a href='.\URL::route('actions.complete', $actions).' type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</a>';
+                // Ändert Daten: POST-Formular mit CSRF-Token statt Link.
+                $buttons .= ' <form method="POST" action="'.e(\URL::route('actions.complete', $actions)).'" class="inline">'.csrf_field()
+                    .'<button type="submit" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</button></form>';
                 return $buttons;
             })
             ->rawColumns(['Actions'])
@@ -207,10 +209,12 @@ class AdminActionsController extends Controller
      */
     public function complete(Request $request, Action $action)
     {
-        //
+        $this->authorize('complete', $action);
+
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $input = $request->all();
+            // Keine Felder aus dem Request übernehmen (sonst liessen sich z. B. group_id oder APIKey setzen).
+            $input = [];
             if ($action->action_status_id === config('status.action_geplant')) {
                 $action->action_status_id = config('status.action_aktiv');
                 $log['text'] = 'Aktion '.$action['name'].' wurde gestartet.';

@@ -238,6 +238,8 @@ class AdminRoutesController extends Controller
 
     public function deliverAll(Route $route)
     {
+        $this->authorize('deliverAll', $route);
+
         $orders = $route->orders()->get();
         foreach($orders as $order){
             if($order->order_status['id'] <= config('status.order_unterwegs')){

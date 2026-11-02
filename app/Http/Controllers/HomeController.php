@@ -71,11 +71,15 @@ class HomeController extends Controller
 
     public function delivered($id)
     {
+        $this->authorize('deliver', Order::findOrFail($id));
+
         return Helper::checkRoute($id, config('status.order_ausgeliefert')) ? redirect('/home') : back();
     }
 
     public function deposited($id)
     {
+        $this->authorize('deliver', Order::findOrFail($id));
+
         return Helper::checkRoute($id, config('status.order_hinterlegt')) ? redirect('/home') : back();
     }
 

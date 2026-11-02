@@ -71,8 +71,8 @@ Route::group(['middleware' => 'verified'], function () {
 
     Route::get('/routes/{id}', ['as' => 'home.routes', 'uses' => 'HomeController@routes']);
     Route::get('/maps/{id}', ['as' => 'home.maps', 'uses' => 'HomeController@maps']);
-    Route::get('/routes/order/{id}/delivered', ['as' => 'home.delivered', 'uses' => 'HomeController@delivered']);
-    Route::get('/routes/order/{id}/deposited', ['as' => 'home.deposited', 'uses' => 'HomeController@deposited']);
+    Route::post('/routes/order/{id}/delivered', ['as' => 'home.delivered', 'uses' => 'HomeController@delivered']);
+    Route::post('/routes/order/{id}/deposited', ['as' => 'home.deposited', 'uses' => 'HomeController@deposited']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::patch('/user/{user}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
@@ -90,11 +90,11 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
         Route::post('admin/users/addGroupUsers', ['as' => 'users.addGroupUsers', 'uses' => 'AdminUsersController@AddGroupUsersToAction']);
 
-        Route::get('admin/actions/complete/{action}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
+        Route::post('admin/actions/complete/{action}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
 
         Route::get('admin/routes/{id}/overview', ['as' => 'routes.overview', 'uses' => 'AdminRoutesController@overview']);
         Route::get('admin/routes/{id}/downloadPDF', ['as' => 'routes.downloadPDF', 'uses' => 'AdminRoutesController@downloadPDF']);
-        Route::get('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
+        Route::post('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
         Route::get('admin/routes/map', ['as' => 'routes.map', 'uses' => 'AdminRoutesController@map']);
         Route::get('admin/routes/mapfilter', ['as' => 'routes.mapfilter', 'uses' => 'AdminRoutesController@mapfilter']);
         Route::post('admin/routes/{id}/send', ['as' => 'routes.send', 'uses' => 'AdminRoutesController@send']);

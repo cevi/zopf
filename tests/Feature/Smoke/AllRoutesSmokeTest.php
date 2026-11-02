@@ -31,10 +31,7 @@ class AllRoutesSmokeTest extends TestCase
         'loginChef' => 'Demo-Login, braucht DemoActionSeeder',
         'loginLeiter' => 'Demo-Login, braucht DemoActionSeeder',
         'broadcasting/auth' => 'Pusher',
-        'admin/actions/complete/{action}' => 'GET mit Seiteneffekt: schliesst die Aktion ab',
-        'admin/routes/{route}/deliverAll' => 'GET mit Seiteneffekt: liefert alle Bestellungen aus',
-        'routes/order/{id}/delivered' => 'GET mit Seiteneffekt: Bestellung ausgeliefert',
-        'routes/order/{id}/deposited' => 'GET mit Seiteneffekt: Bestellung deponiert',
+        'admin/routes/{id}/downloadPDF' => 'ruft Google Maps direkt über Guzzle auf (Http::fake greift nicht), vorübergehend',
     ];
 
     /**
@@ -53,10 +50,6 @@ class AllRoutesSmokeTest extends TestCase
         'admin/icon_array' => [
             'roles' => ['actionleader', 'groupleader', 'admin'],
             'reason' => 'Parameter "action" fehlt (AdminController:131)',
-        ],
-        'admin/routes/{id}/downloadPDF' => [
-            'roles' => ['actionleader', 'groupleader', 'admin'],
-            'reason' => 'Undefined array key 0 (AdminRoutesController:162)',
         ],
         'admin/addresses' => [
             'roles' => ['actionleader', 'groupleader', 'admin'],

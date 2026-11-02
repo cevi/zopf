@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **55 Testfälle in 7 Dateien**, Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **79 Testfälle in 9 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -23,6 +23,7 @@ Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 vendor/bin/phpunit                                              # alle Tests
 vendor/bin/phpunit tests/Feature/TestInfrastructureTest.php     # eine Datei
 vendor/bin/phpunit --filter test_name                           # einzelne Tests
+npm run test:js                                                 # JS-Tests (Node, ohne Abhängigkeiten)
 ```
 
 Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
@@ -84,6 +85,9 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | Dashboard | `AdminDashboardTest` | 3 | Dashboard mit und ohne Aktion, Logbuch-Links |
 | Dashboard | `TimeChartDataTest` | 5 | Zeitdiagramm: Zöpfe pro halbe Stunde |
 | Wartung | `MaintenancePageTest` | 3 | öffentliche Wartungsseite (503) für `php artisan down` |
+| Sicherheit | `Security/SideEffectRoutesTest` | 12 | Aktionen mit Seiteneffekt nur per POST, keine Request-Felder beim Abschliessen |
+| Sicherheit | `Security/ForeignIdsTest` | 13 | fremde Bestellungen, Routen, Aktionen → 403 (Policies) |
+| JS | `tests/js/escape-html.test.js` | 4 | `escapeHtml` für Logbuch und Benachrichtigungen |
 | Sicherheit | `Security/MaintenanceTest` | 16 | Admin-Wartungsseite: Artisan nur per POST und nur für Admins, alte `run-*`-URLs weg |
 
 ### Grundlagen
@@ -162,6 +166,28 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 
 ### Sicherheit
 
+**[`Security/SideEffectRoutesTest`](Feature/Security/SideEffectRoutesTest.php)**: Bestellung übergeben/hinterlegt, Route "Alle Bestellungen abschliessen" und Aktion starten/abschliessen waren GET-Links. Ein Link oder `<img>` auf einer fremden Seite konnte sie für eingeloggte Benutzer auslösen. Jetzt POST mit CSRF-Token.
+
+| Test | Prüft |
+|---|---|
+| `test_get_is_not_allowed_and_changes_nothing` (4) | GET gibt 405, nichts geändert |
+| `test_leader_marks_order_as_delivered` / `_deposited` | Leiter auf eigener Route |
+| `test_actionleader_delivers_all_orders_of_route` | Route abschliessen |
+| `test_actionleader_completes_action` | Aktion abschliessen |
+| `test_complete_ignores_request_fields` | `complete()` übernahm `$request->all()` (z. B. `group_id`, `APIKey`, `demo`) |
+| `test_leader_route_page_uses_post_forms` / `test_route_overview_uses_post_form` | Knöpfe sind Formulare, keine Links |
+
+**[`Security/ForeignIdsTest`](Feature/Security/ForeignIdsTest.php)**: Policies `OrderPolicy::deliver`, `RoutePolicy::deliverAll`, `ActionPolicy::complete`. Regeln siehe [Fachliche Regeln](#fachliche-regeln-die-die-tests-festhalten).
+
+| Test | Prüft |
+|---|---|
+| `test_foreign_objects_are_forbidden` (9) | fremde Gruppe bzw. fremde Route → 403, nichts geändert |
+| `test_actionleader_marks_any_order_of_own_action` | Aktionsleiter darf alle Bestellungen der eigenen Aktion |
+| `test_groupleader_completes_action_of_own_group` | Aktionen der eigenen Gruppe |
+| `test_admin_may_act_on_any_group` / `test_admin_may_mark_any_order` | Admin darf alles |
+
+**[`tests/js/escape-html.test.js`](js/escape-html.test.js)**: `resources/js/escape-html.js`. Logbuch-Liste (Dashboard) und Live-Benachrichtigungen setzten Benutzertext ungeprüft als HTML ein. Ausführen: `npm run test:js`.
+
 **[`Security/MaintenanceTest`](Feature/Security/MaintenanceTest.php)**: Wartungsseite für Admins (`admin/maintenance`). Ersetzt die GET-URLs `admin/run-migrations`, `admin/run-migrations-seed` und `admin/run-deployment`, die ohne Login erreichbar waren. Artisan wird in jedem Test gefakt, bevor eine Route aufgerufen wird.
 
 | Test | Prüft |
@@ -184,6 +210,10 @@ Abgestimmt mit der Projektleitung. Wer sie ändert, muss auch die Tests anpassen
 - Rollen sind hierarchisch: eine kleinere `role_id` hat mehr Rechte (Administrator 1, Gruppenleiter 5, Aktionsleiter 10, Leiter 20).
 - Aktionsleiter sehen nur ihre eigene Aktion, Leiter nur ihre eigenen Routen.
 - Die Demo-Logins (`aktionschef@demo`, `leiter1@demo`) sind gewollt, auch auf Prod.
+- Bestellung übergeben/hinterlegt: Leiter nur auf der eigenen Route, Aktionsleiter und höher alle Bestellungen der eigenen aktuellen Aktion, Admin alle.
+- Route "Alle Bestellungen abschliessen": Routen der eigenen aktuellen Aktion, Admin alle.
+- Aktion starten/abschliessen: Aktionen der eigenen Gruppe (wie die Aktionen-Tabelle), Admin alle.
+- Nicht erlaubter Zugriff auf fremde Objekte: 403.
 
 ---
 
