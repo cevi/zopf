@@ -8,6 +8,7 @@ use App\Models\GroupUser;
 use App\Models\Help;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Validator;
 
 class GroupsController extends Controller
@@ -57,7 +58,7 @@ class GroupsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Group $group)
     {

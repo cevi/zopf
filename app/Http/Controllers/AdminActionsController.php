@@ -13,6 +13,7 @@ use App\Models\Group;
 use App\Models\Help;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Geocoder\Facades\Geocoder;
 
@@ -21,7 +22,7 @@ class AdminActionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -55,6 +56,7 @@ class AdminActionsController extends Controller
                 // Ändert Daten: POST-Formular mit CSRF-Token statt Link.
                 $buttons .= ' <form method="POST" action="'.e(\URL::route('actions.complete', $actions)).'" class="inline">'.csrf_field()
                     .'<button type="submit" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</button></form>';
+
                 return $buttons;
             })
             ->rawColumns(['Actions'])
@@ -64,7 +66,7 @@ class AdminActionsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -81,7 +83,7 @@ class AdminActionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -129,7 +131,7 @@ class AdminActionsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -140,7 +142,7 @@ class AdminActionsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Action $action)
     {
@@ -158,7 +160,7 @@ class AdminActionsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -168,8 +170,8 @@ class AdminActionsController extends Controller
             $action = Action::findOrFail($id);
             $address = $action->center;
             $input = $request->all();
-            GeoCoder::setApiKey($input['APIKey']);
-            GeoCoder::setCountry('CH');
+            Geocoder::setApiKey($input['APIKey']);
+            Geocoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
@@ -205,7 +207,7 @@ class AdminActionsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function complete(Request $request, Action $action)
     {

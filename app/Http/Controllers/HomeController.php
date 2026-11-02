@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Help;
 use App\Models\Order;
 use App\Models\Route;
-use App\Helper\Helper;
-use App\Events\NotificationCreate;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -24,7 +24,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -82,6 +82,4 @@ class HomeController extends Controller
 
         return Helper::checkRoute($id, config('status.order_hinterlegt')) ? redirect('/home') : back();
     }
-
-    
 }

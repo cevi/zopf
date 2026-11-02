@@ -37,5 +37,4 @@ return [
         'redirect' => env('HITOBITO_CALLBACK_URI', 'https://zopf.cevi.tools/login/hitobito/callback'),
     ],
 
-
 ];

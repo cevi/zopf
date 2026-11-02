@@ -23,11 +23,11 @@ class LogbookNotification
         return $notifiable->routeNotificationFor('database')->create([
 
             'id' => $notification->id,
-            'quantity' => $quantity, //<-- comes from toDatabase() Method, this is my customised column
-            'cut' => $cut, //<-- comes from toDatabase() Method, this is my customised column
-            'user' => $user, //<-- comes from toDatabase() Method, this is my customised column
-            'when' => $when, //<-- comes from toDatabase() Method, this is my customised column
-            'route_id' => $route_id, //<-- comes from toDatabase() Method, this is my customised column
+            'quantity' => $quantity, // <-- comes from toDatabase() Method, this is my customised column
+            'cut' => $cut, // <-- comes from toDatabase() Method, this is my customised column
+            'user' => $user, // <-- comes from toDatabase() Method, this is my customised column
+            'when' => $when, // <-- comes from toDatabase() Method, this is my customised column
+            'route_id' => $route_id, // <-- comes from toDatabase() Method, this is my customised column
             'notifiable_type' => \Auth::user()->id ?? 1,
             'type' => get_class($notification),
             'content' => $text,

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 
 class Action extends Model
@@ -66,13 +68,13 @@ class Action extends Model
         return $this->belongsTo('App\Models\Address', 'address_id');
     }
 
-    public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function allUsers(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\User', 'action_users')->where('action_users.role_id', '<>', config('status.role_administrator'))->orderBy('username');
     }
 
     public function notifications()
     {
-        return $this->morphMany(\Illuminate\Notifications\DatabaseNotification::class, 'notifiable');
+        return $this->morphMany(DatabaseNotification::class, 'notifiable');
     }
 }

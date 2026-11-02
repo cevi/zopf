@@ -11,12 +11,14 @@
 |
 */
 
-use App\Models\User;
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Action;
+use App\Models\User;
+use Pusher\Pusher;
 
 Route::get('/', function () {
-    $action_counter = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
-    $total_amount = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
+    $action_counter = Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
+    $total_amount = Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
 
     return view('welcome', compact('action_counter', 'total_amount'));
 });
@@ -134,7 +136,7 @@ Route::get('/broadcasting/auth', function (Request $request) {
         $channelName = $request->channel_name;
         $socketId = $request->socket_id;
         // Create a new Pusher channel token with the user's ID as the user context
-        $pusher = new \Pusher\Pusher(
+        $pusher = new Pusher(
             config('broadcasting.connections.pusher.key'),
             config('broadcasting.connections.pusher.secret'),
             config('broadcasting.connections.pusher.app_id'),

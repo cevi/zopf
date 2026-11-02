@@ -7,6 +7,7 @@ use App\Models\BakeryProgress;
 use App\Models\Help;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AdminBakeryProgressController extends Controller
@@ -14,7 +15,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -75,7 +76,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -85,7 +86,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -108,7 +109,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(BakeryProgress $bakeryProgress)
     {
@@ -118,8 +119,8 @@ class AdminBakeryProgressController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function edit(BakeryProgress $progress)
     {
@@ -141,8 +142,8 @@ class AdminBakeryProgressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function update(Request $request, BakeryProgress $progress)
     {
@@ -161,8 +162,8 @@ class AdminBakeryProgressController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function destroy(BakeryProgress $progress)
     {

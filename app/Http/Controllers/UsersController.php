@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Help;
 use App\Models\User;
-use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +20,7 @@ class UsersController extends Controller
         }
         if ($aktUser->id == $user->id) {
             $title = 'Profil';
-            $help = Help::where('title',$title)->first();
+            $help = Help::where('title', $title)->first();
 
             return view('home.user', compact('aktUser', 'title', 'help'));
         } else {

@@ -76,7 +76,7 @@ return [
             'decodePolyline' => true, // true = decode overview_polyline.points to an array of points
             'param' => [
                 'origin' => null, // required
-                'destination' => null, //required
+                'destination' => null, // required
                 'mode' => null,
                 'waypoints' => null,
                 'place_id' => null,

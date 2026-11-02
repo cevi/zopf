@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\User;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,7 +16,7 @@ class UserCreated
     /**
      * The user instance.
      *
-     * @var \App\Models\User
+     * @var User
      */
     public $user;
 
@@ -33,7 +34,7 @@ class UserCreated
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

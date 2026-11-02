@@ -11,9 +11,9 @@ use App\Models\OrderStatus;
 use App\Models\Route;
 use App\Models\RouteStatus;
 use App\Models\RouteType;
-use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -27,7 +27,7 @@ class AdminRoutesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -150,7 +150,7 @@ class AdminRoutesController extends Controller
     public function downloadPDF($id)
     {
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $group = $user->group;
             $action = $user->action;
             $route = Route::findOrFail($id);
@@ -246,18 +246,19 @@ class AdminRoutesController extends Controller
         $this->authorize('deliverAll', $route);
 
         $orders = $route->orders()->get();
-        foreach($orders as $order){
-            if($order->order_status['id'] <= config('status.order_unterwegs')){
+        foreach ($orders as $order) {
+            if ($order->order_status['id'] <= config('status.order_unterwegs')) {
                 Helper::checkRoute($order['id'], config('status.order_ausgeliefert'));
             }
         }
+
         return back();
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -277,7 +278,7 @@ class AdminRoutesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -309,7 +310,7 @@ class AdminRoutesController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -320,7 +321,7 @@ class AdminRoutesController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -357,7 +358,7 @@ class AdminRoutesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -427,7 +428,7 @@ class AdminRoutesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
