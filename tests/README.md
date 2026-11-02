@@ -4,13 +4,14 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **114 Testfälle in 15 Dateien** (PHP) und 4 JS-Tests, Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **116 Testfälle in 16 Dateien** (PHP), 4 JS-Tests und 13 Browser-Tests (Dusk), Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
 
 - [Tests ausführen](#tests-ausführen)
 - [Aufbau](#aufbau)
+- [Browser-Tests (Dusk)](#browser-tests-dusk)
 - [CI und Code-Stil](#ci-und-code-stil)
 - [Übersicht aller Tests](#übersicht-aller-tests)
 - [Fachliche Regeln, die die Tests festhalten](#fachliche-regeln-die-die-tests-festhalten)
@@ -25,6 +26,7 @@ vendor/bin/phpunit                                              # alle Tests
 vendor/bin/phpunit tests/Feature/TestInfrastructureTest.php     # eine Datei
 vendor/bin/phpunit --filter test_name                           # einzelne Tests
 npm run test:js                                                 # JS-Tests (Node, ohne Abhängigkeiten)
+php artisan dusk                                                # Browser-Tests (im Sail-Container, siehe unten)
 ```
 
 Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
@@ -76,6 +78,28 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 
 ---
 
+## Browser-Tests (Dusk)
+
+Ganze Abläufe im echten Chrome (Selenium-Container) gegen die App unter `http://laravel.test`. Laufen nicht in der CI.
+
+```bash
+./vendor/bin/sail up -d selenium      # einmal, auf dem Host
+npm run build                         # Dusk testet public/build
+php artisan dusk                      # im App-Container (sail shell)
+```
+
+- **Umgebung:** `.env.dusk.local` (Dusk tauscht während des Laufs die `.env` aus), Datenbank `database/dusk.sqlite`. `tests/DuskTestCase.php` leert vor jedem Test alle Tabellen und seedet `TestingSeeder`; es bricht ab, wenn nicht `dusk.sqlite` konfiguriert ist. Den Lauf nie abbrechen, sonst bleibt `.env` ersetzt (Original in `.env.backup`).
+- **Keine echten Dienste:** Der Browser erreicht Pusher und Google Maps nicht (`--host-resolver-rules`), ausgehende HTTPS-Anfragen des Servers scheitern (`HTTPS_PROXY` auf eine tote Adresse). Deshalb nicht testbar: Bestellung bearbeiten und Aktion bearbeiten (Geocoding bei Google).
+- **Bei Fehlern:** `tests/Browser/screenshots`, `console`, `source`.
+
+| Datei | Prüft |
+|---|---|
+| [`Browser/AdminListsTest`](Browser/AdminListsTest.php) (5) | Routen, Bestellungen, Leiter, Aktionen, Gruppen: Zeilen erscheinen, kein DataTables-Alert, keine JS-Fehler |
+| [`Browser/FormsTest`](Browser/FormsTest.php) (7) | umgebaute Formulare (Form:: → Komponenten): Route, Gruppe, Benutzer bearbeiten; Profil mit Validierungsfehler (Eingabe bleibt); Logbuch-Eintrag auf dem Dashboard (Zeitfeld vorbelegt, HTML maskiert, auch nach `UpdateList()`); Bestellung zum Abholen; Leiter übergibt Bestellung |
+| [`Browser/SetupTest`](Browser/SetupTest.php) (1) | Grundaufbau: Login, Testdaten |
+
+---
+
 ## CI und Code-Stil
 
 - **GitHub Actions** ([`.github/workflows/tests.yml`](../.github/workflows/tests.yml)): Jobs `pint`, `phpunit` und `js` bei jedem Push auf `develop` und bei jedem Pull Request. Der Prod-Build (`prod_build.yml`, Push auf `master`) ruft die Tests zuerst auf und baut nur, wenn sie grün sind. Die CI läuft ohne `.env`-Werte und ohne `public/build`: Was lokal nur dank der eigenen `.env` grün ist, fällt dort auf.
@@ -94,6 +118,7 @@ Unter Sail: `sail artisan test` bzw. `sail php vendor/bin/phpunit`.
 | Smoke | `Smoke/AllRoutesSmokeTest` | 6 | alle GET-Routen pro Rolle ohne Serverfehler, bekannte Fehler in `KNOWN_ISSUES` |
 | Formulare | `FormComponentsTest` | 13 | Formular-Komponenten (Ersatz für `Form::`): old() vor Wert vor Model |
 | Dashboard | `AdminDashboardTest` | 3 | Dashboard mit und ohne Aktion, Logbuch-Links |
+| Tabellen | `DataTablesTest` | 2 | Routen- und Bestell-Liste: Sortieren nach Status (seit Laravel 13 500) |
 | Dashboard | `TimeChartDataTest` | 5 | Zeitdiagramm: Zöpfe pro halbe Stunde |
 | Ajax | `AjaxEndpointsTest` | 4 | JSON-Endpunkte ohne Parameter (früher 500) |
 | Rückmeldungen | `FeedbackTest` | 3 | Seite `admin/changes`: Rückmeldung speichern und per Mail melden |
