@@ -2,6 +2,11 @@
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
 <script>
+    // Namen und Adressen kommen aus Eingaben und Importen: im Info-Fenster nur als Text (eigene Kopie,
+    // weil das Bundle mit window.escapeHtml als Modul erst später geladen wird)
+    function mapEscape(value) {
+        return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
     var center, orders, latitude, longitude, bounds;
     var clicked_markers = new Array;
     var markers = new Array;
@@ -136,7 +141,7 @@
         });
 
         if (center != null) {
-            var html = "<div class='maps-content'><p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p></div>";
+            var html = "<div class='maps-content'><p><b>" + mapEscape(center['name']) + "</b> <br/>" + mapEscape(center['street']) + "</p></div>";
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(center['lat'], center['lng']),
                 map: map,
@@ -171,13 +176,13 @@
         var icon_url = (order) => ((travelMode != null) && (order.order_status_id > 15)) || ((travelMode == null) && (order.route_id == null)) ? "https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png" : "https://maps.gstatic.com/mapfiles/markers2/marker.png";
 
         for (const order of orders) {
-            var url_deliver = "{{route('home.delivered', ':id')}}";
-            url_deliver = url_deliver.replace(':id', order.id);
-            var link_deliver = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deliver + '">Übergeben</a>';
-            var url_deposited = "{{route('home.deposited', ':id')}}";
-            url_deposited = url_deposited.replace(':id', order.id);
-            var link_deposited = '<a type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="'+ url_deposited + '">Hinterlegt</a>';
-            var address = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
+            // Ändert Daten: als POST-Formular mit CSRF-Token, nicht als Link.
+            var postButton = (url, label) => '<form method="POST" action="' + url + '" class="inline">' +
+                '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                '<button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">' + label + '</button></form>';
+            var link_deliver = postButton("{{ route('home.delivered', ':id') }}".replace(':id', order.id), 'Übergeben');
+            var link_deposited = postButton("{{ route('home.deposited', ':id') }}".replace(':id', order.id), 'Hinterlegt');
+            var address = "<div class='maps-content'><p><b>" + mapEscape(order.address['firstname']) + " " + mapEscape(order.address['name']) + "</b> <br/>" + mapEscape(order.address['street']) + "<br/> Zopf: " + mapEscape(order['quantity']) + "<br>";
             var html = address + link_deliver + " " + link_deposited  +'</p></div>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(order.address['lat'], order.address['lng']),

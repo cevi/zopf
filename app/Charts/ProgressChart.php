@@ -30,13 +30,13 @@ class ProgressChart extends Chart
                     'title' => [
                         'display' => true,
                         'text' => 'Uhrzeit',
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                     'grid' => [
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                     'ticks' => [
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                 ],
                 'y' => [
@@ -45,13 +45,13 @@ class ProgressChart extends Chart
                     'title' => [
                         'display' => true,
                         'text' => 'Anzahl Zöpfe',
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                     'grid' => [
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                     'ticks' => [
-                        'color' => "rgba(156, 163, 175,1)",
+                        'color' => 'rgba(156, 163, 175,1)',
                     ],
                 ],
             ],

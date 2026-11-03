@@ -18,19 +18,20 @@
             <div class="row">
                 <div class="col-sm-4">
                     <p>Artikel Erfassen:</p>
-                    {!! Form::open(['method' => 'POST', 'action'=>'AdminHelpController@store']) !!}
+                    <form method="POST" action="{{ action('AdminHelpController@store') }}" accept-charset="UTF-8">
+                        @csrf
                     <div class="form-group">
-                        {!! Form::label('title', 'Titel:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                        {!! Form::text('title', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
+                        <x-form.label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titel:</x-form.label>
+                        <x-form.input name="title" id="title" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                     </div>
                     <div class="form-group">
-                        {!! Form::label('content', 'Inhalt:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                        {!! Form::textarea('content', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required', 'rows' => 10]) !!}
+                        <x-form.label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inhalt:</x-form.label>
+                        <x-form.textarea name="content" id="content" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" required rows="10" />
                     </div>
                     <div class="form-group">
-                        {!! Form::submit('Artikel Erfassen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                        <x-form.submit value="Artikel Erfassen" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
                     </div>
-                    {!! Form::close()!!}
+                    </form>
                 </div>
                 <div class="col-md-8">
                     <table class="table table-striped table-responsive" id="datatable">

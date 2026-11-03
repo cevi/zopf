@@ -15,7 +15,7 @@
                     </a>
                 </div>
                 <div class="col-lg-4 col-md-12">
-                    {!! Html::link('files/Vorlage.xlsx', 'Vorlage herunterladen', ['class' => 'font-medium text-blue-600 dark:text-blue-500 hover:underline']) !!}
+                    <a href="{{ url('files/Vorlage.xlsx') }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Vorlage herunterladen</a>
                 </div>
                 <div class="col-lg-4 col-md-12">
                     <button id="chooseRoute" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Route hinzufügen</button>
@@ -80,12 +80,13 @@
         <br>
         <div class="row">
             <div class="col-lg-4">
-                {!! Form::open(['action' => 'AdminOrdersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                <form method="POST" action="{{ action('AdminOrdersController@uploadFile') }}" accept-charset="UTF-8" enctype="multipart/form-data">
+                    @csrf
                 <div class="form-group">
-                    {!! Form::file('csv_file', ['class' => 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400']) !!}
+                    <x-form.input name="csv_file" type="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
                 </div>
-                {{ Form::submit('Bestellungen hochladen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800']) }}
-                {!! Form::close() !!}
+                <x-form.submit value="Bestellungen hochladen" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
+                </form>
             </div>
         </div>
 
@@ -170,7 +171,8 @@
                                 _: 'status.display',
                                 sort: 'status.sort'
                             },
-                            name: 'status',
+                            // Sortieren nach der Status-ID (status ist ein Array display/sort)
+                            name: 'status.sort',
                             "width": "5%"
                         },
                         {

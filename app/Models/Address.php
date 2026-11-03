@@ -8,9 +8,8 @@ use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Address extends Model
 {
-    //
-    use SearchableTrait;
     use HasFactory;
+    use SearchableTrait;
 
     protected $fillable = [
         'name', 'firstname', 'street', 'city_id', 'group_id', 'lat', 'lng', 'plz', 'city', 'center',

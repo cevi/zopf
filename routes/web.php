@@ -11,12 +11,14 @@
 |
 */
 
-use App\Models\User;
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Action;
+use App\Models\User;
+use Pusher\Pusher;
 
 Route::get('/', function () {
-    $action_counter = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
-    $total_amount = \App\Models\Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
+    $action_counter = Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->count();
+    $total_amount = Action::where('action_status_id', '=', config('status.action_abgeschlossen'))->where('total_amount', '>', 0)->sum('total_amount');
 
     return view('welcome', compact('action_counter', 'total_amount'));
 });
@@ -71,30 +73,30 @@ Route::group(['middleware' => 'verified'], function () {
 
     Route::get('/routes/{id}', ['as' => 'home.routes', 'uses' => 'HomeController@routes']);
     Route::get('/maps/{id}', ['as' => 'home.maps', 'uses' => 'HomeController@maps']);
-    Route::get('/routes/order/{id}/delivered', ['as' => 'home.delivered', 'uses' => 'HomeController@delivered']);
-    Route::get('/routes/order/{id}/deposited', ['as' => 'home.deposited', 'uses' => 'HomeController@deposited']);
+    Route::post('/routes/order/{id}/delivered', ['as' => 'home.delivered', 'uses' => 'HomeController@delivered']);
+    Route::post('/routes/order/{id}/deposited', ['as' => 'home.deposited', 'uses' => 'HomeController@deposited']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::patch('/user/{user}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('admin/actions', 'AdminActionsController');
 
-    Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
-
     Route::group(['middleware' => 'groupleader'], function () {
 
         Route::get('/admin', ['as' => 'admin.index', 'uses' => 'AdminController@index']);
         Route::post('admin/log/create', ['as' => 'admin.logcreate', 'uses' => 'AdminController@logcreate']);
 
+        // Vor der Resource, sonst fängt admin/users/{user} die Anfrage ab
+        Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
         Route::resource('admin/users', 'AdminUsersController');
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
         Route::post('admin/users/addGroupUsers', ['as' => 'users.addGroupUsers', 'uses' => 'AdminUsersController@AddGroupUsersToAction']);
 
-        Route::get('admin/actions/complete/{action}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
+        Route::post('admin/actions/complete/{action}', ['as' => 'actions.complete', 'uses' => 'AdminActionsController@complete']);
 
         Route::get('admin/routes/{id}/overview', ['as' => 'routes.overview', 'uses' => 'AdminRoutesController@overview']);
         Route::get('admin/routes/{id}/downloadPDF', ['as' => 'routes.downloadPDF', 'uses' => 'AdminRoutesController@downloadPDF']);
-        Route::get('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
+        Route::post('admin/routes/{route}/deliverAll', ['as' => 'routes.deliverAll', 'uses' => 'AdminRoutesController@deliverAll']);
         Route::get('admin/routes/map', ['as' => 'routes.map', 'uses' => 'AdminRoutesController@map']);
         Route::get('admin/routes/mapfilter', ['as' => 'routes.mapfilter', 'uses' => 'AdminRoutesController@mapfilter']);
         Route::post('admin/routes/{id}/send', ['as' => 'routes.send', 'uses' => 'AdminRoutesController@send']);
@@ -109,18 +111,15 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/orders/pickup/{order}', ['as' => 'orders.pickup', 'uses' => 'AdminOrdersController@pickup']);
         Route::resource('admin/orders', 'AdminOrdersController');
 
-        Route::resource('admin/addresses', 'AdminAddressesController');
         Route::resource('admin/logbooks', 'AdminLogbookController');
         Route::resource('admin/progress', 'AdminBakeryProgressController');
-        Route::resource('admin/helps', 'AdminHelpController');
 
         // Route::get('admin/orders/bulkdelete', ['as'=>'orders.bulkdelete','uses'=>'AdminOrdersController@bulkdelete']);
-
-        // Route::get('admin/searchajaxcity', ['as'=>'searchajaxcity','uses'=>'AdminAddressesController@searchResponseCity']);
 
         // Route::get('admin/searchajaxaddress', ['as'=>'searchajaxaddress','uses'=>'AdminOrdersController@searchResponseAddress']);
 
         Route::get('admin/changes', 'AdminController@changes');
+        Route::post('admin/feedback', ['as' => 'feedback.store', 'uses' => 'FeedbackController@store']);
         Route::resource('admin/groups', 'AdminGroupsController');
 
         Route::get('admin/notifications/read', ['as' => 'notifications.read', 'uses' => 'AdminController@notifications_read']);
@@ -136,7 +135,7 @@ Route::get('/broadcasting/auth', function (Request $request) {
         $channelName = $request->channel_name;
         $socketId = $request->socket_id;
         // Create a new Pusher channel token with the user's ID as the user context
-        $pusher = new \Pusher\Pusher(
+        $pusher = new Pusher(
             config('broadcasting.connections.pusher.key'),
             config('broadcasting.connections.pusher.secret'),
             config('broadcasting.connections.pusher.app_id'),
@@ -155,22 +154,12 @@ Route::get('/broadcasting/auth', function (Request $request) {
 
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
+    // Hilfe-Artikel: nur Admin (Texte erscheinen allen Benutzern als HTML)
+    Route::resource('admin/helps', 'AdminHelpController');
     Route::post('users/feedback/send', 'FeedbackController@send');
-});
 
-Route::get('admin/run-migrations', function () {
-    return Artisan::call('migrate', ['--force' => true]);
-});
-
-Route::get('admin/run-migrations-seed', function () {
-    return Artisan::call('migrate', ['--force' => true, '--seed' => true]);
-});
-
-Route::get('admin/run-deployment', function () {
-    echo 'config:cache <br>';
-    Artisan::call('config:cache');
-    echo 'view:cache <br>';
-    Artisan::call('view:cache');
-
-    return true;
+    Route::get('admin/maintenance', ['as' => 'admin.maintenance', 'uses' => 'AdminMaintenanceController@index']);
+    Route::post('admin/maintenance/migrate', ['as' => 'admin.maintenance.migrate', 'uses' => 'AdminMaintenanceController@migrate']);
+    Route::post('admin/maintenance/cache', ['as' => 'admin.maintenance.cache', 'uses' => 'AdminMaintenanceController@cache']);
+    Route::post('admin/maintenance/clear', ['as' => 'admin.maintenance.clear', 'uses' => 'AdminMaintenanceController@clear']);
 });

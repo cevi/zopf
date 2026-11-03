@@ -3,18 +3,18 @@
 namespace App\Imports;
 
 use App\Models\Order;
-use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class OrdersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
+class OrdersImport implements SkipsEmptyRows, ToModel, WithHeadingRow
 {
     use Importable;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     public function model(array $row)
     {
@@ -34,6 +34,6 @@ class OrdersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
 
     public function isEmptyWhen(array $row): bool
     {
-        return !isset($row['abholung']) && !isset($row['vorname']);
+        return ! isset($row['abholung']) && ! isset($row['vorname']);
     }
 }

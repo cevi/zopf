@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use App\Auth\HitobitoProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -51,7 +51,6 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Format the callback URL, resolving a relative URI if needed.
      *
-     * @param  array  $config
      * @return string
      */
     protected function formatRedirectUrl(array $config)

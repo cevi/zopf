@@ -18,35 +18,37 @@
                 @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
-                {!! Form::model($route, ['method' => 'Patch', 'action'=>['AdminRoutesController@update',$route->id]])
-                !!}
+                <form method="POST" action="{{ action('AdminRoutesController@update', $route->id) }}" accept-charset="UTF-8">
+                    @csrf
+                    @method('PATCH')
                 <div class="form-group">
-                    {!! Form::label('name', 'Name:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::text('name', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name:</x-form.label>
+                    <x-form.input name="name" :model="$route" id="name" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
                 <div class="form-group">
-                    {!! Form::label('user_id', 'Verantwortlicher:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('user_id', $users, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Verantwortlicher:</x-form.label>
+                    <x-form.select name="user_id" :options="$users" :model="$route" id="user_id" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
                 <div class="form-group">
-                    {!! Form::label('route_type_id', 'Routen Art:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('route_type_id', $route_types, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="route_type_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Routen Art:</x-form.label>
+                    <x-form.select name="route_type_id" :options="$route_types" :model="$route" id="route_type_id" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
                 <div class="form-group">
-                    {!! Form::label('route_status_id', 'Status:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('route_status_id', $route_statuses, null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                    <x-form.label for="route_status_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status:</x-form.label>
+                    <x-form.select name="route_status_id" :options="$route_statuses" :model="$route" id="route_status_id" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
                 <div class="form-group">
-                    {!! Form::submit('Route Aktualisieren', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
+                    <x-form.submit value="Route Aktualisieren" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
                 </div>
-                {!! Form::close()!!}
+                </form>
 
-                {!! Form::model($route, ['method' => 'DELETE', 'action'=>['AdminRoutesController@destroy',$route->id]])
-                !!}
+                <form method="POST" action="{{ action('AdminRoutesController@destroy', $route->id) }}" accept-charset="UTF-8">
+                    @csrf
+                    @method('DELETE')
                 <div class="form-group">
-                    {!! Form::submit('Route löschen', ['class' => 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
+                    <x-form.submit value="Route löschen" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" />
                 </div>
-                {!! Form::close()!!}
+                </form>
             </div>
             <div class="col-sm-6">
                 <button id="chooseOrders" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Bestellungen hinzufügen</button>
@@ -74,12 +76,13 @@
                             <td>{{$order['quantity']}}</td>
                             <td>{{$order->order_status['name']}}</td>
                             <td>
-                                {!! Form::model($order, ['method' => 'patch',
-                                'action'=>['AdminRoutesController@RemoveOrder',$order->id]]) !!}
-                                {!! Form::hidden('order_id', $order->id) !!}
-                                {!! Form::hidden('route_id', $route->id) !!}
-                                {!! Form::button('<i class="fa fa-trash"></i>', ['class' => 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900', 'title' => 'Aus Route entfernen', 'type' => 'submit'])!!}
-                                {!! Form::close() !!}
+                                <form method="POST" action="{{ action('AdminRoutesController@RemoveOrder', $order->id) }}" accept-charset="UTF-8">
+                                    @csrf
+                                    @method('PATCH')
+                                <x-form.input name="order_id" type="hidden" :value="$order->id" :model="$order" />
+                                <x-form.input name="route_id" type="hidden" :value="$route->id" :model="$order" />
+                                <button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg  text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" title="Aus Route entfernen"><i class="fa fa-trash"></i></button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>

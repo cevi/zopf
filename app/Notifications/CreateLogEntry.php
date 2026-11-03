@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
 
 class CreateLogEntry extends Notification implements ShouldQueue
 {
@@ -26,7 +27,7 @@ class CreateLogEntry extends Notification implements ShouldQueue
     private mixed $user;
 
     /**
-     * @var \Illuminate\Support\Carbon|mixed
+     * @var Carbon|mixed
      */
     private mixed $when;
 

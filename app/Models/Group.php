@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Group extends Model
 {
+    use HasFactory;
+
     //
     public static function boot()
     {
@@ -41,7 +45,7 @@ class Group extends Model
         return $this->hasMany('App\Models\User');
     }
 
-    public function allUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function allUsers(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\User', 'group_users')->where('group_users.role_id', '<>', config('status.role_administrator'));
     }

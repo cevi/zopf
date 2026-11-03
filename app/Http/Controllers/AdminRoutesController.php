@@ -11,11 +11,12 @@ use App\Models\OrderStatus;
 use App\Models\Route;
 use App\Models\RouteStatus;
 use App\Models\RouteType;
-use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use PDF;
@@ -26,7 +27,7 @@ class AdminRoutesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -134,6 +135,7 @@ class AdminRoutesController extends Controller
         //
         $action = Auth::user()->action;
         $route = Route::findOrFail($id);
+        $this->authorize('manage', $route);
         $center = $action->center;
         $orders = $route->orders;
         $routetype = $route->route_type;
@@ -149,16 +151,20 @@ class AdminRoutesController extends Controller
     public function downloadPDF($id)
     {
         $user = Auth::user();
-        if (!$user->demo) {
+        if (! $user->demo) {
             $group = $user->group;
             $action = $user->action;
             $route = Route::findOrFail($id);
+            $this->authorize('view', $route);
             $center = $action->center;
             $orders = $route->orders;
             if ($route['photo'] === null) {
                 $key = $action['APIKey'];
 
                 $response = Helper::CreateRouteSequence($route);
+                if (($response['status'] ?? null) !== 'OK') {
+                    return back()->with('error', 'Karte konnte nicht erstellt werden (Google Maps: '.($response['status'] ?? 'keine Antwort').').');
+                }
                 $path = $response['routes'][0]['overview_polyline']['points'];
                 $url = 'https://maps.googleapis.com/maps/api/staticmap?size=512x512&scale=1&maptype=roadmap&mode='.strtolower($route->route_type['travelmode']).'&';
 
@@ -168,7 +174,7 @@ class AdminRoutesController extends Controller
                 }
                 $url = $url.'&path=enc:'.$path;
                 $url = $url.'&key='.$key;
-                $image = file_get_contents($url);
+                $image = Http::get($url)->body();
                 $folder = 'images/'.Str::slug($group['name']).'/'.Str::slug($action['name']).'_'.$action['year'].'/';
                 $directory = storage_path('app/public/'.$folder);
                 if (! File::isDirectory($directory)) {
@@ -238,19 +244,22 @@ class AdminRoutesController extends Controller
 
     public function deliverAll(Route $route)
     {
+        $this->authorize('deliverAll', $route);
+
         $orders = $route->orders()->get();
-        foreach($orders as $order){
-            if($order->order_status['id'] <= config('status.order_unterwegs')){
+        foreach ($orders as $order) {
+            if ($order->order_status['id'] <= config('status.order_unterwegs')) {
                 Helper::checkRoute($order['id'], config('status.order_ausgeliefert'));
             }
         }
+
         return back();
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -270,7 +279,7 @@ class AdminRoutesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -290,6 +299,7 @@ class AdminRoutesController extends Controller
             if ($request->user_id == null) {
                 $input['user_id'] = $user->id;
             } else {
+                $this->authorize('assignLeader', [Route::class, (int) $action['id'], (int) $request->user_id]);
                 $input['user_id'] = $request->user_id;
             }
             $route = Route::create($input);
@@ -302,7 +312,7 @@ class AdminRoutesController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -313,12 +323,12 @@ class AdminRoutesController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
-        //
         $route = Route::findOrFail($id);
+        $this->authorize('manage', $route);
         $action = Auth::user()->action;
         $users = $action->allUsers();
         $users = $users->pluck('username', 'users.id')->all();
@@ -350,7 +360,7 @@ class AdminRoutesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -359,7 +369,12 @@ class AdminRoutesController extends Controller
         $user = Auth::user();
         if (! $user->demo) {
             $route = Route::findOrFail($id);
-            $route->update($request->all());
+            $this->authorize('manage', $route);
+            if ($request->filled('user_id')) {
+                $this->authorize('assignLeader', [Route::class, (int) $route->action_id, (int) $request->input('user_id')]);
+            }
+            // Nur die Formularfelder
+            $route->update($request->only(['name', 'user_id', 'route_type_id', 'route_status_id']));
         }
 
         return redirect('/admin/routes');
@@ -371,8 +386,10 @@ class AdminRoutesController extends Controller
 
         $user = Auth::user();
         if (! $user->demo) {
-            $orders = Order::WhereIn('id', $request['id']);
-            $orders->update(['route_id' => $request['route_id']]);
+            $route = Route::findOrFail($request['route_id']);
+            $this->authorize('manage', $route);
+            // Nur Bestellungen derselben Aktion
+            Order::whereIn('id', (array) $request['id'])->where('action_id', $route->action_id)->update(['route_id' => $route->id]);
         }
 
         return redirect('/admin/routes/edit');
@@ -385,6 +402,7 @@ class AdminRoutesController extends Controller
         $user = Auth::user();
         if (! $user->demo) {
             $order = Order::findOrFail($Request['order_id']);
+            $this->authorize('manage', $order);
             $order->update(['route_id' => null]);
         }
 
@@ -397,6 +415,7 @@ class AdminRoutesController extends Controller
         $user = Auth::user();
         if (! $user->demo) {
             $route = Route::findOrFail($id);
+            $this->authorize('manage', $route);
             if ($route->route_status['id'] === config('status.route_geplant')) {
                 $route->update(['route_status_id' => config('status.route_vorbereitet')]);
             } elseif ($request->has('planned')) {
@@ -420,7 +439,7 @@ class AdminRoutesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -428,7 +447,9 @@ class AdminRoutesController extends Controller
 
         $user = Auth::user();
         if (! $user->demo) {
-            Route::findOrFail($id)->delete();
+            $route = Route::findOrFail($id);
+            $this->authorize('manage', $route);
+            $route->delete();
         }
 
         return redirect('/admin/routes');

@@ -89,12 +89,16 @@
                         @elseif ($order['order_status_id'] === config('status.order_ausgeliefert'))
                         <td>Übergeben</td>
                         @else
-                        <td><a role="button"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                                href="{{route('home.delivered', $order->id)}}">Übergeben</a>
-                            <a role="button"
-                                class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-900"
-                                href="{{route('home.deposited', $order->id)}}">Hinterlegt</a>
+                        <td><form method="POST" action="{{ route('home.delivered', $order->id) }}" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Übergeben</button>
+                            </form>
+                            <form method="POST" action="{{ route('home.deposited', $order->id) }}" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-900">Hinterlegt</button>
+                            </form>
                         </td>
                         @endif
                     </span>

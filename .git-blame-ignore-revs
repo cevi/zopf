@@ -1,0 +1,5 @@
+# Reine Formatierungs-Commits, die git blame überspringen soll (GitHub liest diese Datei automatisch).
+# Lokal einmal: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Code-Stil: Laravel Pint auf das ganze Projekt
+9b63a6656c5a309dffa4d6f176af9a4c38250eed

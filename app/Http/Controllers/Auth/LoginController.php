@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
 use App\Events\UserCreated;
-use Illuminate\Http\Request;
+use App\Exceptions\InvalidLoginProviderException;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Laravel\Socialite\AbstractUser as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
-use App\Exceptions\InvalidLoginProviderException;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Laravel\Socialite\AbstractUser as SocialiteUser;
 
 class LoginController extends Controller
 {
@@ -97,22 +97,21 @@ class LoginController extends Controller
         if ($userFromDB = User::where('foreign_id', $socialiteUser->getId())->first()) {
             // User is logging in
             return $this->updateEmailIfAppropriate($userFromDB, $socialiteUser);
-            
-        } elseif ($userFromDB = User::where('email',$socialiteUser->getEmail())->first()) {
+
+        } elseif ($userFromDB = User::where('email', $socialiteUser->getEmail())->first()) {
             return $this->updateForeignIdIfAppropriate($userFromDB, $socialiteUser);
-        } 
-        else {
+        } else {
 
             // User is registering
             return $this->createNewHitobitoUser($socialiteUser);
         }
     }
-    
+
     private function updateForeignIdIfAppropriate(User $user, SocialiteUser $socialiteUser)
     {
         $foreignID = $socialiteUser->getId();
         if ($user->foreign_id != $foreignID && User::where('foreign_id', $foreignID)->doesntExist()) {
-            //Update email only if it is not occupied by someone else
+            // Update email only if it is not occupied by someone else
             $user->foreign_id = $foreignID;
             $user->save();
         }
@@ -124,7 +123,7 @@ class LoginController extends Controller
     {
         $hitobitoEmail = $socialiteUser->getEmail();
         if ($user->email != $hitobitoEmail && User::where('email', $hitobitoEmail)->doesntExist()) {
-            //Update email only if it is not occupied by someone else
+            // Update email only if it is not occupied by someone else
             $user->email = $hitobitoEmail;
             $user->save();
         }

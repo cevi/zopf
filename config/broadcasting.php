@@ -33,7 +33,9 @@ return [
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('VITE_PUSHER_APP_KEY'),
-            'secret' => env('VITE_PUSHER_APP_SECRET'),
+            // Ohne VITE_-Prefix: VITE_-Variablen landen im JavaScript-Bundle, sobald Code sie liest.
+            // Übergang: alter Name als Rückfall, bis die Prod-.env umgestellt ist.
+            'secret' => env('PUSHER_APP_SECRET', env('VITE_PUSHER_APP_SECRET')),
             'app_id' => env('VITE_PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('VITE_PUSHER_APP_CLUSTER'),

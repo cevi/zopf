@@ -59,7 +59,8 @@
                                 _: 'status.display',
                                 sort: 'status.sort'
                             },
-                            name: 'status',
+                            // Sortieren nach der Status-ID (status ist ein Array display/sort)
+                            name: 'status.sort',
                             "width": "5%"
                         },
                         {

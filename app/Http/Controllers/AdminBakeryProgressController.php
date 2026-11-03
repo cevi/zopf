@@ -7,6 +7,7 @@ use App\Models\BakeryProgress;
 use App\Models\Help;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AdminBakeryProgressController extends Controller
@@ -14,7 +15,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -75,7 +76,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -85,7 +86,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -94,7 +95,7 @@ class AdminBakeryProgressController extends Controller
         $action = Auth::user()->action;
 
         if ($action && ! Auth::user()->demo) {
-            $input = $request->all();
+            $input = $request->only(['when', 'raw_material', 'dough', 'braided', 'baked', 'delivered']);
             $input['user_id'] = Auth::user()->id;
             $input['action_id'] = $action['id'];
             $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
@@ -108,7 +109,7 @@ class AdminBakeryProgressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(BakeryProgress $bakeryProgress)
     {
@@ -118,12 +119,12 @@ class AdminBakeryProgressController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function edit(BakeryProgress $progress)
     {
-        //
+        $this->authorize('manage', $progress);
 
         $title = 'Backstuben Verlauf - Bearbeiten';
         $group = Auth::user()->group;
@@ -141,14 +142,14 @@ class AdminBakeryProgressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function update(Request $request, BakeryProgress $progress)
     {
-        //
-
-        $input = $request->all();
+        $this->authorize('manage', $progress);
+        // Nur die Formularfelder
+        $input = $request->only(['when', 'raw_material', 'dough', 'braided', 'baked', 'delivered']);
 
         if (! Auth::user()->demo) {
             $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
@@ -161,12 +162,12 @@ class AdminBakeryProgressController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BakeryProgress  $bakeryProgress
-     * @return \Illuminate\Http\Response
+     * @param  BakeryProgress  $bakeryProgress
+     * @return Response
      */
     public function destroy(BakeryProgress $progress)
     {
-        //
+        $this->authorize('manage', $progress);
         $user = Auth::user();
         if (! $user->demo) {
             $progress->delete();

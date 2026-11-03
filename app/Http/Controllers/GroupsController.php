@@ -8,6 +8,7 @@ use App\Models\GroupUser;
 use App\Models\Help;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Validator;
 
 class GroupsController extends Controller
@@ -38,10 +39,12 @@ class GroupsController extends Controller
 
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $input = $request->all();
-            $input['user_id'] = $aktUser->id;
-            $input['global'] = false;
-            $group = Group::create($input);
+            // Nur das Formularfeld; Besitzer ist immer die eigene Person, nie global
+            $group = Group::create([
+                'name' => $request->input('name'),
+                'user_id' => $aktUser->id,
+                'global' => false,
+            ]);
             $aktUser->update(['group_id' => $group->id, 'role_id' => config('status.role_groupleader')]);
             GroupUser::create([
                 'user_id' => $aktUser->id,
@@ -57,11 +60,11 @@ class GroupsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Group $group)
     {
-        //
+        $this->authorize('manage', $group);
         $title = 'Gruppe - Bearbeiten';
         $help = Help::where('title', $title)->first();
 
@@ -70,6 +73,8 @@ class GroupsController extends Controller
 
     public function update(Request $request, Group $group)
     {
+        $this->authorize('manage', $group);
+
         $validator = Validator::make($request->all(), [
             'name' => 'unique:groups',
         ]);
@@ -82,8 +87,7 @@ class GroupsController extends Controller
 
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $input = $request->all();
-            $group->update($input);
+            $group->update($request->only(['name']));
         }
 
         return redirect('home');
@@ -91,7 +95,7 @@ class GroupsController extends Controller
 
     public function updateGroup(Request $request, Group $group)
     {
-        //
+        $this->authorize('switchTo', $group);
 
         $aktUser = Auth::user();
         if (! $aktUser->demo) {

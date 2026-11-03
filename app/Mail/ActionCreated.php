@@ -5,16 +5,13 @@ namespace App\Mail;
 use App\Models\Action;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class ActionCreated extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     protected $action;
 
     protected $user;
@@ -30,7 +27,6 @@ class ActionCreated extends Mailable
         $this->action = $action;
         $this->user = $user;
     }
-
 
     public function build()
     {

@@ -13,6 +13,7 @@ use App\Models\Group;
 use App\Models\Help;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Geocoder\Facades\Geocoder;
 
@@ -21,7 +22,7 @@ class AdminActionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -52,7 +53,10 @@ class AdminActionsController extends Controller
             ->addColumn('Actions', function ($actions) {
                 $text = ($actions->action_status_id === config('status.action_geplant')) ? 'Starten' : 'Abschliessen';
                 $buttons = '<a href='.\URL::route('actions.edit', $actions).' type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-center text-sm px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Bearbeiten</a>';
-                $buttons .= ' <a href='.\URL::route('actions.complete', $actions).' type="button" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</a>';
+                // Ändert Daten: POST-Formular mit CSRF-Token statt Link.
+                $buttons .= ' <form method="POST" action="'.e(\URL::route('actions.complete', $actions)).'" class="inline">'.csrf_field()
+                    .'<button type="submit" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-center text-sm px-3 py-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">'.$text.'</button></form>';
+
                 return $buttons;
             })
             ->rawColumns(['Actions'])
@@ -62,7 +66,7 @@ class AdminActionsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -79,29 +83,27 @@ class AdminActionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         //
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $address = Address::Where('id', $request->address_id)->first();
             $group = $aktUser->group;
+            // Nur die Formularfelder; Gruppe bei Nicht-Admins immer die eigene, nie global oder demo
+            $input = $request->only(['name', 'year', 'APIKey', 'street', 'plz', 'city']);
+            $input['group_id'] = $aktUser->isAdmin() && $request->filled('group_id') ? (int) $request->input('group_id') : $group['id'];
+            // Bestehende Adresse nur aus der Gruppe der Aktion
+            $address = Address::where('id', $request->address_id)->where('group_id', $input['group_id'])->first();
             if (! $address) {
-                $input = $request->all();
-                if (! $aktUser->isAdmin()) {
-                    $input['group_id'] = $group['id'];
-                }
                 $geocoder = Helper::getGeocoder($input['APIKey']);
                 $geocode = $geocoder->getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
                 $input['lat'] = $geocode['lat'];
                 $input['lng'] = $geocode['lng'];
                 $input['center'] = true;
-
-                $address = Address::create($input);
-            } else {
-                $input = $request->all();
+                // Standort hat keinen Vornamen; Spalte ist NOT NULL (MySQL ohne strict setzt sonst still '')
+                $address = Address::create($input + ['firstname' => '']);
             }
             $input['address_id'] = $address['id'];
 
@@ -127,7 +129,7 @@ class AdminActionsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -138,11 +140,11 @@ class AdminActionsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Action $action)
     {
-        //
+        $this->authorize('manage', $action);
         $action_statuses = ActionStatus::pluck('name', 'id')->all();
         $title = 'Aktion - Bearbeiten';
         $help = Help::where('title', $title)->first();
@@ -156,7 +158,7 @@ class AdminActionsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -164,10 +166,12 @@ class AdminActionsController extends Controller
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $action = Action::findOrFail($id);
+            $this->authorize('manage', $action);
             $address = $action->center;
-            $input = $request->all();
-            GeoCoder::setApiKey($input['APIKey']);
-            GeoCoder::setCountry('CH');
+            // Nur die Formularfelder (Aktion und Standort-Adresse)
+            $input = $request->only(['name', 'year', 'APIKey', 'action_status_id', 'street', 'plz', 'city']);
+            Geocoder::setApiKey($input['APIKey']);
+            Geocoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
             $input['lat'] = $geocode['lat'];
             $input['lng'] = $geocode['lng'];
@@ -179,7 +183,7 @@ class AdminActionsController extends Controller
                     $group = $aktUser->group;
                     $input['group_id'] = $group['id'];
                 }
-                $address = Address::create($input);
+                $address = Address::create($input + ['firstname' => '']);
                 $input['address_id'] = $address['id'];
             }
             $status_id = (int) $input['action_status_id'];
@@ -203,14 +207,16 @@ class AdminActionsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function complete(Request $request, Action $action)
     {
-        //
+        $this->authorize('complete', $action);
+
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $input = $request->all();
+            // Keine Felder aus dem Request übernehmen (sonst liessen sich z. B. group_id oder APIKey setzen).
+            $input = [];
             if ($action->action_status_id === config('status.action_geplant')) {
                 $action->action_status_id = config('status.action_aktiv');
                 $log['text'] = 'Aktion '.$action['name'].' wurde gestartet.';
@@ -230,7 +236,7 @@ class AdminActionsController extends Controller
 
     public function updateAction(Request $request, Action $action)
     {
-        //
+        $this->authorize('switchTo', $action);
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             Helper::updateAction($aktUser, $action);
@@ -241,7 +247,7 @@ class AdminActionsController extends Controller
 
     public function destroy(Action $action)
     {
-        //
+        $this->authorize('manage', $action);
         Helper::deleteAction($action);
 
         return redirect('/admin/actions');

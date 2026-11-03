@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Help;
 use App\Models\Order;
 use App\Models\Route;
-use App\Helper\Helper;
-use App\Events\NotificationCreate;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -24,7 +24,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -46,6 +46,7 @@ class HomeController extends Controller
         $user = Auth::user();
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
+        $this->authorize('follow', $route);
         $orders = $route->orders;
         $title = $route['name'];
         $help = Help::where('title', 'Mobile Routen')->first();
@@ -59,6 +60,7 @@ class HomeController extends Controller
         $action = Auth::user()->action;
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
+        $this->authorize('follow', $route);
         $orders = Order::where('route_id', $route['id']);
         $orders = $orders->with('address')->get();
         $center = $action->center;
@@ -71,13 +73,15 @@ class HomeController extends Controller
 
     public function delivered($id)
     {
+        $this->authorize('deliver', Order::findOrFail($id));
+
         return Helper::checkRoute($id, config('status.order_ausgeliefert')) ? redirect('/home') : back();
     }
 
     public function deposited($id)
     {
+        $this->authorize('deliver', Order::findOrFail($id));
+
         return Helper::checkRoute($id, config('status.order_hinterlegt')) ? redirect('/home') : back();
     }
-
-    
 }

@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\User;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AdminUsersController extends Controller
@@ -20,16 +21,13 @@ class AdminUsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         //
-        if (! Auth::user()->isAdmin()) {
-            $roles = Role::where('id', '>', config('status.role_administrator'))->pluck('name', 'id')->all();
-        } else {
-            $roles = Role::pluck('name', 'id')->all();
-        }
+        // Nur Rollen, die der Benutzer vergeben darf (höchstens die eigene)
+        $roles = Role::all()->filter(fn ($role) => Auth::user()->can('assignRole', [User::class, $role->id]))->pluck('name', 'id')->all();
         $title = 'Leiter';
         $help = Help::where('title', $title)->first();
 
@@ -48,7 +46,8 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('username', function (User $user) {
-                return '<a href='.\URL::route('users.edit', $user).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$user['username'].'</a>';
+                // Name maskieren: Spalte ist HTML (rawColumns)
+                return '<a href="'.e(\URL::route('users.edit', $user)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($user['username']).'</a>';
             })
             ->addColumn('group', function (User $user) {
                 if (Auth::user()->isAdmin()) {
@@ -60,7 +59,7 @@ class AdminUsersController extends Controller
                 return $group_name;
             })
             ->addColumn('picture', function ($user) {
-                return '<img class="img-user" alt="" src="' . $user->getAvatar() . '">';
+                return '<img class="img-user" alt="" src="'.e($user->getAvatar()).'">';
             })
             ->addColumn('role', function (User $user) {
                 $role_name = '';
@@ -97,7 +96,7 @@ class AdminUsersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -107,18 +106,22 @@ class AdminUsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         //
 
         $aktUser = Auth::user();
+        if ($request->filled('role_id')) {
+            $this->authorize('assignRole', [User::class, (int) $request->input('role_id')]);
+        }
         if (! $aktUser->demo) {
-            if (trim($request->password) == '') {
-                $input = $request->except('password');
-            } else {
-                $input = $request->all();
+            // Nur die Felder des Formulars; Gruppe und Aktion setzt bei Nicht-Admins der Controller.
+            $input = $request->only($aktUser->isAdmin()
+                ? ['username', 'email', 'role_id', 'is_active', 'group_id']
+                : ['username', 'email', 'role_id', 'is_active']);
+            if (trim((string) $request->password) != '') {
                 $input['password'] = bcrypt($request->password);
             }
 
@@ -150,7 +153,7 @@ class AdminUsersController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -159,28 +162,31 @@ class AdminUsersController extends Controller
 
     public function searchResponseUser(Request $request)
     {
+        // Mindestens 3 Zeichen, Antwort ohne E-Mail-Adressen (Liste aller Personen sonst offen)
+        if (mb_strlen(trim((string) $request->get('term'))) < 3) {
+            return [];
+        }
         $group = Auth::user()->group;
         $allusers = $group->users;
         $users = User::where('role_id', '<>', config('status.role_administrator'))->search($request->get('term'))->get();
 
         $usersDiff = $users->diff($allusers);
+        $data = [];
         foreach ($usersDiff as $user) {
-            $data[] = ['username' => $user->username, 'email' => $user->email, 'id' => $user->id];
+            $data[] = ['username' => $user->username, 'id' => $user->id];
         }
-        if (count($data)) {
-            return $data;
-        } else {
-            return ['username' => '', 'email' => '', 'id' => ''];
-        }
+
+        return $data;
     }
 
     public function add(Request $request)
     {
 
         $aktUser = Auth::user();
+        $this->authorize('assignRole', [User::class, (int) $request->input('role_id_add')]);
         if (! $aktUser->demo) {
-            $input = $request->all();
-            if ($input['user_id']) {
+            $input = $request->only(['user_id', 'role_id_add']);
+            if ($input['user_id'] ?? null) {
                 $group = $aktUser->group;
                 $user = User::findOrFail($input['user_id']);
                 GroupUser::create([
@@ -217,15 +223,17 @@ class AdminUsersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
         //
         $title = 'Leiter - Bearbeiten';
         $user = User::findOrFail($id);
+        $this->authorize('manage', $user);
         $groups = Group::pluck('name', 'id')->all();
-        $roles = Role::pluck('name', 'id')->all();
+        // Nur Rollen, die der Benutzer vergeben darf (höchstens die eigene)
+        $roles = Role::all()->filter(fn ($role) => Auth::user()->can('assignRole', [User::class, $role->id]))->pluck('name', 'id')->all();
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Leiter';
         $help['main_route'] = '/admin/users';
@@ -237,7 +245,7 @@ class AdminUsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -246,11 +254,16 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $user = User::findOrFail($id);
+            $this->authorize('manage', $user);
+            if ($request->filled('role_id')) {
+                $this->authorize('assignRole', [User::class, (int) $request->input('role_id')]);
+            }
 
-            if (trim($request->password) == '') {
-                $input = $request->except('password');
-            } else {
-                $input = $request->all();
+            // Nur die Felder des Formulars; die Gruppe setzt nur der Admin direkt.
+            $input = $request->only($aktUser->isAdmin()
+                ? ['username', 'email', 'role_id', 'is_active', 'group_id']
+                : ['username', 'email', 'role_id', 'is_active']);
+            if (trim((string) $request->password) != '') {
                 $input['password'] = bcrypt($request->password);
             }
             if (! $aktUser->isAdmin()) {
@@ -274,15 +287,15 @@ class AdminUsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(User $user)
     {
-        //
+        $this->authorize('manage', $user);
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $action = Auth::user()->action;
-            if($action===$user->action){
+            if ($action === $user->action) {
                 $action_global = Action::where('global', true)->first();
                 Helper::updateAction($user, $action_global);
             }
@@ -294,6 +307,7 @@ class AdminUsersController extends Controller
             // }
             // GroupUser::where('group_id', $group->id)->where('user_id', $user->id)->delete();
         }
+
         return true;
     }
 }

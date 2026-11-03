@@ -2,21 +2,24 @@
 
 namespace App\Helper;
 
-use App\Models\User;
+use App\Events\NotificationCreate;
+use App\Models\Action;
+use App\Models\ActionUser;
+use App\Models\Address;
 use App\Models\Group;
+use App\Models\GroupUser;
 use App\Models\Order;
 use App\Models\Route;
-use App\Models\Action;
-use App\Models\Address;
-use App\Models\GroupUser;
-use App\Models\ActionUser;
-use Illuminate\Support\Str;
-use Spatie\Geocoder\Geocoder;
-use App\Events\NotificationCreate;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Spatie\Geocoder\Geocoder;
 
 class Helper
 {
@@ -24,24 +27,23 @@ class Helper
     {
         $action = $route->action;
         $response = '';
-        if (!$action->demo) {
+        if (! $action->demo) {
             $orders = $route->orders;
             $center = $action->center;
             $key = $action['APIKey'];
 
-            $url = 'directions/json?origin=' . $center['lat'] . ',' . $center['lng'];
-            $url = $url . '&destination=' . $center['lat'] . ',' . $center['lng'];
-            $url = $url . '&mode=' . strtolower($route->route_type['travelmode']);
-            $url = $url . '&waypoints=optimize:true|';
+            $url = 'directions/json?origin='.$center['lat'].','.$center['lng'];
+            $url = $url.'&destination='.$center['lat'].','.$center['lng'];
+            $url = $url.'&mode='.strtolower($route->route_type['travelmode']);
+            $url = $url.'&waypoints=optimize:true|';
             foreach ($orders as $order) {
                 $address = Address::findOrFail($order['address_id']);
-                $url = $url . $address['lat'] . ',' . $address['lng'] . '|';
+                $url = $url.$address['lat'].','.$address['lng'].'|';
             }
             $url = rtrim($url, '| ');
-            $client = new \GuzzleHttp\Client(['base_uri' => 'https://maps.googleapis.com/maps/api/']);
-            $request = $client->get($url . '&key=' . $key);
-            $response = json_decode($request->getBody(), true);
-            if (!$route['sequenceDone'] && ($response['status'] === 'OK')) {
+            // Laravel-Http-Client statt Guzzle direkt: in Tests mit Http::fake() abfangbar.
+            $response = Http::baseUrl('https://maps.googleapis.com/maps/api/')->get($url.'&key='.$key)->json();
+            if (! $route['sequenceDone'] && (($response['status'] ?? null) === 'OK')) {
                 foreach ($response['routes'][0]['waypoint_order'] as $key => $waypoint) {
                     $orders[$waypoint]->update(['sequence' => $key]);
                 }
@@ -55,10 +57,9 @@ class Helper
     public static function updateGroup(User $user, Group $group, $fromUser = false)
     {
         $group_user = GroupUser::firstOrCreate(['group_id' => $group->id, 'user_id' => $user->id]);
-        if($fromUser){
+        if ($fromUser) {
             $role_id = $user->role ? $user->role->id : config('status.role_leader');
-        }
-        else{
+        } else {
             $role_id = $group_user->role ? $group_user->role->id : config('status.role_leader');
         }
         $group_user->update(['role_id' => $role_id]);
@@ -76,10 +77,9 @@ class Helper
     public static function updateAction(User $user, Action $action, $fromUser = false)
     {
         $action_user = ActionUser::firstOrCreate(['action_id' => $action->id, 'user_id' => $user->id]);
-        if($fromUser){
+        if ($fromUser) {
             $role_id = $user->role ? $user->role->id : config('status.role_leader');
-        }
-        else{
+        } else {
             $role_id = $action_user->role ? $action_user->role->id : config('status.role_leader');
         }
         $action_user->update(['role_id' => $role_id]);
@@ -91,8 +91,8 @@ class Helper
 
     public static function getGeocoder(string $key): Geocoder
     {
-        $client = new \GuzzleHttp\Client();
-        $geocoder = new Geocoder($client);
+        // Aus dem Container, damit Tests den FakeGeocoder bekommen (GEOCODER_FAKE)
+        $geocoder = app(Geocoder::class);
         $geocoder->setApiKey($key);
         $geocoder->setCountry('CH');
 
@@ -123,19 +123,27 @@ class Helper
         ];
     }
 
-    public static function GetTimeChartData(Action $action, $graph_time = false)
+    public static function GetTimeChartData(?Action $action, $graph_time = false)
     {
+        // Benutzer ohne aktuelle Aktion: leeres Diagramm.
+        if (! $action) {
+            return [0];
+        }
 
-        $graphs = $action->notifications()->select(
-            DB::raw('sum(quantity) as total'),
-            DB::raw("CASE
-                    WHEN MOD(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30, 1) >= 0.5
-                        THEN date_format(DATE_ADD('2020-01-01 00:00:00', Interval CEILING(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
-                    ELSE date_format(DATE_ADD('2020-01-01 00:00:00', Interval FLOOR(TIMESTAMPDIFF(MINUTE, '2020-01-01 00:00:00', `when`) / 30) * 30 minute), '%H:%i')
-                    END AS time_frame"),
-        )
-            ->groupBy('time_frame')
-            ->orderBy('time_frame', 'ASC')->get();
+        // Zöpfe pro halbe Stunde, gerundet auf die nächste halbe Stunde (ab :15 bzw. :45 aufgerundet).
+        // In PHP statt SQL, damit es auf MySQL und SQLite (Tests) gleich läuft.
+        $graphs = $action->notifications()
+            ->whereNotNull('when')
+            ->get(['quantity', 'when'])
+            ->groupBy(function ($notification) {
+                $time = Carbon::parse($notification->when);
+                $minutes = intdiv($time->hour * 60 + $time->minute + 15, 30) * 30 % 1440;
+
+                return sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60);
+            })
+            ->map(fn ($group, $timeFrame) => (object) ['time_frame' => $timeFrame, 'total' => $group->sum('quantity')])
+            ->sortKeys()
+            ->values();
 
         if (count($graphs) > 0) {
             $graphs_time_min = strtotime($graphs->first()->time_frame);
@@ -163,7 +171,7 @@ class Helper
         return $graph_time ? $graphs_time : $graphs_sum;
     }
 
-    public static function GetZopfChartData(Action $action): array
+    public static function GetZopfChartData(?Action $action): array
     {
         $data['cut'] = 0;
         $data['orders_count'] = 0;
@@ -195,26 +203,26 @@ class Helper
         return $data;
     }
 
-    public static function GetIconArray($data): \Illuminate\Support\Collection
+    public static function GetIconArray($data): Collection
     {
         return collect([
             (object) [
                 'id' => 'overview-breads',
                 'icon' => 'fa-bread-slice',
                 'name' => 'Zöpfe',
-                'number' => $data['orders_finished'] + $data['cut'] . ' / ' . $data['total'],
+                'number' => $data['orders_finished'] + $data['cut'].' / '.$data['total'],
             ],
             (object) [
                 'id' => 'overview-orders',
                 'icon' => 'fa-newspaper',
                 'name' => 'Bestellungen',
-                'number' => $data['orders_count_finished'] . ' / ' . $data['orders_count'],
+                'number' => $data['orders_count_finished'].' / '.$data['orders_count'],
             ],
             (object) [
                 'id' => 'overview-routes',
                 'icon' => 'fa-route',
                 'name' => 'Routen',
-                'number' => $data['routes_finished_count'] . ' / ' . $data['routes_count'],
+                'number' => $data['routes_finished_count'].' / '.$data['routes_count'],
             ],
             (object) [
                 'id' => 'overview-open',
@@ -255,14 +263,14 @@ class Helper
     {
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            if($action['amount']===null){
+            if ($action['amount'] === null) {
                 $action->delete();
             }
-            $action_global = Action::where('global',true)->first();
-            
+            $action_global = Action::where('global', true)->first();
+
             $users = $action->allUsers;
-            foreach($users as $user){
-                if($action===$user->action()){
+            foreach ($users as $user) {
+                if ($action === $user->action()) {
                     Helper::updateAction($user, $action_global);
                 }
                 ActionUser::where('action_id', $action->id)->where('user_id', $user->id)->delete();
@@ -270,7 +278,8 @@ class Helper
         }
     }
 
-    public static function updateAvatar($request, $user){
+    public static function updateAvatar($request, $user)
+    {
         if ($file = $request->file('avatar')) {
             $input = $request->all();
             if ($input['cropped_photo_id']) {
@@ -278,7 +287,7 @@ class Helper
                 $directory = storage_path('app/public/'.$save_path);
                 File::deleteDirectory($directory);
                 File::makeDirectory($directory, 0775, true);
-                $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+                $name = Str::uuid().'_'.str_replace(' ', '', $file->getClientOriginalName());
                 Image::make($input['cropped_photo_id'])->save($directory.'/'.$name, 80);
                 $input['avatar'] = $save_path.'/'.$name;
                 $user->update(['avatar' => $input['avatar']]);
@@ -289,20 +298,20 @@ class Helper
     public static function getAvatarPath($avatar)
     {
         $path = null;
-        if($avatar){
-            if(str_starts_with($avatar, 'https')){
+        if ($avatar) {
+            if (str_starts_with($avatar, 'https')) {
                 $path = $avatar;
-            }
-            else{
-                $path = asset("storage/".$avatar);
+            } else {
+                $path = asset('storage/'.$avatar);
             }
         }
+
         return $path;
     }
 
     public static function checkRoute($id, $new_status)
     {
-        
+
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $order = Order::findOrFail($id);
