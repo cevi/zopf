@@ -2,6 +2,11 @@
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
 <script>
+    // Namen und Adressen kommen aus Eingaben und Importen: im Info-Fenster nur als Text (eigene Kopie,
+    // weil das Bundle mit window.escapeHtml als Modul erst später geladen wird)
+    function mapEscape(value) {
+        return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
     var center, orders, latitude, longitude, bounds;
     var clicked_markers = new Array;
     var markers = new Array;
@@ -136,7 +141,7 @@
         });
 
         if (center != null) {
-            var html = "<div class='maps-content'><p><b>" + center['name'] + "</b> <br/>" + center['street'] + "</p></div>";
+            var html = "<div class='maps-content'><p><b>" + mapEscape(center['name']) + "</b> <br/>" + mapEscape(center['street']) + "</p></div>";
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(center['lat'], center['lng']),
                 map: map,
@@ -177,7 +182,7 @@
                 '<button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">' + label + '</button></form>';
             var link_deliver = postButton("{{ route('home.delivered', ':id') }}".replace(':id', order.id), 'Übergeben');
             var link_deposited = postButton("{{ route('home.deposited', ':id') }}".replace(':id', order.id), 'Hinterlegt');
-            var address = "<div class='maps-content'><p><b>" + order.address['firstname'] + " " + order.address['name'] + "</b> <br/>" + order.address['street'] + "<br/> Zopf: " + order['quantity'] + "<br>";
+            var address = "<div class='maps-content'><p><b>" + mapEscape(order.address['firstname']) + " " + mapEscape(order.address['name']) + "</b> <br/>" + mapEscape(order.address['street']) + "<br/> Zopf: " + mapEscape(order['quantity']) + "<br>";
             var html = address + link_deliver + " " + link_deposited  +'</p></div>';
             var marker = new mapIcons.Marker({
                 position: new google.maps.LatLng(order.address['lat'], order.address['lng']),

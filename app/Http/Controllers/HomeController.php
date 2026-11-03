@@ -46,6 +46,7 @@ class HomeController extends Controller
         $user = Auth::user();
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
+        $this->authorize('follow', $route);
         $orders = $route->orders;
         $title = $route['name'];
         $help = Help::where('title', 'Mobile Routen')->first();
@@ -59,6 +60,7 @@ class HomeController extends Controller
         $action = Auth::user()->action;
         $routes = Route::where('user_id', $user->id)->where('route_status_id', config('status.route_unterwegs'))->get();
         $route = Route::FindOrFail($id);
+        $this->authorize('follow', $route);
         $orders = Order::where('route_id', $route['id']);
         $orders = $orders->with('address')->get();
         $center = $action->center;

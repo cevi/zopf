@@ -80,7 +80,8 @@ class AdminOrdersController extends Controller
                 ->addColumn('firstname', function ($orders) {
                     $firstname = $orders->address ? $orders->address['firstname'] : '';
 
-                    return '<a href='.\URL::route('orders.edit', $orders).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$firstname.'</a>';
+                    // Name maskieren: Spalte ist HTML (rawColumns)
+                    return '<a href="'.e(\URL::route('orders.edit', $orders)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($firstname).'</a>';
                 })
                 ->addColumn('street', function ($orders) {
                     return $orders->address ? $orders->address['street'] : '';
@@ -95,11 +96,11 @@ class AdminOrdersController extends Controller
                     $route = $orders->route ? $orders->route['name'] : '';
                     if ($route != '') {
                         if ($orders->route['route_status_id'] > config('status.route_geplant')) {
-                            $link = '<a href='.\URL::route('routes.overview', $orders->route).'  class="font-medium text-blue-600 dark:text-blue-500 hover:underline">';
+                            $link = '<a href="'.e(\URL::route('routes.overview', $orders->route)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">';
                         } else {
-                            $link = '<a href='.\URL::route('routes.edit', $orders->route).'  class="font-medium text-blue-600 dark:text-blue-500 hover:underline">';
+                            $link = '<a href="'.e(\URL::route('routes.edit', $orders->route)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">';
                         }
-                        $route = $link.$route.'</a>';
+                        $route = $link.e($route).'</a>';
                     }
 
                     return $route;
@@ -140,6 +141,7 @@ class AdminOrdersController extends Controller
             $action = $user->action;
             if ($request->name == '') {
                 $route = Route::FindOrFail($request->route_id);
+                $this->authorize('manage', $route);
             } else {
                 $input['name'] = $request->name;
                 $input['action_id'] = $action['id'];
@@ -147,7 +149,8 @@ class AdminOrdersController extends Controller
                 $input['user_id'] = Auth::user()->id;
                 $route = Route::create($input);
             }
-            Order::WhereIn('id', $request->id)->update(['route_id' => $route['id']]);
+            // Nur Bestellungen derselben Aktion
+            Order::whereIn('id', (array) $request->id)->where('action_id', $route->action_id)->update(['route_id' => $route['id']]);
 
         }
 
@@ -161,7 +164,7 @@ class AdminOrdersController extends Controller
      */
     public function pickup(Order $order)
     {
-        //
+        $this->authorize('manage', $order);
         $action = Auth::user()->action;
 
         if ($action && ! Auth::user()->demo) {
@@ -341,15 +344,13 @@ class AdminOrdersController extends Controller
         $action = $user->action;
 
         if ($action && ! Auth::user()->demo) {
-            $address = Address::Where('id', $request->address_id)->first();
+            // Bestehende Adresse nur aus der Gruppe der Aktion
+            $address = Address::where('id', $request->address_id)->where('group_id', $action->group_id)->first();
 
             if (! $address) {
-                $input = $request->all();
-
-                if (! $user->isAdmin()) {
-                    $group = $user->group;
-                    $input['group_id'] = $group['id'];
-                }
+                // Nur die Formularfelder der Adresse
+                $input = $request->only(['firstname', 'name', 'street', 'plz', 'city']);
+                $input['group_id'] = $action->group_id;
 
                 if ($request->has('pick_up')) {
                     $center = $action->center;
@@ -367,17 +368,17 @@ class AdminOrdersController extends Controller
                     $input['lng'] = $geocode['lng'];
                 }
                 $address = Address::create($input);
-
-                // return $input;
-            } else {
-                $input = $request->all();
             }
 
-            $input['address_id'] = $address->id;
-            $input['action_id'] = $action['id'];
-            $input['order_status_id'] = config('status.order_offen');
-
-            Order::create($input);
+            // Nur die Formularfelder der Bestellung
+            Order::create([
+                'quantity' => $request->input('quantity'),
+                'comments' => $request->input('comments'),
+                'pick_up' => $request->has('pick_up'),
+                'address_id' => $address->id,
+                'action_id' => $action['id'],
+                'order_status_id' => config('status.order_offen'),
+            ]);
         }
 
         return redirect('/admin/orders/create');
@@ -402,7 +403,7 @@ class AdminOrdersController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $this->authorize('manage', $order);
         $title = 'Bestellung - Bearbeiten';
         $action = Auth::user()->action;
         $routes = Route::where('action_id', $action['id'])->get();
@@ -427,28 +428,31 @@ class AdminOrdersController extends Controller
     {
         //
         $order = Order::findOrFail($id);
+        $this->authorize('manage', $order);
         $address = $order->address;
         $user = Auth::user();
         $action = $user->action;
+        // Route nur aus derselben Aktion
+        if ($request->filled('route_id')) {
+            $this->authorize('manage', Route::findOrFail($request->input('route_id')));
+            abort_unless(Route::find($request->input('route_id'))->action_id === $order->action_id, 403);
+        }
 
         if ($action && ! Auth::user()->demo) {
             Geocoder::setApiKey($action['APIKey']);
             Geocoder::setCountry('CH');
+            // Nur die Formularfelder (Adresse und Bestellung)
+            $input = $request->only(['firstname', 'name', 'street', 'plz', 'city', 'quantity', 'route_id', 'order_status_id', 'comments']);
+            $input['route_id'] = $request->filled('route_id') ? (int) $request->input('route_id') : null;
+            $input['pick_up'] = $request->has('pick_up');
             if ($address) {
-                $input = $request->all();
-
-                $input['pick_up'] = isset($input['pick_up']);
                 $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
                 $input['lat'] = $geocode['lat'];
                 $input['lng'] = $geocode['lng'];
 
                 $address->update($input);
             } else {
-                $input = $request->all();
-                if (! Auth::user()->isAdmin()) {
-                    $group = Auth::user()->group;
-                    $input['group_id'] = $group['id'];
-                }
+                $input['group_id'] = $action->group_id;
                 $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
                 $input['lat'] = $geocode['lat'];
                 $input['lng'] = $geocode['lng'];
@@ -457,7 +461,7 @@ class AdminOrdersController extends Controller
 
                 $address = Address::create($input);
             }
-            $order->update($input);
+            $order->update(collect($input)->only(['quantity', 'route_id', 'order_status_id', 'comments', 'pick_up', 'address_id'])->all());
         }
 
         return redirect('/admin/orders');
@@ -471,7 +475,7 @@ class AdminOrdersController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $this->authorize('manage', $order);
 
         if (! Auth::user()->demo) {
             $order->delete();

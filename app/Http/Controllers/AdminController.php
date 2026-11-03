@@ -128,6 +128,8 @@ class AdminController extends Controller
     public function GetIconArray(Request $request)
     {
         $action = Action::findOrFail($request->input('action.id'));
+        // Nur die eigene aktuelle Aktion (Admin: alle)
+        abort_unless(Auth::user()->isAdmin() || $action->id === Auth::user()->action_id, 403);
 
         $data = Helper::GetZopfChartData($action);
         $icon_array = Helper::GetIconArray($data);

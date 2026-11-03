@@ -95,7 +95,7 @@ class AdminBakeryProgressController extends Controller
         $action = Auth::user()->action;
 
         if ($action && ! Auth::user()->demo) {
-            $input = $request->all();
+            $input = $request->only(['when', 'raw_material', 'dough', 'braided', 'baked', 'delivered']);
             $input['user_id'] = Auth::user()->id;
             $input['action_id'] = $action['id'];
             $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
@@ -124,7 +124,7 @@ class AdminBakeryProgressController extends Controller
      */
     public function edit(BakeryProgress $progress)
     {
-        //
+        $this->authorize('manage', $progress);
 
         $title = 'Backstuben Verlauf - Bearbeiten';
         $group = Auth::user()->group;
@@ -147,9 +147,9 @@ class AdminBakeryProgressController extends Controller
      */
     public function update(Request $request, BakeryProgress $progress)
     {
-        //
-
-        $input = $request->all();
+        $this->authorize('manage', $progress);
+        // Nur die Formularfelder
+        $input = $request->only(['when', 'raw_material', 'dough', 'braided', 'baked', 'delivered']);
 
         if (! Auth::user()->demo) {
             $input['total'] = $input['raw_material'] + $input['dough'] + $input['braided'] + $input['baked'] + $input['delivered'];
@@ -167,7 +167,7 @@ class AdminBakeryProgressController extends Controller
      */
     public function destroy(BakeryProgress $progress)
     {
-        //
+        $this->authorize('manage', $progress);
         $user = Auth::user();
         if (! $user->demo) {
             $progress->delete();

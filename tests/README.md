@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **133 Testfälle in 18 Dateien** (PHP), 4 JS-Tests und 16 Browser-Tests (Dusk), Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **165 Testfälle in 22 Dateien** (PHP), 4 JS-Tests und 17 Browser-Tests (Dusk), Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -95,7 +95,7 @@ php artisan dusk                      # im App-Container (sail shell)
 | Datei | Prüft |
 |---|---|
 | [`Browser/AdminListsTest`](Browser/AdminListsTest.php) (5) | Routen, Bestellungen, Leiter, Aktionen, Gruppen: Zeilen erscheinen, kein DataTables-Alert, keine JS-Fehler |
-| [`Browser/FormsTest`](Browser/FormsTest.php) (7) | umgebaute Formulare (Form:: → Komponenten): Route, Gruppe, Benutzer bearbeiten; Profil mit Validierungsfehler (Eingabe bleibt); Logbuch-Eintrag auf dem Dashboard (Zeitfeld vorbelegt, HTML maskiert, auch nach `UpdateList()`); Bestellung zum Abholen; Leiter übergibt Bestellung |
+| [`Browser/FormsTest`](Browser/FormsTest.php) (11) | umgebaute Formulare (Form:: → Komponenten): Route, Gruppe, Benutzer bearbeiten; Profil mit Validierungsfehler (Eingabe bleibt); Logbuch-Eintrag auf dem Dashboard (Zeitfeld vorbelegt, HTML maskiert, auch nach `UpdateList()`); Bestellung zum Abholen; Leiter übergibt Bestellung |
 | [`Browser/SetupTest`](Browser/SetupTest.php) (1) | Grundaufbau: Login, Testdaten |
 
 ---
@@ -127,6 +127,10 @@ php artisan dusk                      # im App-Container (sail shell)
 | Entfernt | `RemovedPagesTest` | 3 | Adressverwaltung `admin/addresses` entfernt |
 | Wartung | `MaintenancePageTest` | 3 | öffentliche Wartungsseite (503) für `php artisan down` |
 | Sicherheit | `Security/SideEffectRoutesTest` | 12 | Aktionen mit Seiteneffekt nur per POST, keine Request-Felder beim Abschliessen |
+| Sicherheit | `Security/OrdersRoutesTest` | 13 | Bestellungen und Routen: nur eigene Aktion, Leiter nur eigene Route, nur Formularfelder |
+| Sicherheit | `Security/ProgressHelpsTest` | 9 | Backstuben-Verlauf nur eigene Aktion; Hilfe-Artikel nur Admin |
+| Sicherheit | `Security/DataLeaksTest` | 6 | Benutzersuche ohne E-Mail-Adressen, Dashboard-Zahlen nur eigene Aktion |
+| Sicherheit | `Security/HtmlOutputTest` | 4 | Namen in Admin-Tabellen und Karten-Info-Fenster nur als Text |
 | Sicherheit | `Security/GroupsActionsTest` | 15 | Gruppen und Aktionen: Wechseln nur mit Zugehörigkeit, Bearbeiten nur Besitzer bzw. eigene Gruppe |
 | Geocoding | `GeocoderTest` | 2 | `FakeGeocoder` statt Google in Tests und Dusk |
 | Sicherheit | `Security/UserAccountsTest` | 18 | Profil und Benutzerverwaltung: keine Rechte-Ausweitung, keine fremden Konten |
@@ -259,6 +263,25 @@ php artisan dusk                      # im App-Container (sail shell)
 | `test_complete_ignores_request_fields` | `complete()` übernahm `$request->all()` (z. B. `group_id`, `APIKey`, `demo`) |
 | `test_leader_route_page_uses_post_forms` / `test_route_overview_uses_post_form` | Knöpfe sind Formulare, keine Links |
 
+**[`Security/OrdersRoutesTest`](Feature/Security/OrdersRoutesTest.php)**: `OrderPolicy::manage`, `RoutePolicy` (`follow`, `manage`, `assignLeader`). Vorher konnte jede registrierte Person über `routes/{id}` und `maps/{id}` jede Route mit Namen und Adressen lesen, Aktionsleiter fremde Bestellungen und Routen ändern, löschen, starten und umhängen.
+
+| Test | Prüft |
+|---|---|
+| `test_stranger_cannot_read_foreign_route` / `test_leader_reads_only_own_route` / `test_actionleader_reads_routes_of_own_action` | Leiter-Seiten Route und Karte |
+| `test_foreign_order_cannot_be_managed` | Bestellung bearbeiten, abholen, löschen → 403 |
+| `test_actionleader_updates_own_order_with_form_fields_only` / `test_order_cannot_be_assigned_to_foreign_route` | nur Formularfelder, Route nur aus derselben Aktion |
+| `test_order_store_does_not_use_foreign_address` | `address_id` nur aus der eigenen Gruppe |
+| `test_create_route_only_with_own_orders_and_routes` / `test_assign_and_remove_only_own_orders` | Bestellungen zuweisen und entfernen |
+| `test_foreign_route_cannot_be_managed` | Route bearbeiten, Übersicht, starten, löschen → 403 |
+| `test_route_update_with_form_fields_and_own_users_only` / `test_route_store_with_own_users_only` | Verantwortliche nur aus der Aktion, `photo`/`action_id` nie aus dem Request |
+| `test_actionleader_manages_own_route` | erlaubter Ablauf |
+
+**[`Security/ProgressHelpsTest`](Feature/Security/ProgressHelpsTest.php)**: `BakeryProgressPolicy::manage`; Hilfe-Artikel in der Admin-Routengruppe. Hilfetexte erscheinen allen Benutzern als HTML, und jede registrierte Person kann Aktionsleiter werden: vorher ein Weg, Skripte bei Admins auszuführen.
+
+**[`Security/DataLeaksTest`](Feature/Security/DataLeaksTest.php)**: Benutzersuche nur für Aktionsleiter und höher, mindestens 3 Zeichen, Antwort ohne E-Mail (vorher alle E-Mail-Adressen für jede eingeloggte Person); `icon_array` nur für die eigene Aktion.
+
+**[`Security/HtmlOutputTest`](Feature/Security/HtmlOutputTest.php)**: Zellen der Admin-Tabellen werden mit `Dom\HTMLDocument` eingelesen, nur erwartete Elemente und Attribute sind erlaubt (Wert greift Text, unquotierte und quotierte Attribute an). Karten-Info-Fenster maskieren Namen und Adressen (`mapEscape`).
+
 **[`Security/GroupsActionsTest`](Feature/Security/GroupsActionsTest.php)**: `GroupPolicy` (`switchTo`, `manage`, `assignOwner`) und `ActionPolicy` (`switchTo`, `manage`). Vorher konnte jede registrierte Person in jede Gruppe und Aktion wechseln (danach Namen und Adressen sichtbar), jede Aktion ändern und löschen und jede Gruppe ändern (inkl. Besitzer übernehmen).
 
 | Test | Prüft |
@@ -328,6 +351,9 @@ Abgestimmt mit der Projektleitung. Wer sie ändert, muss auch die Tests anpassen
 - Nicht erlaubter Zugriff auf fremde Objekte: 403.
 - Gruppe wechseln: nur Gruppen mit Mitgliedschaft und die globale Gruppe; Aktion wechseln: nur Aktionen der aktuellen Gruppe und die globale Aktion. Admin: alle.
 - Gruppe bearbeiten/löschen: Besitzer und Admin; neuer Besitzer muss Mitglied sein. Aktion bearbeiten/löschen: wie abschliessen. Aktion erfassen: nur in der eigenen Gruppe.
+- Bestellungen und Routen verwalten: Aktionsleiter und höher in der eigenen aktuellen Aktion, Admin alle. Leiter-Seiten (Route, Karte): eigene Route, Aktionsleiter und höher alle Routen der eigenen Aktion. Verantwortliche nur aus der Aktion.
+- Backstuben-Verlauf: wie Bestellungen. Hilfe-Artikel: nur Admin.
+- Benutzersuche: Aktionsleiter und höher, Teilsuche in der E-Mail, Antwort ohne E-Mail-Adressen.
 - Profil: nur das eigene; nur Benutzername, E-Mail, Passwort (mit Bestätigung), Avatar.
 - Benutzerverwaltung: Nicht-Admins nur Benutzer der eigenen aktuellen Gruppe mit gleich vielen oder weniger Rechten; als Rolle (auch beim Erfassen und Hinzufügen) höchstens die eigene. Admin: alles.
 

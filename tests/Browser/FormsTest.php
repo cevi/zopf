@@ -246,4 +246,27 @@ class FormsTest extends DuskTestCase
         $this->assertSame('Backstubenweg 3', $action->center->street);
         $this->assertEqualsWithDelta(47.37, (float) $action->center->lat, 0.02);
     }
+
+    public function test_add_existing_leader_via_search_without_email(): void
+    {
+        $a = ActionScenario::create();
+        $b = ActionScenario::create();
+        $term = strstr($b->leader->email, '@', true);
+
+        $this->browse(function (Browser $browser) use ($a, $b, $term) {
+            $browser->loginAs($a->actionleader)
+                ->visit(route('users.index'))
+                ->click('#email_add')
+                ->type('#email_add', $term)
+                ->waitFor('.ui-autocomplete li')
+                ->assertSeeIn('.ui-autocomplete', $b->leader->username)
+                ->assertDontSeeIn('.ui-autocomplete', '@')
+                ->click('.ui-autocomplete li')
+                ->select('role_id_add', (string) config('status.role_leader'))
+                ->press('Leiter Hinzufügen')
+                ->assertPathIs('/admin/users');
+        });
+
+        $this->assertDatabaseHas('group_users', ['user_id' => $b->leader->id, 'group_id' => $a->group->id]);
+    }
 }

@@ -18,8 +18,8 @@
                 <form method="POST" action="{{ action('AdminUsersController@add') }}" accept-charset="UTF-8">
                     @csrf
                 <div class="form-group">
-                    <x-form.label for="email_add" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-Mail:</x-form.label>
-                    <x-form.input name="email_add" type="email" id="email_add" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 typeahead autocomplete_txt" placeholder="name@abt" required />
+                    <x-form.label for="email_add" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Leiter suchen (E-Mail oder Teil davon):</x-form.label>
+                    <x-form.input name="email_add" id="email_add" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 typeahead autocomplete_txt" placeholder="name@abt" required />
                 </div>
                 <div class="form-group">
                     <x-form.label for="role_id_add" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rolle:</x-form.label>
@@ -178,8 +178,8 @@
                             success: function (data) {
                                 var array = $.map(data, function (item) {
                                     return {
-                                        label: item['username'] + ' - ' + item['email'],
-                                        value: item['email'],
+                                        label: item['username'],
+                                        value: item['username'],
                                         data: item
                                     }
                                 });

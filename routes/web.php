@@ -81,13 +81,13 @@ Route::group(['middleware' => 'verified'], function () {
 
     Route::resource('admin/actions', 'AdminActionsController');
 
-    Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
-
     Route::group(['middleware' => 'groupleader'], function () {
 
         Route::get('/admin', ['as' => 'admin.index', 'uses' => 'AdminController@index']);
         Route::post('admin/log/create', ['as' => 'admin.logcreate', 'uses' => 'AdminController@logcreate']);
 
+        // Vor der Resource, sonst fängt admin/users/{user} die Anfrage ab
+        Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
         Route::resource('admin/users', 'AdminUsersController');
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
         Route::post('admin/users/addGroupUsers', ['as' => 'users.addGroupUsers', 'uses' => 'AdminUsersController@AddGroupUsersToAction']);
@@ -113,7 +113,6 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/logbooks', 'AdminLogbookController');
         Route::resource('admin/progress', 'AdminBakeryProgressController');
-        Route::resource('admin/helps', 'AdminHelpController');
 
         // Route::get('admin/orders/bulkdelete', ['as'=>'orders.bulkdelete','uses'=>'AdminOrdersController@bulkdelete']);
 
@@ -155,6 +154,8 @@ Route::get('/broadcasting/auth', function (Request $request) {
 
 Route::group(['middleware' => 'admin'], function () {
     Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
+    // Hilfe-Artikel: nur Admin (Texte erscheinen allen Benutzern als HTML)
+    Route::resource('admin/helps', 'AdminHelpController');
     Route::post('users/feedback/send', 'FeedbackController@send');
 
     Route::get('admin/maintenance', ['as' => 'admin.maintenance', 'uses' => 'AdminMaintenanceController@index']);

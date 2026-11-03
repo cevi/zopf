@@ -42,6 +42,7 @@
         <env name="GOOGLE_MAPS_GEOCODING_API_KEY" value="" force="true"/>
         <env name="GEOCODER_FAKE" value="true" force="true"/>
         <env name="VITE_PUSHER_APP_KEY" value="" force="true"/>
+        <env name="PUSHER_APP_SECRET" value="" force="true"/>
         <env name="VITE_PUSHER_APP_SECRET" value="" force="true"/>
         <env name="VITE_PUSHER_APP_ID" value="" force="true"/>
         <env name="HITOBITO_BASE_URL" value="http://hitobito.invalid" force="true"/>
