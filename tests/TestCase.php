@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
         // Tests brauchen kein gebautes Frontend (public/build).
         $this->withoutVite();
 
-        // Keine echten HTTP-Aufrufe über den Http-Client (Geocoder nutzt Guzzle direkt, siehe Helper::getGeocoder).
+        // Keine echten HTTP-Aufrufe über den Http-Client. Geocoding läuft über App\Support\FakeGeocoder (GEOCODER_FAKE).
         Http::preventStrayRequests();
 
         // Excel-Downloads (maatwebsite/excel) löschen ihre Temp-Datei erst nach dem Senden, was im Test nie passiert.

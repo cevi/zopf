@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Models\Action;
 use App\Models\Group;
 use App\Models\Order;
 use App\Models\Route;
@@ -15,7 +16,7 @@ use Tests\Support\ActionScenario;
  * Formulare, die beim Ersatz von Form:: (laravelcollective/html) auf Blade-Komponenten umgebaut wurden:
  * Vorbelegung aus dem Model, Absenden, gespeicherte Werte, Eingaben nach Validierungsfehlern.
  *
- * Nicht hier: Bestellung bearbeiten und Aktion bearbeiten (rufen auf dem Server immer den Geocoder bei Google auf).
+ * Geocoding läuft über App\Support\FakeGeocoder (GEOCODER_FAKE in .env.dusk.local), nie über Google.
  */
 class FormsTest extends DuskTestCase
 {
@@ -32,7 +33,9 @@ class FormsTest extends DuskTestCase
                 ->type($form.' [name="name"]', 'Route Nord')
                 ->select($form.' [name="route_type_id"]', (string) config('status.route_type_driving'))
                 ->press('Route Aktualisieren')
-                ->assertPathIs('/admin/routes');
+                ->assertPathIs('/admin/routes')
+                // Liste fertig laden lassen: Ein abgebrochener Ajax-Aufruf löst sonst im nächsten Test einen DataTables-Alert aus
+                ->waitForText('Route Nord');
         });
 
         $route = Route::find($s->route->id);
@@ -52,7 +55,8 @@ class FormsTest extends DuskTestCase
                 ->assertInputValue($form.' [name="name"]', $s->group->name)
                 ->type($form.' [name="name"]', 'Cevi Test')
                 ->press('Gruppe aktualisieren')
-                ->assertPathIs('/admin/groups');
+                ->assertPathIs('/admin/groups')
+                ->waitForText('Cevi Test');
         });
 
         $this->assertSame('Cevi Test', Group::find($s->group->id)->name);
@@ -72,7 +76,8 @@ class FormsTest extends DuskTestCase
                 ->assertSelectMissingOption($form.' [name="role_id"]', (string) config('status.role_administrator'))
                 ->select($form.' [name="role_id"]', (string) config('status.role_actionleader'))
                 ->press('Update Leiter')
-                ->assertPathIs('/admin/users');
+                ->assertPathIs('/admin/users')
+                ->waitForText('Aktions Chef');
         });
 
         $user = User::find($s->leader->id);
@@ -168,5 +173,77 @@ class FormsTest extends DuskTestCase
         });
 
         $this->assertSame(config('status.order_ausgeliefert'), Order::find($s->orderOnRoute->id)->order_status_id);
+    }
+
+    public function test_order_edit_form_saves_address_with_coordinates(): void
+    {
+        $s = ActionScenario::create();
+        $order = $s->openOrder;
+        $form = 'form[action="'.route('orders.update', $order->id).'"]';
+
+        $this->browse(function (Browser $browser) use ($s, $order, $form) {
+            $browser->loginAs($s->actionleader)
+                ->visit(route('orders.edit', $order->id))
+                ->assertInputValue($form.' [name="street"]', $order->address->street)
+                ->assertInputValue($form.' [name="quantity"]', (string) $order->quantity)
+                ->assertNotChecked($form.' [name="pick_up"]')
+                ->type($form.' [name="street"]', 'Seefeldstrasse 12')
+                ->type($form.' [name="quantity"]', '7')
+                ->press('Bestellung Aktualisieren')
+                ->assertPathIs('/admin/orders')
+                ->waitForText('Seefeldstrasse 12');
+        });
+
+        $order = Order::find($order->id);
+        $this->assertSame(7, (int) $order->quantity);
+        $this->assertSame('Seefeldstrasse 12', $order->address->street);
+        $this->assertEqualsWithDelta(47.37, (float) $order->address->lat, 0.02);
+    }
+
+    public function test_order_with_address_is_geocoded(): void
+    {
+        $s = ActionScenario::create();
+
+        $this->browse(function (Browser $browser) use ($s) {
+            $browser->loginAs($s->actionleader)
+                ->visit(route('orders.create'))
+                ->type('firstname', 'Beat')
+                ->type('name', 'Beispiel')
+                ->type('street', 'Limmatquai 5')
+                ->type('plz', '8001')
+                ->type('city', 'Zürich')
+                ->type('quantity', '2')
+                ->press('Adresse Erfassen')
+                ->assertPathIs('/admin/orders/create');
+        });
+
+        $order = Order::latest('id')->first();
+        $this->assertSame('Limmatquai 5', $order->address->street);
+        $this->assertSame($s->action->id, $order->action_id);
+        $this->assertNotNull($order->address->lat);
+    }
+
+    public function test_action_edit_form_saves_center(): void
+    {
+        $s = ActionScenario::create();
+        $form = 'form[action="'.route('actions.update', $s->action->id).'"]';
+
+        $this->browse(function (Browser $browser) use ($s, $form) {
+            $browser->loginAs($s->actionleader)
+                ->visit(route('actions.edit', $s->action->id))
+                ->assertInputValue($form.' [name="name"]', $s->action->name)
+                ->assertInputValue($form.' [name="city"]', $s->action->center->city)
+                ->assertSelected($form.' [name="action_status_id"]', (string) $s->action->action_status_id)
+                ->type($form.' [name="name"]', 'Zopfaktion 2027')
+                ->type($form.' [name="street"]', 'Backstubenweg 3')
+                ->press('Aktion aktualisieren')
+                ->assertPathIs('/admin/actions')
+                ->waitForText('Zopfaktion 2027');
+        });
+
+        $action = Action::find($s->action->id);
+        $this->assertSame('Zopfaktion 2027', $action->name);
+        $this->assertSame('Backstubenweg 3', $action->center->street);
+        $this->assertEqualsWithDelta(47.37, (float) $action->center->lat, 0.02);
     }
 }

@@ -90,22 +90,20 @@ class AdminActionsController extends Controller
         //
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
-            $address = Address::Where('id', $request->address_id)->first();
             $group = $aktUser->group;
+            // Nur die Formularfelder; Gruppe bei Nicht-Admins immer die eigene, nie global oder demo
+            $input = $request->only(['name', 'year', 'APIKey', 'street', 'plz', 'city']);
+            $input['group_id'] = $aktUser->isAdmin() && $request->filled('group_id') ? (int) $request->input('group_id') : $group['id'];
+            // Bestehende Adresse nur aus der Gruppe der Aktion
+            $address = Address::where('id', $request->address_id)->where('group_id', $input['group_id'])->first();
             if (! $address) {
-                $input = $request->all();
-                if (! $aktUser->isAdmin()) {
-                    $input['group_id'] = $group['id'];
-                }
                 $geocoder = Helper::getGeocoder($input['APIKey']);
                 $geocode = $geocoder->getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
                 $input['lat'] = $geocode['lat'];
                 $input['lng'] = $geocode['lng'];
                 $input['center'] = true;
-
-                $address = Address::create($input);
-            } else {
-                $input = $request->all();
+                // Standort hat keinen Vornamen; Spalte ist NOT NULL (MySQL ohne strict setzt sonst still '')
+                $address = Address::create($input + ['firstname' => '']);
             }
             $input['address_id'] = $address['id'];
 
@@ -146,7 +144,7 @@ class AdminActionsController extends Controller
      */
     public function edit(Action $action)
     {
-        //
+        $this->authorize('manage', $action);
         $action_statuses = ActionStatus::pluck('name', 'id')->all();
         $title = 'Aktion - Bearbeiten';
         $help = Help::where('title', $title)->first();
@@ -168,8 +166,10 @@ class AdminActionsController extends Controller
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $action = Action::findOrFail($id);
+            $this->authorize('manage', $action);
             $address = $action->center;
-            $input = $request->all();
+            // Nur die Formularfelder (Aktion und Standort-Adresse)
+            $input = $request->only(['name', 'year', 'APIKey', 'action_status_id', 'street', 'plz', 'city']);
             Geocoder::setApiKey($input['APIKey']);
             Geocoder::setCountry('CH');
             $geocode = Geocoder::getCoordinatesForAddress($input['street'].', '.$input['plz'].' '.$input['city']);
@@ -183,7 +183,7 @@ class AdminActionsController extends Controller
                     $group = $aktUser->group;
                     $input['group_id'] = $group['id'];
                 }
-                $address = Address::create($input);
+                $address = Address::create($input + ['firstname' => '']);
                 $input['address_id'] = $address['id'];
             }
             $status_id = (int) $input['action_status_id'];
@@ -236,7 +236,7 @@ class AdminActionsController extends Controller
 
     public function updateAction(Request $request, Action $action)
     {
-        //
+        $this->authorize('switchTo', $action);
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             Helper::updateAction($aktUser, $action);
@@ -247,7 +247,7 @@ class AdminActionsController extends Controller
 
     public function destroy(Action $action)
     {
-        //
+        $this->authorize('manage', $action);
         Helper::deleteAction($action);
 
         return redirect('/admin/actions');

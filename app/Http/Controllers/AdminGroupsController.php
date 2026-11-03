@@ -73,7 +73,12 @@ class AdminGroupsController extends Controller
 
         $user = Auth::user();
         if (! $user->demo) {
-            Group::create($request->all());
+            // Nur die Formularfelder; Besitzer bei Nicht-Admins immer die eigene Person, nie global
+            Group::create([
+                'name' => $request->input('name'),
+                'user_id' => $user->isAdmin() && $request->filled('user_id') ? (int) $request->input('user_id') : $user->id,
+                'global' => false,
+            ]);
         }
 
         return redirect('admin/groups');
@@ -100,6 +105,7 @@ class AdminGroupsController extends Controller
     {
         //
         $group = Group::findOrFail($id);
+        $this->authorize('manage', $group);
         $users = $group->allUsers()->pluck('username', 'user_id')->all();
         $title = 'Gruppe Bearbeiten';
         $help = Help::where('title', $title)->first();
@@ -118,8 +124,13 @@ class AdminGroupsController extends Controller
         //
 
         $user = Auth::user();
+        $group = Group::findOrFail($id);
+        $this->authorize('manage', $group);
+        if ($request->filled('user_id')) {
+            $this->authorize('assignOwner', [$group, (int) $request->input('user_id')]);
+        }
         if (! $user->demo) {
-            Group::findOrFail($id)->update($request->all());
+            $group->update($request->only(['name', 'user_id']));
         }
 
         return redirect('admin/groups');
@@ -133,6 +144,7 @@ class AdminGroupsController extends Controller
      */
     public function destroy(Group $group)
     {
+        $this->authorize('manage', $group);
         $aktUser = Auth::user();
         if (! $aktUser->demo) {
             $actions = $group->actions;

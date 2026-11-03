@@ -36,4 +36,9 @@ return [
      */
     'country' => 'CH',
 
+    /*
+     * Nur Tests und Dusk: App\Support\FakeGeocoder statt Google (keine Netzwerkaufrufe).
+     */
+    'fake' => env('GEOCODER_FAKE', false),
+
 ];

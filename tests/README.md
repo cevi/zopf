@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 2. November 2026: **116 Testfälle in 16 Dateien** (PHP), 4 JS-Tests und 13 Browser-Tests (Dusk), Laufzeit rund 1 Sekunde.
+Stand 2. November 2026: **133 Testfälle in 18 Dateien** (PHP), 4 JS-Tests und 16 Browser-Tests (Dusk), Laufzeit rund 1 Sekunde.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -127,6 +127,8 @@ php artisan dusk                      # im App-Container (sail shell)
 | Entfernt | `RemovedPagesTest` | 3 | Adressverwaltung `admin/addresses` entfernt |
 | Wartung | `MaintenancePageTest` | 3 | öffentliche Wartungsseite (503) für `php artisan down` |
 | Sicherheit | `Security/SideEffectRoutesTest` | 12 | Aktionen mit Seiteneffekt nur per POST, keine Request-Felder beim Abschliessen |
+| Sicherheit | `Security/GroupsActionsTest` | 15 | Gruppen und Aktionen: Wechseln nur mit Zugehörigkeit, Bearbeiten nur Besitzer bzw. eigene Gruppe |
+| Geocoding | `GeocoderTest` | 2 | `FakeGeocoder` statt Google in Tests und Dusk |
 | Sicherheit | `Security/UserAccountsTest` | 18 | Profil und Benutzerverwaltung: keine Rechte-Ausweitung, keine fremden Konten |
 | Sicherheit | `Security/ForeignIdsTest` | 13 | fremde Bestellungen, Routen, Aktionen → 403 (Policies) |
 | JS | `tests/js/escape-html.test.js` | 4 | `escapeHtml` für Logbuch und Benachrichtigungen |
@@ -257,6 +259,18 @@ php artisan dusk                      # im App-Container (sail shell)
 | `test_complete_ignores_request_fields` | `complete()` übernahm `$request->all()` (z. B. `group_id`, `APIKey`, `demo`) |
 | `test_leader_route_page_uses_post_forms` / `test_route_overview_uses_post_form` | Knöpfe sind Formulare, keine Links |
 
+**[`Security/GroupsActionsTest`](Feature/Security/GroupsActionsTest.php)**: `GroupPolicy` (`switchTo`, `manage`, `assignOwner`) und `ActionPolicy` (`switchTo`, `manage`). Vorher konnte jede registrierte Person in jede Gruppe und Aktion wechseln (danach Namen und Adressen sichtbar), jede Aktion ändern und löschen und jede Gruppe ändern (inkl. Besitzer übernehmen).
+
+| Test | Prüft |
+|---|---|
+| `test_stranger_cannot_switch_into_foreign_group` / `_action` | Wechsel ohne Zugehörigkeit → 403, keine Mitgliedschaft angelegt |
+| `test_member_switches_between_own_groups` / `test_member_switches_into_action_of_own_group` / `test_everybody_may_switch_to_global_group_and_action` | erlaubte Wechsel |
+| `test_stranger_cannot_edit_foreign_group` / `test_actionleader_of_group_cannot_edit_group_he_does_not_own` | Gruppe nur durch Besitzer |
+| `test_owner_edits_group` / `test_owner_cannot_hand_group_to_non_member` | Besitzer ändert Name und Besitzer (nur an Mitglieder), `global` nie aus dem Request |
+| `test_group_create_ignores_global_and_foreign_owner` | Gruppe erfassen |
+| `test_stranger_cannot_edit_or_delete_foreign_action` / `test_actionleader_of_other_group_cannot_edit_action` / `test_leader_of_own_group_cannot_edit_action` | Aktion nur Aktionsleiter+ der eigenen Gruppe |
+| `test_actionleader_edits_action_of_own_group` / `test_action_create_stays_in_own_group` | nur Formularfelder; Gruppe, `global`, `demo`, Besitzer nie aus dem Request |
+
 **[`Security/UserAccountsTest`](Feature/Security/UserAccountsTest.php)**: `UserPolicy` (`updateProfile`, `manage`, `assignRole`). Vorher konnte jeder eingeloggte Leiter sich über das Profil zum Administrator machen (`role_id` aus `$request->all()`), fremde Profile und Benutzer ändern (E-Mail, Passwort → Konto übernehmen) und Aktionsleiter konnten Administratoren anlegen bzw. hinzufügen.
 
 | Test | Prüft |
@@ -312,6 +326,8 @@ Abgestimmt mit der Projektleitung. Wer sie ändert, muss auch die Tests anpassen
 - Route "Alle Bestellungen abschliessen" und Routenblatt: Routen der eigenen aktuellen Aktion, Admin alle.
 - Aktion starten/abschliessen: Aktionen der eigenen Gruppe (wie die Aktionen-Tabelle), Admin alle.
 - Nicht erlaubter Zugriff auf fremde Objekte: 403.
+- Gruppe wechseln: nur Gruppen mit Mitgliedschaft und die globale Gruppe; Aktion wechseln: nur Aktionen der aktuellen Gruppe und die globale Aktion. Admin: alle.
+- Gruppe bearbeiten/löschen: Besitzer und Admin; neuer Besitzer muss Mitglied sein. Aktion bearbeiten/löschen: wie abschliessen. Aktion erfassen: nur in der eigenen Gruppe.
 - Profil: nur das eigene; nur Benutzername, E-Mail, Passwort (mit Bestätigung), Avatar.
 - Benutzerverwaltung: Nicht-Admins nur Benutzer der eigenen aktuellen Gruppe mit gleich vielen oder weniger Rechten; als Rolle (auch beim Erfassen und Hinzufügen) höchstens die eigene. Admin: alles.
 

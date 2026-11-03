@@ -24,7 +24,7 @@ class ActionFactory extends Factory
             'year' => (int) date('Y'),
             'group_id' => Group::factory(),
             'action_status_id' => config('status.action_aktiv'),
-            'APIKey' => '',
+            'APIKey' => 'test-api-key', // Pflichtfeld im Formular; Google wird in Tests nie aufgerufen
             'global' => false,
             'demo' => false,
         ];

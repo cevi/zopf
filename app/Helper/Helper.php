@@ -91,8 +91,8 @@ class Helper
 
     public static function getGeocoder(string $key): Geocoder
     {
-        $client = new Client;
-        $geocoder = new Geocoder($client);
+        // Aus dem Container, damit Tests den FakeGeocoder bekommen (GEOCODER_FAKE)
+        $geocoder = app(Geocoder::class);
         $geocoder->setApiKey($key);
         $geocoder->setCountry('CH');
 
